@@ -1,9 +1,10 @@
 """Core domain models for Rigging"""
 
-from enum import Enum
-from typing import Optional, Dict, Any, List
 from datetime import datetime
-from pydantic import BaseModel, Field, ConfigDict
+from enum import Enum
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class HookType(str, Enum):
@@ -48,26 +49,26 @@ class HandlerType(str, Enum):
 class Handler(BaseModel):
     """Hook handler configuration"""
     type: HandlerType
-    command: Optional[str] = None
-    workflow: Optional[str] = None
-    script: Optional[str] = None
-    
+    command: str | None = None
+    workflow: str | None = None
+    script: str | None = None
+
     model_config = ConfigDict(use_enum_values=True)
 
 
 class Hook(BaseModel):
     """A configured hook"""
-    id: Optional[str] = Field(default=None, description="Unique identifier")
+    id: str | None = Field(default=None, description="Unique identifier")
     type: HookType
-    matcher: Optional[str] = Field(default=None, description="Tool or event matcher")
+    matcher: str | None = Field(default=None, description="Tool or event matcher")
     handler: Handler
-    description: Optional[str] = None
+    description: str | None = None
     enabled: bool = True
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
     created_at: datetime = Field(default_factory=datetime.now)
-    
+
     model_config = ConfigDict(use_enum_values=True)
-    
+
     def is_valid_matcher(self) -> bool:
         """Check if the matcher is valid for this hook type"""
         if self.type in [HookType.PRE_TOOL_USE, HookType.POST_TOOL_USE]:
@@ -80,17 +81,17 @@ class Hook(BaseModel):
 
 class HookExecution(BaseModel):
     """Record of a hook execution"""
-    id: Optional[int] = None
+    id: int | None = None
     hook_id: str
     hook_type: HookType
-    tool_name: Optional[str] = None
+    tool_name: str | None = None
     timestamp: datetime = Field(default_factory=datetime.now)
-    input_data: Dict[str, Any]
-    output_data: Optional[Dict[str, Any]] = None
-    duration_ms: Optional[int] = None
+    input_data: dict[str, Any]
+    output_data: dict[str, Any] | None = None
+    duration_ms: int | None = None
     status: str = "pending"  # pending, success, error
-    error_message: Optional[str] = None
-    
+    error_message: str | None = None
+
     model_config = ConfigDict(use_enum_values=True)
 
 
@@ -98,9 +99,9 @@ class Workflow(BaseModel):
     """A workflow definition"""
     id: str
     name: str
-    description: Optional[str] = None
-    steps: List[Dict[str, Any]]  # Workflow step definitions
-    variables: Dict[str, Any] = Field(default_factory=dict)
+    description: str | None = None
+    steps: list[dict[str, Any]]  # Workflow step definitions
+    variables: dict[str, Any] = Field(default_factory=dict)
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
 
@@ -111,31 +112,31 @@ class Template(BaseModel):
     name: str
     description: str
     category: str
-    hooks: List[Hook]
-    variables: Dict[str, Any] = Field(default_factory=dict)
+    hooks: list[Hook]
+    variables: dict[str, Any] = Field(default_factory=dict)
     version: str = "1.0.0"
-    author: Optional[str] = None
-    tags: List[str] = Field(default_factory=list)
+    author: str | None = None
+    tags: list[str] = Field(default_factory=list)
 
 
 class HookConfiguration(BaseModel):
     """Complete hook configuration"""
-    hooks: List[Hook] = Field(default_factory=list)
+    hooks: list[Hook] = Field(default_factory=list)
     version: str = "1.0"
-    metadata: Dict[str, Any] = Field(default_factory=dict)
-    
+    metadata: dict[str, Any] = Field(default_factory=dict)
+
     def add_hook(self, hook: Hook) -> None:
         """Add a hook to the configuration"""
         if not hook.id:
             hook.id = f"{hook.type}_{hook.matcher or 'default'}_{len(self.hooks)}"
         self.hooks.append(hook)
-    
+
     def remove_hook(self, hook_id: str) -> bool:
         """Remove a hook by ID"""
         original_length = len(self.hooks)
         self.hooks = [h for h in self.hooks if h.id != hook_id]
         return len(self.hooks) < original_length
-    
-    def get_hooks_by_type(self, hook_type: HookType) -> List[Hook]:
+
+    def get_hooks_by_type(self, hook_type: HookType) -> list[Hook]:
         """Get all hooks of a specific type"""
         return [h for h in self.hooks if h.type == hook_type]

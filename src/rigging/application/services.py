@@ -1,28 +1,35 @@
 """Application services - Business logic implementation"""
 
-from typing import List, Optional, Dict, Any
-from pathlib import Path
 import json
-from datetime import datetime
+from pathlib import Path
+from typing import Any
 
-from rigging.domain.models import (
-    Hook, HookType, HookConfiguration, HookExecution,
-    Template, Workflow, ToolMatcher, Handler
-)
 from rigging.domain.exceptions import (
-    HookConfigurationError, TemplateError, WorkflowError
+    HookConfigurationError,
+    TemplateError,
+)
+from rigging.domain.models import (
+    Handler,
+    Hook,
+    HookConfiguration,
+    HookExecution,
+    HookType,
+    Template,
+    Workflow,
 )
 from rigging.infrastructure.repositories import (
-    HookRepository, ExecutionRepository, TemplateRepository
+    ExecutionRepository,
+    HookRepository,
+    TemplateRepository,
 )
 
 
 class HookService:
     """Service for managing hooks"""
-    
+
     def __init__(self, hook_repo: HookRepository):
         self.hook_repo = hook_repo
-    
+
     def create_hook(self, hook: Hook) -> Hook:
         """Create and validate a new hook"""
         if not hook.is_valid_matcher():
@@ -30,67 +37,67 @@ class HookService:
                 f"Invalid matcher '{hook.matcher}' for hook type {hook.type}"
             )
         return self.hook_repo.save(hook)
-    
-    def get_hook(self, hook_id: str) -> Optional[Hook]:
+
+    def get_hook(self, hook_id: str) -> Hook | None:
         """Get a hook by ID"""
         return self.hook_repo.get(hook_id)
-    
-    def list_hooks(self, hook_type: Optional[HookType] = None) -> List[Hook]:
+
+    def list_hooks(self, hook_type: HookType | None = None) -> list[Hook]:
         """List all hooks, optionally filtered by type"""
         hooks = self.hook_repo.get_all()
         if hook_type:
             hooks = [h for h in hooks if h.type == hook_type]
         return hooks
-    
-    def update_hook(self, hook_id: str, updates: Dict[str, Any]) -> Optional[Hook]:
+
+    def update_hook(self, hook_id: str, updates: dict[str, Any]) -> Hook | None:
         """Update a hook"""
         hook = self.hook_repo.get(hook_id)
         if not hook:
             return None
-        
+
         for key, value in updates.items():
             if hasattr(hook, key):
                 setattr(hook, key, value)
-        
+
         if not hook.is_valid_matcher():
             raise HookConfigurationError(
                 f"Invalid matcher '{hook.matcher}' for hook type {hook.type}"
             )
-        
+
         return self.hook_repo.save(hook)
-    
+
     def delete_hook(self, hook_id: str) -> bool:
         """Delete a hook"""
         return self.hook_repo.delete(hook_id)
-    
-    def enable_hook(self, hook_id: str) -> Optional[Hook]:
+
+    def enable_hook(self, hook_id: str) -> Hook | None:
         """Enable a hook"""
         return self.update_hook(hook_id, {"enabled": True})
-    
-    def disable_hook(self, hook_id: str) -> Optional[Hook]:
+
+    def disable_hook(self, hook_id: str) -> Hook | None:
         """Disable a hook"""
         return self.update_hook(hook_id, {"enabled": False})
 
 
 class ConfigurationService:
     """Service for managing hook configurations"""
-    
+
     def __init__(self, config_path: Path):
         self.config_path = config_path
         self.claude_settings_path = config_path / ".claude" / "settings.json"
-    
+
     def load_configuration(self) -> HookConfiguration:
         """Load hook configuration from Claude settings"""
         if not self.claude_settings_path.exists():
             return HookConfiguration()
-        
+
         try:
-            with open(self.claude_settings_path, 'r') as f:
+            with open(self.claude_settings_path) as f:
                 data = json.load(f)
-            
+
             hooks_data = data.get("hooks", [])
             hooks = []
-            
+
             for hook_data in hooks_data:
                 # Convert Claude format to our format
                 handler_data = hook_data["handler"]
@@ -101,22 +108,22 @@ class ConfigurationService:
                     handler=handler
                 )
                 hooks.append(hook)
-            
+
             return HookConfiguration(hooks=hooks)
         except Exception as e:
-            raise HookConfigurationError(f"Failed to load configuration: {e}")
-    
+            raise HookConfigurationError(f"Failed to load configuration: {e}") from e
+
     def save_configuration(self, config: HookConfiguration) -> None:
         """Save hook configuration to Claude settings"""
         self.claude_settings_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Load existing settings
         if self.claude_settings_path.exists():
-            with open(self.claude_settings_path, 'r') as f:
+            with open(self.claude_settings_path) as f:
                 settings = json.load(f)
         else:
             settings = {}
-        
+
         # Convert to Claude format
         hooks_data = []
         for hook in config.hooks:
@@ -128,91 +135,91 @@ class ConfigurationService:
                 if hook.matcher:
                     hook_dict["matcher"] = hook.matcher
                 hooks_data.append(hook_dict)
-        
+
         settings["hooks"] = hooks_data
-        
+
         # Save with backup
         if self.claude_settings_path.exists():
             backup_path = self.claude_settings_path.with_suffix('.json.backup')
             backup_path.write_text(self.claude_settings_path.read_text())
-        
+
         with open(self.claude_settings_path, 'w') as f:
             json.dump(settings, f, indent=2)
 
 
 class ExecutionService:
     """Service for hook execution tracking"""
-    
+
     def __init__(self, execution_repo: ExecutionRepository):
         self.execution_repo = execution_repo
-    
+
     def record_execution(self, execution: HookExecution) -> HookExecution:
         """Record a hook execution"""
         return self.execution_repo.save(execution)
-    
-    def get_execution(self, execution_id: int) -> Optional[HookExecution]:
+
+    def get_execution(self, execution_id: int) -> HookExecution | None:
         """Get an execution by ID"""
         return self.execution_repo.get(execution_id)
-    
+
     def list_executions(
-        self, 
-        hook_type: Optional[HookType] = None,
+        self,
+        hook_type: HookType | None = None,
         limit: int = 100,
         offset: int = 0
-    ) -> List[HookExecution]:
+    ) -> list[HookExecution]:
         """List executions with optional filtering"""
         return self.execution_repo.get_recent(
-            hook_type=hook_type, 
-            limit=limit, 
+            hook_type=hook_type,
+            limit=limit,
             offset=offset
         )
-    
-    def get_execution_stats(self) -> Dict[str, Any]:
+
+    def get_execution_stats(self) -> dict[str, Any]:
         """Get execution statistics"""
         return self.execution_repo.get_stats()
 
 
 class TemplateService:
     """Service for managing templates"""
-    
+
     def __init__(self, template_repo: TemplateRepository):
         self.template_repo = template_repo
-    
-    def list_templates(self, category: Optional[str] = None) -> List[Template]:
+
+    def list_templates(self, category: str | None = None) -> list[Template]:
         """List available templates"""
         templates = self.template_repo.get_all()
         if category:
             templates = [t for t in templates if t.category == category]
         return templates
-    
-    def get_template(self, template_id: str) -> Optional[Template]:
+
+    def get_template(self, template_id: str) -> Template | None:
         """Get a template by ID"""
         return self.template_repo.get(template_id)
-    
+
     def install_template(
-        self, 
-        template_id: str, 
-        variables: Optional[Dict[str, Any]] = None
-    ) -> List[Hook]:
+        self,
+        template_id: str,
+        variables: dict[str, Any] | None = None
+    ) -> list[Hook]:
         """Install a template, returning the created hooks"""
         template = self.template_repo.get(template_id)
         if not template:
             raise TemplateError(f"Template '{template_id}' not found")
-        
+
         # Apply variables to template
         hooks = []
         for hook in template.hooks:
             hook_dict = hook.model_dump()
-            
+
             # Replace variables in strings
             if variables:
                 hook_dict = self._apply_variables(hook_dict, variables)
-            
+
             hooks.append(Hook(**hook_dict))
-        
+
         return hooks
-    
-    def _apply_variables(self, data: Any, variables: Dict[str, Any]) -> Any:
+
+    def _apply_variables(self, data: Any, variables: dict[str, Any]) -> Any:
         """Recursively apply variables to template data"""
         if isinstance(data, str):
             for key, value in variables.items():
@@ -227,15 +234,15 @@ class TemplateService:
 
 class WorkflowService:
     """Service for workflow execution"""
-    
+
     def __init__(self, workflow_path: Path):
         self.workflow_path = workflow_path
-    
+
     def execute_workflow(
-        self, 
-        workflow_id: str, 
-        context: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self,
+        workflow_id: str,
+        context: dict[str, Any]
+    ) -> dict[str, Any]:
         """Execute a workflow with the given context"""
         # This is a placeholder - actual implementation would:
         # 1. Load workflow definition
@@ -243,12 +250,12 @@ class WorkflowService:
         # 3. Handle conditions and loops
         # 4. Return results
         raise NotImplementedError("Workflow execution coming soon!")
-    
-    def list_workflows(self) -> List[Workflow]:
+
+    def list_workflows(self) -> list[Workflow]:
         """List available workflows"""
         workflows = []
         if self.workflow_path.exists():
-            for workflow_file in self.workflow_path.glob("**/*.yaml"):
+            for _workflow_file in self.workflow_path.glob("**/*.yaml"):
                 # Load and parse workflow files
                 pass
         return workflows

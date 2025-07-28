@@ -1,34 +1,32 @@
 """Repository implementations for data persistence"""
 
-from typing import List, Optional, Dict, Any
+import json
 from abc import ABC, abstractmethod
 from pathlib import Path
-import json
-from datetime import datetime
-from sqlalchemy import create_engine, select, func
+from typing import Any
+
+from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from rigging.domain.models import (
-    Hook, HookExecution, Template, Workflow, HookType
-)
-from rigging.infrastructure.database import Base, get_db_path, init_db
+from rigging.domain.models import Hook, HookExecution, HookType, Template
+from rigging.infrastructure.database import get_db_path, init_db
 
 
 class HookRepository(ABC):
     """Abstract repository for hooks"""
-    
+
     @abstractmethod
     def save(self, hook: Hook) -> Hook:
         pass
-    
+
     @abstractmethod
-    def get(self, hook_id: str) -> Optional[Hook]:
+    def get(self, hook_id: str) -> Hook | None:
         pass
-    
+
     @abstractmethod
-    def get_all(self) -> List[Hook]:
+    def get_all(self) -> list[Hook]:
         pass
-    
+
     @abstractmethod
     def delete(self, hook_id: str) -> bool:
         pass
@@ -36,22 +34,22 @@ class HookRepository(ABC):
 
 class InMemoryHookRepository(HookRepository):
     """In-memory implementation for testing"""
-    
+
     def __init__(self):
-        self.hooks: Dict[str, Hook] = {}
-    
+        self.hooks: dict[str, Hook] = {}
+
     def save(self, hook: Hook) -> Hook:
         if not hook.id:
             hook.id = f"{hook.type}_{hook.matcher or 'default'}_{len(self.hooks)}"
         self.hooks[hook.id] = hook
         return hook
-    
-    def get(self, hook_id: str) -> Optional[Hook]:
+
+    def get(self, hook_id: str) -> Hook | None:
         return self.hooks.get(hook_id)
-    
-    def get_all(self) -> List[Hook]:
+
+    def get_all(self) -> list[Hook]:
         return list(self.hooks.values())
-    
+
     def delete(self, hook_id: str) -> bool:
         if hook_id in self.hooks:
             del self.hooks[hook_id]
@@ -61,58 +59,58 @@ class InMemoryHookRepository(HookRepository):
 
 class ExecutionRepository(ABC):
     """Abstract repository for hook executions"""
-    
+
     @abstractmethod
     def save(self, execution: HookExecution) -> HookExecution:
         pass
-    
+
     @abstractmethod
-    def get(self, execution_id: int) -> Optional[HookExecution]:
+    def get(self, execution_id: int) -> HookExecution | None:
         pass
-    
+
     @abstractmethod
     def get_recent(
-        self, 
-        hook_type: Optional[HookType] = None,
+        self,
+        hook_type: HookType | None = None,
         limit: int = 100,
         offset: int = 0
-    ) -> List[HookExecution]:
+    ) -> list[HookExecution]:
         pass
-    
+
     @abstractmethod
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         pass
 
 
 class SQLiteExecutionRepository(ExecutionRepository):
     """SQLite implementation for execution persistence"""
-    
-    def __init__(self, db_path: Optional[Path] = None):
+
+    def __init__(self, db_path: Path | None = None):
         self.db_path = db_path or get_db_path()
         self.engine = create_engine(f"sqlite:///{self.db_path}")
         init_db(self.engine)
-    
+
     def save(self, execution: HookExecution) -> HookExecution:
-        with Session(self.engine) as session:
+        with Session(self.engine):
             # Convert to DB model and save
             # This is simplified - actual implementation would use SQLAlchemy models
             execution.id = 1  # Placeholder
             return execution
-    
-    def get(self, execution_id: int) -> Optional[HookExecution]:
+
+    def get(self, execution_id: int) -> HookExecution | None:
         # Placeholder implementation
         return None
-    
+
     def get_recent(
-        self, 
-        hook_type: Optional[HookType] = None,
+        self,
+        hook_type: HookType | None = None,
         limit: int = 100,
         offset: int = 0
-    ) -> List[HookExecution]:
+    ) -> list[HookExecution]:
         # Placeholder implementation
         return []
-    
-    def get_stats(self) -> Dict[str, Any]:
+
+    def get_stats(self) -> dict[str, Any]:
         # Placeholder implementation
         return {
             "total_executions": 0,
@@ -123,15 +121,15 @@ class SQLiteExecutionRepository(ExecutionRepository):
 
 class TemplateRepository(ABC):
     """Abstract repository for templates"""
-    
+
     @abstractmethod
-    def get(self, template_id: str) -> Optional[Template]:
+    def get(self, template_id: str) -> Template | None:
         pass
-    
+
     @abstractmethod
-    def get_all(self) -> List[Template]:
+    def get_all(self) -> list[Template]:
         pass
-    
+
     @abstractmethod
     def save(self, template: Template) -> Template:
         pass
@@ -139,38 +137,38 @@ class TemplateRepository(ABC):
 
 class FileTemplateRepository(TemplateRepository):
     """File-based template repository"""
-    
+
     def __init__(self, template_dir: Path):
         self.template_dir = template_dir
         self.template_dir.mkdir(parents=True, exist_ok=True)
         self._ensure_default_templates()
-    
-    def get(self, template_id: str) -> Optional[Template]:
+
+    def get(self, template_id: str) -> Template | None:
         template_file = self.template_dir / f"{template_id}.json"
         if not template_file.exists():
             return None
-        
+
         try:
-            with open(template_file, 'r') as f:
+            with open(template_file) as f:
                 data = json.load(f)
             return Template(**data)
         except Exception:
             return None
-    
-    def get_all(self) -> List[Template]:
+
+    def get_all(self) -> list[Template]:
         templates = []
         for template_file in self.template_dir.glob("*.json"):
             template = self.get(template_file.stem)
             if template:
                 templates.append(template)
         return templates
-    
+
     def save(self, template: Template) -> Template:
         template_file = self.template_dir / f"{template.id}.json"
         with open(template_file, 'w') as f:
             json.dump(template.model_dump(), f, indent=2, default=str)
         return template
-    
+
     def _ensure_default_templates(self):
         """Create default templates if they don't exist"""
         default_templates = [
@@ -220,7 +218,7 @@ class FileTemplateRepository(TemplateRepository):
                 tags=["monitoring", "logging", "observability"]
             )
         ]
-        
+
         for template in default_templates:
             if not (self.template_dir / f"{template.id}.json").exists():
                 self.save(template)

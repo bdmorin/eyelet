@@ -1,10 +1,19 @@
 """Database configuration and models"""
 
+from datetime import datetime
 from pathlib import Path
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, JSON, Float, Boolean
+
+from sqlalchemy import (
+    JSON,
+    Boolean,
+    Column,
+    DateTime,
+    Integer,
+    String,
+    create_engine,
+)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from datetime import datetime
 
 Base = declarative_base()
 
@@ -19,7 +28,7 @@ def get_db_path() -> Path:
 class HookExecutionModel(Base):
     """SQLAlchemy model for hook executions"""
     __tablename__ = "executions"
-    
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     hook_id = Column(String, nullable=False)
     hook_type = Column(String, nullable=False)
@@ -35,7 +44,7 @@ class HookExecutionModel(Base):
 class WorkflowResultModel(Base):
     """SQLAlchemy model for workflow results"""
     __tablename__ = "workflow_results"
-    
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     execution_id = Column(Integer, nullable=False)
     step_name = Column(String, nullable=False)
@@ -46,7 +55,7 @@ class WorkflowResultModel(Base):
 class TemplateModel(Base):
     """SQLAlchemy model for templates"""
     __tablename__ = "templates"
-    
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     template_id = Column(String, unique=True, nullable=False)
     name = Column(String, nullable=False)

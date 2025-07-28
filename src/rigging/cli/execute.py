@@ -1,17 +1,18 @@
 """Hook execution command - the main runtime endpoint"""
 
-import click
-import sys
 import json
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
+
+import click
 from rich.console import Console
 
-from rigging.domain.models import HookExecution, HookType
 from rigging.application.services import ExecutionService, WorkflowService
-from rigging.infrastructure.repositories import SQLiteExecutionRepository
+from rigging.domain.models import HookExecution
 from rigging.infrastructure.database import get_db_path
+from rigging.infrastructure.repositories import SQLiteExecutionRepository
 
 console = Console()
 
@@ -20,15 +21,15 @@ def create_hms_log_entry(input_data, start_time, project_dir=None):
     """Create a comprehensive log entry in the hms-hooks directory"""
     if project_dir is None:
         project_dir = Path.cwd()
-    
+
     # Extract hook information
     hook_type = input_data.get('hook_event_name', 'unknown')
     tool_name = input_data.get('tool_name', '')
-    
+
     # Build directory structure
     # Format: ./hms-hooks/{hook_type}/{tool_name}/{date}/
     hms_dir = project_dir / "hms-hooks"
-    
+
     if hook_type in ['PreToolUse', 'PostToolUse'] and tool_name:
         log_dir = hms_dir / hook_type / tool_name / start_time.strftime("%Y-%m-%d")
     elif hook_type == 'PreCompact':
@@ -37,10 +38,10 @@ def create_hms_log_entry(input_data, start_time, project_dir=None):
     else:
         # For hooks without tools (Notification, UserPromptSubmit, Stop, etc.)
         log_dir = hms_dir / hook_type / start_time.strftime("%Y-%m-%d")
-    
+
     # Create directory structure
     log_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Create filename with full timestamp
     # Format: YYYYMMDD_HHMMSS_microseconds_{hook_type}_{tool_name}.json
     timestamp_str = start_time.strftime("%Y%m%d_%H%M%S_%f")
@@ -48,9 +49,9 @@ def create_hms_log_entry(input_data, start_time, project_dir=None):
         filename = f"{timestamp_str}_{hook_type}_{tool_name}.json"
     else:
         filename = f"{timestamp_str}_{hook_type}.json"
-    
+
     log_file = log_dir / filename
-    
+
     # Prepare comprehensive log data
     log_data = {
         "timestamp": start_time.isoformat(),
@@ -65,7 +66,7 @@ def create_hms_log_entry(input_data, start_time, project_dir=None):
             "platform": sys.platform,
             "rigging_version": "0.1.0",  # TODO: Import from __version__
             "env_vars": {
-                k: v for k, v in os.environ.items() 
+                k: v for k, v in os.environ.items()
                 if k.startswith(('CLAUDE', 'RIGGING', 'ANTHROPIC'))
             }
         },
@@ -76,11 +77,11 @@ def create_hms_log_entry(input_data, start_time, project_dir=None):
             "project_dir": str(project_dir),
         }
     }
-    
+
     # Write the log file
     with open(log_file, 'w') as f:
         json.dump(log_data, f, indent=2, default=str)
-    
+
     return log_file, log_data
 
 
@@ -94,12 +95,12 @@ def create_hms_log_entry(input_data, start_time, project_dir=None):
 def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
     """
     Execute as a hook endpoint - Man the guns!
-    
+
     This command is called by Claude Code when hooks are triggered.
     It reads JSON from stdin and processes according to configuration.
     """
     start_time = datetime.now()
-    
+
     # Read input from stdin
     try:
         if sys.stdin.isatty():
@@ -124,10 +125,10 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
         if debug:
             console.print(f"[red]Failed to read input: {e}[/red]", file=sys.stderr)
         input_data = {
-            "hook_event_name": "read_error", 
+            "hook_event_name": "read_error",
             "error": str(e)
         }
-    
+
     # Create HMS log entry FIRST - always log everything
     if not no_hms_log:
         try:
@@ -138,11 +139,11 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
             if debug:
                 console.print(f"[yellow]HMS logging failed: {e}[/yellow]", file=sys.stderr)
             # Continue execution even if logging fails
-    
+
     # Extract hook information
     hook_type = input_data.get('hook_event_name', 'unknown')
     tool_name = input_data.get('tool_name', None)
-    
+
     # Create execution record
     execution = HookExecution(
         hook_id=f"{hook_type}_{tool_name or 'general'}",
@@ -151,36 +152,36 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
         input_data=input_data,
         status="running"
     )
-    
+
     # Initialize services
     execution_service = ExecutionService(
         SQLiteExecutionRepository(get_db_path())
     )
-    
+
     output_data = {}
-    
+
     try:
         # Record execution start
         execution = execution_service.record_execution(execution)
-        
+
         if debug:
             console.print(f"[dim]Hook: {hook_type}, Tool: {tool_name}[/dim]", file=sys.stderr)
-        
+
         # Process based on options
         if log_only:
             # Just log and exit successfully
             execution.status = "success"
             execution.output_data = {"action": "logged"}
-            
+
         elif log_result:
             # Log the result of a previous execution
             execution.status = "success"
             execution.output_data = {"action": "result_logged"}
-            
+
         elif workflow:
             # Execute specified workflow
             workflow_service = WorkflowService(Path.cwd() / "workflows")
-            
+
             try:
                 result = workflow_service.execute_workflow(workflow, input_data)
                 execution.status = "success"
@@ -191,25 +192,25 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
                 execution.error_message = str(e)
                 if debug:
                     console.print(f"[red]Workflow error: {e}[/red]", file=sys.stderr)
-        
+
         else:
             # Default processing
             execution.status = "success"
             execution.output_data = {"action": "processed"}
-        
+
         # Calculate duration
         execution.duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)
-        
+
         # Update execution record
         execution_service.record_execution(execution)
-        
+
         # Update HMS log with results if enabled
         if not no_hms_log and 'log_file' in locals():
             try:
                 # Read existing log
-                with open(log_file, 'r') as f:
+                with open(log_file) as f:
                     final_log_data = json.load(f)
-                
+
                 # Add execution results
                 final_log_data['execution'] = {
                     'status': execution.status,
@@ -218,14 +219,14 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
                     'error_message': execution.error_message
                 }
                 final_log_data['completed_at'] = datetime.now().isoformat()
-                
+
                 # Write updated log
                 with open(log_file, 'w') as f:
                     json.dump(final_log_data, f, indent=2, default=str)
             except Exception as e:
                 if debug:
                     console.print(f"[yellow]Failed to update HMS log: {e}[/yellow]", file=sys.stderr)
-        
+
         # Output any required response
         if execution.output_data and not log_only:
             # Check for blocking response
@@ -234,31 +235,31 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
                 if debug:
                     console.print("[yellow]Blocking action[/yellow]", file=sys.stderr)
                 sys.exit(2)
-            
+
             # Check for response data
             if "response" in execution.output_data:
                 print(json.dumps(execution.output_data["response"]))
-        
+
         # Success
         sys.exit(0)
-        
+
     except Exception as e:
         # Record failure
         execution.status = "error"
         execution.error_message = str(e)
         execution.duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)
-        
+
         try:
             execution_service.record_execution(execution)
         except:
             pass  # Don't fail on logging errors
-        
+
         # Update HMS log with error if enabled
         if not no_hms_log and 'log_file' in locals():
             try:
-                with open(log_file, 'r') as f:
+                with open(log_file) as f:
                     final_log_data = json.load(f)
-                
+
                 final_log_data['execution'] = {
                     'status': 'error',
                     'duration_ms': execution.duration_ms,
@@ -266,14 +267,14 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
                     'error_type': type(e).__name__
                 }
                 final_log_data['completed_at'] = datetime.now().isoformat()
-                
+
                 with open(log_file, 'w') as f:
                     json.dump(final_log_data, f, indent=2, default=str)
             except:
                 pass
-        
+
         if debug:
             console.print(f"[red]Execution error: {e}[/red]", file=sys.stderr)
-        
+
         # Exit with success to not disrupt Claude Code
         sys.exit(0)

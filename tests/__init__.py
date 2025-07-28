@@ -1,1 +1,1 @@
-# Rigging test suite
+# Tests for rigging-cli

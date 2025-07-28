@@ -1,15 +1,18 @@
 """CLI utilities and helpers"""
 
-import click
 import sys
 from functools import wraps
+
+import click
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
 from rigging.domain.exceptions import (
-    RiggingError, HookConfigurationError, TemplateError, 
-    WorkflowError, DiscoveryError
+    DiscoveryError,
+    HookConfigurationError,
+    TemplateError,
+    WorkflowError,
 )
 
 console = Console()
@@ -170,32 +173,32 @@ def info_message(message):
 
 class RiggingCommand(click.Command):
     """Enhanced command class with better help formatting"""
-    
+
     def format_help(self, ctx, formatter):
         """Format help with naval theme and examples"""
         # Command name and description
         console.print(f"\n[bold cyan]{self.name}[/bold cyan] - {self.short_help}")
-        
+
         if self.help:
             console.print(f"\n{self.help}")
-        
+
         # Usage
         pieces = self.collect_usage_pieces(ctx)
         if pieces:
             console.print(f"\n[bold]Usage:[/bold] {ctx.command_path} {' '.join(pieces)}")
-        
+
         # Options
         opts = []
         for param in self.get_params(ctx):
             rv = param.get_help_record(ctx)
             if rv is not None:
                 opts.append(rv)
-        
+
         if opts:
             console.print("\n[bold]Options:[/bold]")
             for opt in opts:
                 console.print(f"  {opt[0]:30} {opt[1]}")
-        
+
         # Epilog
         if self.epilog:
             console.print(f"\n{self.epilog}")
