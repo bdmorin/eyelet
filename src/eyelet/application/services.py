@@ -4,11 +4,11 @@ import json
 from pathlib import Path
 from typing import Any
 
-from rigging.domain.exceptions import (
+from eyelet.domain.exceptions import (
     HookConfigurationError,
     TemplateError,
 )
-from rigging.domain.models import (
+from eyelet.domain.models import (
     Handler,
     Hook,
     HookConfiguration,
@@ -17,7 +17,7 @@ from rigging.domain.models import (
     Template,
     Workflow,
 )
-from rigging.infrastructure.repositories import (
+from eyelet.infrastructure.repositories import (
     ExecutionRepository,
     HookRepository,
     TemplateRepository,

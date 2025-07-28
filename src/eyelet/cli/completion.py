@@ -1,4 +1,4 @@
-"""Shell completion support for Rigging"""
+"""Shell completion support for Eyelet"""
 
 import os
 import sys
@@ -14,12 +14,12 @@ SHELLS = ['bash', 'zsh', 'fish', 'powershell']
 
 COMPLETION_SCRIPTS = {
     'bash': '''
-# Rigging completion for Bash
-_rigging_completion() {
+# Eyelet completion for Bash
+_eyelet_completion() {
     local IFS=$'\\n'
     local response
 
-    response=$(env COMP_WORDS="${COMP_WORDS[*]}" COMP_CWORD=$COMP_CWORD _RIGGING_COMPLETE=bash_complete $1)
+    response=$(env COMP_WORDS="${COMP_WORDS[*]}" COMP_CWORD=$COMP_CWORD _EYELET_COMPLETE=bash_complete $1)
 
     for completion in $response; do
         IFS=' ' read type value <<< "$completion"
@@ -38,17 +38,17 @@ _rigging_completion() {
     return 0
 }
 
-complete -F _rigging_completion -o nosort rigging
+complete -F _eyelet_completion -o nosort eyelet
 ''',
     'zsh': '''
-# Rigging completion for Zsh
-_rigging_completion() {
+# Eyelet completion for Zsh
+_eyelet_completion() {
     local -a completions
     local -a completions_with_descriptions
     local -a response
-    (( ! $+commands[rigging] )) && return 1
+    (( ! $+commands[eyelet] )) && return 1
 
-    response=("${(@f)$(env COMP_WORDS="${words[*]}" COMP_CWORD=$((CURRENT-1)) _RIGGING_COMPLETE=zsh_complete rigging)}")
+    response=("${(@f)$(env COMP_WORDS="${words[*]}" COMP_CWORD=$((CURRENT-1)) _EYELET_COMPLETE=zsh_complete eyelet)}")
 
     for type key descr in ${response}; do
         if [[ "$type" == "plain" ]]; then
@@ -73,12 +73,12 @@ _rigging_completion() {
     fi
 }
 
-compdef _rigging_completion rigging
+compdef _eyelet_completion eyelet
 ''',
     'fish': '''
-# Rigging completion for Fish
-function _rigging_completion
-    set -l response (env COMP_WORDS=(commandline -cp) COMP_CWORD=(commandline -t) _RIGGING_COMPLETE=fish_complete rigging)
+# Eyelet completion for Fish
+function _eyelet_completion
+    set -l response (env COMP_WORDS=(commandline -cp) COMP_CWORD=(commandline -t) _EYELET_COMPLETE=fish_complete eyelet)
 
     for completion in $response
         set -l metadata (string split "," $completion)
@@ -93,18 +93,18 @@ function _rigging_completion
     end
 end
 
-complete -c rigging -f -a "(_rigging_completion)"
+complete -c eyelet -f -a "(_eyelet_completion)"
 ''',
     'powershell': '''
-# Rigging completion for PowerShell
-Register-ArgumentCompleter -Native -CommandName rigging -ScriptBlock {
+# Eyelet completion for PowerShell
+Register-ArgumentCompleter -Native -CommandName eyelet -ScriptBlock {
     param($wordToComplete, $commandAst, $cursorPosition)
 
     $env:COMP_WORDS = $commandAst.ToString()
     $env:COMP_CWORD = $wordToComplete
-    $env:_RIGGING_COMPLETE = "powershell_complete"
+    $env:_EYELET_COMPLETE = "powershell_complete"
 
-    rigging | ForEach-Object {
+    eyelet | ForEach-Object {
         $type, $value = $_ -split " ", 2
 
         if ($type -eq "dir") {
@@ -122,7 +122,7 @@ Register-ArgumentCompleter -Native -CommandName rigging -ScriptBlock {
 
 @click.group()
 def completion():
-    """Manage shell completion for Rigging"""
+    """Manage shell completion for Eyelet"""
     pass
 
 
@@ -131,19 +131,19 @@ def completion():
 @click.option('--path', help='Path to install completion script')
 def install(shell, path):
     """
-    Install shell completion - Ready the rigging for smooth sailing!
+    Install shell completion - Ready the eyelet for smooth sailing!
 
     Examples:
 
         # Auto-detect shell and install
-        rigging completion install
+        eyelet completion install
 
         # Install for specific shell
-        rigging completion install bash
-        rigging completion install zsh
+        eyelet completion install bash
+        eyelet completion install zsh
 
         # Install to custom location
-        rigging completion install --path ~/.config/fish/completions/
+        eyelet completion install --path ~/.config/fish/completions/
     """
     if not shell:
         shell = _detect_shell()
@@ -159,7 +159,7 @@ def install(shell, path):
         # Install to specified path
         install_path = Path(path)
         if install_path.is_dir():
-            install_path = install_path / f"rigging.{shell}"
+            install_path = install_path / f"eyelet.{shell}"
     else:
         # Determine default installation path
         install_path = _get_completion_path(shell)
@@ -202,7 +202,7 @@ def install(shell, path):
 @click.argument('shell', type=click.Choice(SHELLS))
 def show(shell):
     """
-    Show completion script for a shell - Inspect the rigging!
+    Show completion script for a shell - Inspect the eyelet!
 
     This displays the completion script without installing it.
     """
@@ -214,12 +214,12 @@ def show(shell):
         border_style="cyan"
     ))
 
-    console.print(f"\n[dim]To install, run: rigging completion install {shell}[/dim]")
+    console.print(f"\n[dim]To install, run: eyelet completion install {shell}[/dim]")
 
 
 @completion.command()
 def status():
-    """Check completion installation status - Survey the rigging!"""
+    """Check completion installation status - Survey the eyelet!"""
     console.print("[bold]Shell Completion Status[/bold]\n")
 
     for shell in SHELLS:
@@ -276,9 +276,9 @@ def _get_completion_path(shell):
         ]
         for d in dirs:
             if d.exists() and os.access(d, os.W_OK):
-                return d / 'rigging'
+                return d / 'eyelet'
         # Fallback
-        return home / '.rigging-completion.bash'
+        return home / '.eyelet-completion.bash'
 
     elif shell == 'zsh':
         # Zsh completion paths
@@ -289,14 +289,14 @@ def _get_completion_path(shell):
         ]
         for d in dirs:
             if d.exists() and os.access(d, os.W_OK):
-                return d / '_rigging'
+                return d / '_eyelet'
         # Fallback
-        return home / '.rigging-completion.zsh'
+        return home / '.eyelet-completion.zsh'
 
     elif shell == 'fish':
-        return home / '.config' / 'fish' / 'completions' / 'rigging.fish'
+        return home / '.config' / 'fish' / 'completions' / 'eyelet.fish'
 
     elif shell == 'powershell':
-        return home / '.rigging-completion.ps1'
+        return home / '.eyelet-completion.ps1'
 
-    return home / f'.rigging-completion.{shell}'
+    return home / f'.eyelet-completion.{shell}'

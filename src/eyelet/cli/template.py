@@ -8,9 +8,9 @@ from rich.console import Console
 from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
-from rigging.application.services import ConfigurationService, TemplateService
-from rigging.domain.exceptions import TemplateError
-from rigging.infrastructure.repositories import FileTemplateRepository
+from eyelet.application.services import ConfigurationService, TemplateService
+from eyelet.domain.exceptions import TemplateError
+from eyelet.infrastructure.repositories import FileTemplateRepository
 
 console = Console()
 
@@ -25,7 +25,7 @@ def template():
 @click.option('--category', help='Filter by category')
 def list(category):
     """List available templates - Check the armory"""
-    template_dir = Path.home() / ".rigging" / "templates"
+    template_dir = Path.home() / ".eyelet" / "templates"
     template_service = TemplateService(FileTemplateRepository(template_dir))
 
     templates = template_service.list_templates(category)
@@ -59,7 +59,7 @@ def list(category):
 @click.argument('template_id')
 def show(template_id):
     """Show template details - Inspect the ordinance"""
-    template_dir = Path.home() / ".rigging" / "templates"
+    template_dir = Path.home() / ".eyelet" / "templates"
     template_service = TemplateService(FileTemplateRepository(template_dir))
 
     tmpl = template_service.get_template(template_id)
@@ -101,7 +101,7 @@ def show(template_id):
 def install(ctx, template_id, scope, var):
     """Install a template - Load the cannons!"""
     config_dir = ctx.obj['config_dir'] if scope == 'project' else Path.home()
-    template_dir = Path.home() / ".rigging" / "templates"
+    template_dir = Path.home() / ".eyelet" / "templates"
 
     template_service = TemplateService(FileTemplateRepository(template_dir))
     config_service = ConfigurationService(config_dir)
@@ -156,7 +156,7 @@ def install(ctx, template_id, scope, var):
 @click.argument('template_file', type=click.Path(exists=True))
 def import_template(template_file):
     """Import a template file - Bring aboard new ordinance"""
-    template_dir = Path.home() / ".rigging" / "templates"
+    template_dir = Path.home() / ".eyelet" / "templates"
     template_service = TemplateService(FileTemplateRepository(template_dir))
 
     try:
@@ -164,7 +164,7 @@ def import_template(template_file):
             template_data = json.load(f)
 
         # Validate and save
-        from rigging.domain.models import Template
+        from eyelet.domain.models import Template
         tmpl = Template(**template_data)
 
         # Check if already exists
@@ -191,7 +191,7 @@ def import_template(template_file):
 @click.argument('output_file', type=click.Path())
 def export(template_id, output_file):
     """Export a template - Share the wealth"""
-    template_dir = Path.home() / ".rigging" / "templates"
+    template_dir = Path.home() / ".eyelet" / "templates"
     template_service = TemplateService(FileTemplateRepository(template_dir))
 
     tmpl = template_service.get_template(template_id)
@@ -233,7 +233,7 @@ def create():
     tags = [tag.strip() for tag in tags_str.split(",") if tag.strip()]
 
     # Create template
-    from rigging.domain.models import Template
+    from eyelet.domain.models import Template
     tmpl = Template(
         id=template_id,
         name=name,
@@ -261,7 +261,7 @@ def create():
         pass
 
     # Save template
-    template_dir = Path.home() / ".rigging" / "templates"
+    template_dir = Path.home() / ".eyelet" / "templates"
     template_repo = FileTemplateRepository(template_dir)
 
     try:

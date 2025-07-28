@@ -1,4 +1,4 @@
-"""Main CLI entry point for Rigging"""
+"""Main CLI entry point for Eyelet"""
 
 from pathlib import Path
 
@@ -7,8 +7,8 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
-from rigging import __version__
-from rigging.cli import (
+from eyelet import __version__
+from eyelet.cli import (
     completion,
     configure,
     discover,
@@ -17,7 +17,7 @@ from rigging.cli import (
     template,
     validate,
 )
-from rigging.presentation.tui import launch_tui
+from eyelet.presentation.tui import launch_tui
 
 console = Console()
 
@@ -27,15 +27,15 @@ CONTEXT_SETTINGS = {
 }
 
 
-class RiggingCLI(click.Group):
+class EyeletCLI(click.Group):
     """Custom CLI class with enhanced help formatting"""
 
     def format_help(self, ctx, formatter):
         # Custom header
         console.print(Panel.fit(
             Text.from_markup(
-                "[bold cyan]⚓ Rigging[/bold cyan] - Hook Orchestration for AI Agents\n"
-                "[dim]All hands to the rigging![/dim]"
+                "[bold cyan]⚓ Eyelet[/bold cyan] - Hook Orchestration for AI Agents\n"
+                "[dim]All hands to the eyelet![/dim]"
             ),
             border_style="cyan"
         ))
@@ -45,14 +45,14 @@ class RiggingCLI(click.Group):
 
         # Description
         console.print("[bold]Description:[/bold]")
-        console.print("  Rigging provides comprehensive management, templating, and execution")
-        console.print("  handling for AI agent hooks. Like a ship's rigging that controls the")
-        console.print("  sails, Rigging controls and orchestrates your AI agent's behavior.\n")
+        console.print("  Eyelet provides comprehensive management, templating, and execution")
+        console.print("  handling for AI agent hooks. Like a ship's eyelet that controls the")
+        console.print("  sails, Eyelet controls and orchestrates your AI agent's behavior.\n")
 
         # Usage
         console.print("[bold]Usage:[/bold]")
-        console.print("  rigging [OPTIONS] COMMAND [ARGS]...")
-        console.print("  rigging              # Launch interactive TUI\n")
+        console.print("  eyelet [OPTIONS] COMMAND [ARGS]...")
+        console.print("  eyelet              # Launch interactive TUI\n")
 
         # Common commands
         console.print("[bold]Common Commands:[/bold]")
@@ -74,30 +74,30 @@ class RiggingCLI(click.Group):
 
         console.print("[bold]Examples:[/bold]")
         console.print("  [dim]# Configure hooks for current project[/dim]")
-        console.print("  rigging configure add\n")
+        console.print("  eyelet configure add\n")
         console.print("  [dim]# Install a security template[/dim]")
-        console.print("  rigging template install bash-validator\n")
+        console.print("  eyelet template install bash-validator\n")
         console.print("  [dim]# View recent hook executions[/dim]")
-        console.print("  rigging logs --tail 20\n")
+        console.print("  eyelet logs --tail 20\n")
 
         console.print("[bold]Shell Completion:[/bold]")
         console.print("  [dim]# Enable tab completion for your shell[/dim]")
-        console.print("  rigging completion install\n")
+        console.print("  eyelet completion install\n")
 
-        console.print("[dim]Run 'rigging COMMAND --help' for more information on a command.[/dim]")
+        console.print("[dim]Run 'eyelet COMMAND --help' for more information on a command.[/dim]")
 
 
-@click.group(cls=RiggingCLI, invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
-@click.version_option(version=__version__, prog_name="rigging")
+@click.group(cls=EyeletCLI, invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
+@click.version_option(version=__version__, prog_name="eyelet")
 @click.option('--config-dir', type=Path, help='Configuration directory (default: current dir)')
 @click.pass_context
 def cli(ctx, config_dir):
     """
-    ⚓ Rigging - Hook Orchestration for AI Agents
+    ⚓ Eyelet - Hook Orchestration for AI Agents
 
-    All hands to the rigging!
+    All hands to the eyelet!
 
-    Rigging provides comprehensive management, templating, and execution
+    Eyelet provides comprehensive management, templating, and execution
     handling for AI agent hooks. Run without arguments to launch the TUI.
     """
     ctx.ensure_object(dict)
@@ -105,7 +105,7 @@ def cli(ctx, config_dir):
 
     # If no command provided, launch TUI
     if ctx.invoked_subcommand is None:
-        console.print("[bold cyan]All hands to the rigging![/bold cyan]")
+        console.print("[bold cyan]All hands to the eyelet![/bold cyan]")
         launch_tui()
 
 
@@ -135,8 +135,8 @@ def status(ctx):
 
 @cli.command()
 def tui():
-    """Launch the Textual TUI - All hands to the rigging!"""
-    console.print("[bold cyan]All hands to the rigging![/bold cyan]")
+    """Launch the Textual TUI - All hands to the eyelet!"""
+    console.print("[bold cyan]All hands to the eyelet![/bold cyan]")
     launch_tui()
 
 

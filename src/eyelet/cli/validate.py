@@ -123,9 +123,9 @@ def validate_settings(ctx, settings_file, schema):
     Validate Claude settings.json against schema
 
     Examples:
-        rigging validate settings
-        rigging validate settings .claude/settings.json
-        rigging validate settings ~/.claude/settings.json
+        eyelet validate settings
+        eyelet validate settings .claude/settings.json
+        eyelet validate settings ~/.claude/settings.json
     """
     # Default to current directory's .claude/settings.json
     if not settings_file:
@@ -141,7 +141,7 @@ def validate_settings(ctx, settings_file, schema):
         # First try pkg_resources for installed package
         try:
             import pkg_resources
-            schema_path = Path(pkg_resources.resource_filename('rigging', 'schemas/claude-settings.schema.json'))
+            schema_path = Path(pkg_resources.resource_filename('eyelet', 'schemas/claude-settings.schema.json'))
             if not schema_path.exists():
                 raise FileNotFoundError()
         except:
@@ -149,7 +149,7 @@ def validate_settings(ctx, settings_file, schema):
             try:
                 import importlib.resources as resources
                 # For Python 3.9+
-                schema_content = resources.files('rigging').joinpath('schemas/claude-settings.schema.json').read_text()
+                schema_content = resources.files('eyelet').joinpath('schemas/claude-settings.schema.json').read_text()
                 schema_data = json.loads(schema_content)
                 # Skip file loading since we have the data
                 skip_schema_load = True
@@ -241,8 +241,8 @@ def validate_settings(ctx, settings_file, schema):
 @click.pass_context
 def validate_hooks(ctx):
     """Validate all hooks in current configuration"""
-    from rigging.application.services import ConfigurationService
-    from rigging.domain.exceptions import HookConfigurationError
+    from eyelet.application.services import ConfigurationService
+    from eyelet.domain.exceptions import HookConfigurationError
 
     config_dir = ctx.obj.get('config_dir', Path.cwd()) if ctx.obj else Path.cwd()
     config_service = ConfigurationService(config_dir)
@@ -273,7 +273,7 @@ def validate_hooks(ctx):
                 errors.append(f"Hook {i+1} ({hook.type}): Script handler missing script content")
 
             # Warnings
-            if hook.handler.type == "command" and "uvx rigging" in (hook.handler.command or ""):
+            if hook.handler.type == "command" and "uvx eyelet" in (hook.handler.command or ""):
                 if "execute" not in hook.handler.command:
                     warnings.append(f"Hook {i+1} ({hook.type}): Command should include 'execute' subcommand")
 

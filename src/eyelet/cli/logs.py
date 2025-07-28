@@ -7,10 +7,10 @@ from rich.console import Console
 from rich.table import Table
 from rich.text import Text
 
-from rigging.application.services import ExecutionService
-from rigging.domain.models import HookType
-from rigging.infrastructure.database import get_db_path
-from rigging.infrastructure.repositories import SQLiteExecutionRepository
+from eyelet.application.services import ExecutionService
+from eyelet.domain.models import HookType
+from eyelet.infrastructure.database import get_db_path
+from eyelet.infrastructure.repositories import SQLiteExecutionRepository
 
 console = Console()
 
@@ -37,22 +37,22 @@ def logs(tail, hook_type, tool, status, output_json, details, follow, since, unt
     \b
     Examples:
         # View last 20 entries
-        rigging logs --tail 20
+        eyelet logs --tail 20
 
         # Filter by hook type and tool
-        rigging logs --hook-type PreToolUse --tool Bash
+        eyelet logs --hook-type PreToolUse --tool Bash
 
         # Show only errors with details
-        rigging logs --status error --details
+        eyelet logs --status error --details
 
         # Follow logs in real-time
-        rigging logs --follow
+        eyelet logs --follow
 
         # View logs from last hour
-        rigging logs --since 1h
+        eyelet logs --since 1h
 
         # Export logs as JSON
-        rigging logs --json > logs.json
+        eyelet logs --json > logs.json
 
     \b
     Status indicators:

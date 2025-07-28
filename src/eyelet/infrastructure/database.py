@@ -20,9 +20,9 @@ Base = declarative_base()
 
 def get_db_path() -> Path:
     """Get the database path"""
-    db_dir = Path.home() / ".rigging"
+    db_dir = Path.home() / ".eyelet"
     db_dir.mkdir(exist_ok=True)
-    return db_dir / "rigging.db"
+    return db_dir / "eyelet.db"
 
 
 class HookExecutionModel(Base):

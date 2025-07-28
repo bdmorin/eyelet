@@ -7,9 +7,9 @@ from rich.console import Console
 from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
-from rigging.application.services import ConfigurationService, HookService
-from rigging.domain.models import Handler, HandlerType, Hook, HookType, ToolMatcher
-from rigging.infrastructure.repositories import InMemoryHookRepository
+from eyelet.application.services import ConfigurationService, HookService
+from eyelet.domain.models import Handler, HandlerType, Hook, HookType, ToolMatcher
+from eyelet.infrastructure.repositories import InMemoryHookRepository
 
 console = Console()
 
@@ -17,7 +17,7 @@ console = Console()
 @click.group()
 def configure():
     """
-    Configure hooks for your project - Set the rigging!
+    Configure hooks for your project - Set the eyelet!
 
     Manage hook configurations at project or user scope. Hooks intercept
     AI agent actions and allow you to validate, log, or modify behavior.
@@ -25,20 +25,20 @@ def configure():
     Examples:
 
         # List all configured hooks
-        rigging configure list
+        eyelet configure list
 
         # Add a new hook interactively
-        rigging configure add
+        eyelet configure add
 
         # Remove a hook by ID
-        rigging configure remove PreToolUse_Bash_0
+        eyelet configure remove PreToolUse_Bash_0
 
         # Enable/disable hooks
-        rigging configure enable PreToolUse_Bash_0
-        rigging configure disable PreToolUse_Bash_0
+        eyelet configure enable PreToolUse_Bash_0
+        eyelet configure disable PreToolUse_Bash_0
 
         # Clear all hooks (with confirmation)
-        rigging configure clear
+        eyelet configure clear
 
     Hook configurations are stored in .claude/settings.json and are
     non-destructive - they complement any existing Claude settings.
@@ -166,7 +166,7 @@ def add(ctx, scope):
               help='Configuration scope')
 @click.pass_context
 def remove(ctx, hook_id, scope):
-    """Remove a hook - Cut away the old rigging"""
+    """Remove a hook - Cut away the old eyelet"""
     if ctx.obj is None:
         ctx.obj = {'config_dir': Path.cwd()}
     config_dir = ctx.obj.get('config_dir', Path.cwd()) if scope == 'project' else Path.home()
@@ -314,16 +314,16 @@ def install_all(ctx, scope, force, dev):
             if not wheel_path.exists():
                 console.print("[red]No dist/ directory found. Run 'uv build' first![/red]")
                 return
-            wheel_files = list(wheel_path.glob("rigging-*.whl"))
+            wheel_files = list(wheel_path.glob("eyelet-*.whl"))
             if not wheel_files:
                 console.print("[red]No wheel file found in dist/. Run 'uv build' first![/red]")
                 return
             latest_wheel = max(wheel_files, key=lambda p: p.stat().st_mtime)
-            rigging_cmd = f"uvx --from {str(latest_wheel)} rigging execute --log-only"
+            eyelet_cmd = f"uvx --from {str(latest_wheel)} eyelet execute --log-only"
             console.print(f"[yellow]Using development wheel: {latest_wheel.name}[/yellow]")
         else:
             # Use public uvx (requires package to be published to PyPI)
-            rigging_cmd = "uvx --from rigging-cli rigging execute --log-only"
+            eyelet_cmd = "uvx --from eyelet eyelet execute --log-only"
             console.print("[cyan]Using public uvx command (requires PyPI package)[/cyan]")
 
         # PreToolUse and PostToolUse for all tools
@@ -335,7 +335,7 @@ def install_all(ctx, scope, force, dev):
                 matcher=".*",  # Matches all tools
                 handler=Handler(
                     type=HandlerType.COMMAND,
-                    command=rigging_cmd
+                    command=eyelet_cmd
                 ),
                 description=f"Universal HMS logging for all {hook_type.value} events"
             )
@@ -348,7 +348,7 @@ def install_all(ctx, scope, force, dev):
                 type=hook_type,
                 handler=Handler(
                     type=HandlerType.COMMAND,
-                    command=rigging_cmd
+                    command=eyelet_cmd
                 ),
                 description=f"Universal HMS logging for {hook_type.value}"
             )
@@ -361,7 +361,7 @@ def install_all(ctx, scope, force, dev):
                 matcher=matcher,
                 handler=Handler(
                     type=HandlerType.COMMAND,
-                    command=rigging_cmd
+                    command=eyelet_cmd
                 ),
                 description=f"Universal HMS logging for PreCompact ({matcher})"
             )
@@ -393,7 +393,7 @@ def install_all(ctx, scope, force, dev):
 
         console.print(table)
         console.print("\n[dim]All hooks will log to: ./hms-hooks/[/dim]")
-        console.print("[dim]Run 'rigging logs' to view execution history[/dim]")
+        console.print("[dim]Run 'eyelet logs' to view execution history[/dim]")
 
     except Exception as e:
         import traceback

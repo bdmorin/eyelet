@@ -7,9 +7,9 @@ from rich.console import Console
 from rich.table import Table
 from rich.tree import Tree
 
-from rigging.application.discovery import DiscoveryService
-from rigging.domain.exceptions import DiscoveryError
-from rigging.domain.models import HookType, ToolMatcher
+from eyelet.application.discovery import DiscoveryService
+from eyelet.domain.exceptions import DiscoveryError
+from eyelet.domain.models import HookType, ToolMatcher
 
 console = Console()
 

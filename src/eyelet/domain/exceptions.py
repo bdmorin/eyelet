@@ -1,31 +1,31 @@
 """Domain-specific exceptions"""
 
 
-class RiggingError(Exception):
-    """Base exception for all Rigging errors"""
+class EyeletError(Exception):
+    """Base exception for all Eyelet errors"""
     pass
 
 
-class HookConfigurationError(RiggingError):
+class HookConfigurationError(EyeletError):
     """Error in hook configuration"""
     pass
 
 
-class HookExecutionError(RiggingError):
+class HookExecutionError(EyeletError):
     """Error during hook execution"""
     pass
 
 
-class WorkflowError(RiggingError):
+class WorkflowError(EyeletError):
     """Error in workflow execution"""
     pass
 
 
-class TemplateError(RiggingError):
+class TemplateError(EyeletError):
     """Error in template processing"""
     pass
 
 
-class DiscoveryError(RiggingError):
+class DiscoveryError(EyeletError):
     """Error in hook/tool discovery"""
     pass

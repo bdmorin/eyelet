@@ -8,7 +8,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
-from rigging.domain.exceptions import (
+from eyelet.domain.exceptions import (
     DiscoveryError,
     HookConfigurationError,
     TemplateError,
@@ -31,7 +31,7 @@ def handle_errors(func):
                     f"{str(e)}\n\n"
                     f"[dim]Try:[/dim]\n"
                     f"• Check your hook type and matcher combination\n"
-                    f"• Run 'rigging discover matrix' to see valid combinations\n"
+                    f"• Run 'eyelet discover matrix' to see valid combinations\n"
                     f"• Ensure your .claude/settings.json is valid JSON"
                 ),
                 title="⚠️  Configuration Issue",
@@ -44,8 +44,8 @@ def handle_errors(func):
                     f"[red]Template Error[/red]\n\n"
                     f"{str(e)}\n\n"
                     f"[dim]Try:[/dim]\n"
-                    f"• Run 'rigging template list' to see available templates\n"
-                    f"• Check template variables with 'rigging template show'\n"
+                    f"• Run 'eyelet template list' to see available templates\n"
+                    f"• Check template variables with 'eyelet template show'\n"
                     f"• Verify the template file is valid JSON"
                 ),
                 title="⚠️  Template Issue",
@@ -74,7 +74,7 @@ def handle_errors(func):
                     f"[dim]Try:[/dim]\n"
                     f"• Use '--source static' for offline discovery\n"
                     f"• Check your internet connection\n"
-                    f"• Update Rigging to the latest version"
+                    f"• Update Eyelet to the latest version"
                 ),
                 title="⚠️  Discovery Issue",
                 border_style="red"
@@ -117,11 +117,11 @@ def handle_errors(func):
                     f"[red]Unexpected Error[/red]\n\n"
                     f"{type(e).__name__}: {str(e)}\n\n"
                     f"[dim]This might be a bug. Please report it at:[/dim]\n"
-                    f"https://github.com/bdmorin/rigging/issues\n\n"
+                    f"https://github.com/bdmorin/eyelet/issues\n\n"
                     f"[dim]Include:[/dim]\n"
                     f"• The command you ran\n"
                     f"• This error message\n"
-                    f"• Your Rigging version ({get_version()})"
+                    f"• Your Eyelet version ({get_version()})"
                 ),
                 title="⚠️  Unexpected Error",
                 border_style="red"
@@ -135,9 +135,9 @@ def handle_errors(func):
 
 
 def get_version():
-    """Get the current Rigging version"""
+    """Get the current Eyelet version"""
     try:
-        from rigging import __version__
+        from eyelet import __version__
         return __version__
     except:
         return "unknown"
@@ -171,7 +171,7 @@ def info_message(message):
     console.print(f"[blue]ℹ[/blue] {message}")
 
 
-class RiggingCommand(click.Command):
+class EyeletCommand(click.Command):
     """Enhanced command class with better help formatting"""
 
     def format_help(self, ctx, formatter):
@@ -206,6 +206,6 @@ class RiggingCommand(click.Command):
 
 def create_command(name, **attrs):
     """Create a command with enhanced help"""
-    attrs.setdefault('cls', RiggingCommand)
+    attrs.setdefault('cls', EyeletCommand)
     attrs.setdefault('context_settings', {'help_option_names': ['-h', '--help']})
     return click.command(name, **attrs)

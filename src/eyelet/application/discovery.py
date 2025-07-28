@@ -4,7 +4,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from rigging.domain.models import HookType, ToolMatcher
+from eyelet.domain.models import HookType, ToolMatcher
 
 
 class DiscoveryService:
@@ -12,7 +12,7 @@ class DiscoveryService:
 
     def __init__(self):
         self.docs_url = "https://docs.anthropic.com/en/docs/claude-code/hooks"
-        self.cache_dir = Path.home() / ".rigging" / "cache"
+        self.cache_dir = Path.home() / ".eyelet" / "cache"
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
     def get_static_hooks(self) -> list[HookType]:

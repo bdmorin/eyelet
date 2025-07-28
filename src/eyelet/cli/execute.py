@@ -9,10 +9,10 @@ from pathlib import Path
 import click
 from rich.console import Console
 
-from rigging.application.services import ExecutionService, WorkflowService
-from rigging.domain.models import HookExecution
-from rigging.infrastructure.database import get_db_path
-from rigging.infrastructure.repositories import SQLiteExecutionRepository
+from eyelet.application.services import ExecutionService, WorkflowService
+from eyelet.domain.models import HookExecution
+from eyelet.infrastructure.database import get_db_path
+from eyelet.infrastructure.repositories import SQLiteExecutionRepository
 
 console = Console()
 
@@ -64,10 +64,10 @@ def create_hms_log_entry(input_data, start_time, project_dir=None):
         "environment": {
             "python_version": sys.version,
             "platform": sys.platform,
-            "rigging_version": "0.1.0",  # TODO: Import from __version__
+            "eyelet_version": "0.2.0",  # TODO: Import from __version__
             "env_vars": {
                 k: v for k, v in os.environ.items()
-                if k.startswith(('CLAUDE', 'RIGGING', 'ANTHROPIC'))
+                if k.startswith(('CLAUDE', 'EYELET', 'ANTHROPIC'))
             }
         },
         "input_data": input_data,

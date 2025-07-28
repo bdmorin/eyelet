@@ -8,8 +8,8 @@ from typing import Any
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from rigging.domain.models import Hook, HookExecution, HookType, Template
-from rigging.infrastructure.database import get_db_path, init_db
+from eyelet.domain.models import Hook, HookExecution, HookType, Template
+from eyelet.infrastructure.database import get_db_path, init_db
 
 
 class HookRepository(ABC):
@@ -201,7 +201,7 @@ class FileTemplateRepository(TemplateRepository):
                         matcher=".*",
                         handler={
                             "type": "command",
-                            "command": "rigging execute --log-only"
+                            "command": "eyelet execute --log-only"
                         },
                         description="Log all tool usage"
                     ),
@@ -210,7 +210,7 @@ class FileTemplateRepository(TemplateRepository):
                         matcher=".*",
                         handler={
                             "type": "command",
-                            "command": "rigging execute --log-result"
+                            "command": "eyelet execute --log-result"
                         },
                         description="Log tool results"
                     )

@@ -6,7 +6,7 @@ from pathlib import Path
 
 from click.testing import CliRunner
 
-from rigging.cli.main import cli
+from eyelet.cli.main import cli
 
 
 def test_validate_valid_settings():

@@ -1,11 +1,11 @@
-"""Textual TUI for Rigging"""
+"""Textual TUI for Eyelet"""
 
 from textual.app import App, ComposeResult
 from textual.containers import Container, Vertical
 from textual.widgets import Button, Footer, Header, Static
 
 
-class RiggingTUI(App):
+class EyeletTUI(App):
     """Main TUI application"""
 
     CSS = """
@@ -44,9 +44,9 @@ class RiggingTUI(App):
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         yield Container(
-            Static("⚓ RIGGING", classes="title"),
+            Static("🔗 EYELET", classes="title"),
             Static("Hook Orchestration for AI Agents", classes="subtitle"),
-            Static("All hands to the rigging!", classes="subtitle"),
+            Static("All hands to the eyelet!", classes="subtitle"),
             Vertical(
                 Button("Configure Hooks", variant="primary", classes="menu-button", id="configure"),
                 Button("Browse Templates", variant="primary", classes="menu-button", id="templates"),
@@ -99,5 +99,5 @@ class RiggingTUI(App):
 
 def launch_tui():
     """Launch the TUI application"""
-    app = RiggingTUI()
+    app = EyeletTUI()
     app.run()

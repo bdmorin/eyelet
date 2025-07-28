@@ -1,4 +1,4 @@
-"""Core domain models for Rigging"""
+"""Core domain models for Eyelet"""
 
 from datetime import datetime
 from enum import Enum
