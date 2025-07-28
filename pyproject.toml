@@ -1,0 +1,49 @@
+[project]
+name = "rigging"
+version = "0.1.1"
+description = "Hook orchestration system for AI agents - All hands to the rigging!"
+readme = "README.md"
+authors = [{name = "Brian Morin"}]
+license = "MIT"
+requires-python = ">=3.11"
+keywords = ["hooks", "ai", "automation", "orchestration", "claude-code"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "click>=8.1.7",
+    "textual>=0.47.0",
+    "claude-code-sdk>=0.0.17",
+    "sqlalchemy>=2.0.23",
+    "rich>=13.7.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "httpx>=0.25.2",
+    "watchdog>=3.0.0",
+    "jinja2>=3.1.2",
+    "jsonschema>=4.20.0",
+]
+
+[project.optional-dependencies]
+completion = ["click-completion>=0.5.2", "psutil>=5.9.0"]
+dev = ["pytest>=7.4.0", "pytest-cov>=4.1.0", "black>=23.0.0", "ruff>=0.1.0"]
+
+[project.urls]
+Homepage = "https://github.com/bdmorin/rigging"
+Documentation = "https://github.com/bdmorin/rigging#readme"
+Repository = "https://github.com/bdmorin/rigging"
+Issues = "https://github.com/bdmorin/rigging/issues"
+
+[project.scripts]
+rigging = "rigging.cli.main:cli"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+rigging = ["schemas/*.json"]

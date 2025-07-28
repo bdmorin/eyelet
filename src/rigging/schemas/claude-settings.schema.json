@@ -1,0 +1,145 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Claude Code Settings",
+  "description": "Schema for Claude Code settings.json configuration files",
+  "type": "object",
+  "properties": {
+    "hooks": {
+      "type": "array",
+      "description": "Array of hook configurations",
+      "items": {
+        "$ref": "#/definitions/hook"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "definitions": {
+    "hook": {
+      "type": "object",
+      "required": ["type", "handler"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of hook event",
+          "enum": [
+            "PreToolUse",
+            "PostToolUse",
+            "UserPromptSubmit",
+            "Notification",
+            "Stop",
+            "SubagentStop",
+            "PreCompact"
+          ]
+        },
+        "handler": {
+          "$ref": "#/definitions/handler"
+        },
+        "matcher": {
+          "type": "string",
+          "description": "Regex pattern for tool matching (PreToolUse/PostToolUse) or 'manual'/'auto' for PreCompact"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": ["PreToolUse", "PostToolUse"]
+              }
+            }
+          },
+          "then": {
+            "required": ["matcher"],
+            "properties": {
+              "matcher": {
+                "type": "string",
+                "description": "Regex pattern to match tool names"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "PreCompact"
+              }
+            }
+          },
+          "then": {
+            "required": ["matcher"],
+            "properties": {
+              "matcher": {
+                "type": "string",
+                "enum": ["manual", "auto"],
+                "description": "Type of compaction trigger"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": ["UserPromptSubmit", "Notification", "Stop", "SubagentStop"]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "matcher": {
+                "not": {}
+              }
+            }
+          }
+        }
+      ]
+    },
+    "handler": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["command", "workflow", "script"],
+          "description": "Type of handler"
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "type": { "const": "command" },
+            "command": {
+              "type": "string",
+              "description": "Command to execute"
+            }
+          },
+          "required": ["command"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": { "const": "workflow" },
+            "workflow": {
+              "type": "string",
+              "description": "Path to workflow file"
+            }
+          },
+          "required": ["workflow"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": { "const": "script" },
+            "script": {
+              "type": "string",
+              "description": "Script content to execute"
+            }
+          },
+          "required": ["script"],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}
