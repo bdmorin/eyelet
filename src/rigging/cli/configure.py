@@ -319,11 +319,11 @@ def install_all(ctx, scope, force, dev):
                 console.print("[red]No wheel file found in dist/. Run 'uv build' first![/red]")
                 return
             latest_wheel = max(wheel_files, key=lambda p: p.stat().st_mtime)
-            rigging_cmd = f"uvx --from {str(latest_wheel)} rigging-cli execute --log-only"
+            rigging_cmd = f"uvx --from {str(latest_wheel)} rigging execute --log-only"
             console.print(f"[yellow]Using development wheel: {latest_wheel.name}[/yellow]")
         else:
             # Use public uvx (requires package to be published to PyPI)
-            rigging_cmd = "uvx rigging-cli execute --log-only"
+            rigging_cmd = "uvx --from rigging-cli rigging execute --log-only"
             console.print("[cyan]Using public uvx command (requires PyPI package)[/cyan]")
 
         # PreToolUse and PostToolUse for all tools
