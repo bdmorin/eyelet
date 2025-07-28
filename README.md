@@ -144,7 +144,13 @@ Rigging embraces naval terminology in honor of staying organized and shipshape:
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please open issues and pull requests on GitHub.
+
+## 📚 Documentation
+
+- **[Quickstart Guide](docs/QUICKSTART.md)** - Get up and running quickly
+- **[Design Documents](docs/design/)** - Architecture and design decisions
+- **[Setup Guides](docs/setup/)** - GitHub Actions and deployment setup
 
 ## 📜 License
 
