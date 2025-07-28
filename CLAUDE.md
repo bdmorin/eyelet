@@ -19,7 +19,7 @@ The repository is transitioning from research/testing utilities to a full Python
 ## Technology Stack
 
 - **Language**: Python 3.11+
-- **Distribution**: uvx/pipx
+- **Distribution**: uvx/pipx (PyPI package: rigging-cli)
 - **TUI**: Textual (not Bubbletea)
 - **CLI**: Click
 - **Architecture**: Vertical slice with separation of concerns

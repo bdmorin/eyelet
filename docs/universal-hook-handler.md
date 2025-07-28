@@ -16,10 +16,10 @@ The handler logs all hook events to a structured directory system (`./hms-hooks/
 
 ```bash
 # Install universal logging for ALL hooks
-rigging configure install-all
+uvx --from rigging-cli rigging configure install-all
 
 # Or install for user-level (all projects)
-rigging configure install-all --scope user
+uvx --from rigging-cli rigging configure install-all --scope user
 ```
 
 This single command configures Claude Code to send every hook event to Rigging's universal handler.
@@ -108,10 +108,10 @@ Supported tools:
 ### Basic Installation
 ```bash
 # Install for current project
-rigging configure install-all
+uvx --from rigging-cli rigging configure install-all
 
 # Force reinstall (overwrites existing hooks)
-rigging configure install-all --force
+uvx --from rigging-cli rigging configure install-all --force
 ```
 
 ### Viewing Logs
@@ -145,7 +145,7 @@ for log_file in bash_logs:
 ## Configuration Details
 
 The `install-all` command creates hooks with:
-- **Handler**: `rigging execute --log-only`
+- **Handler**: `uvx --from rigging-cli rigging execute --log-only`
 - **Matchers**: 
   - PreToolUse/PostToolUse: `.*` (wildcard - all tools)
   - PreCompact: `manual` and `auto`
@@ -168,8 +168,8 @@ The `install-all` command creates hooks with:
 ## Troubleshooting
 
 ### Logs not appearing
-1. Check hooks are installed: `rigging configure list`
-2. Verify rigging is in PATH: `which rigging`
+1. Check hooks are installed: `uvx --from rigging-cli rigging configure list`
+2. Verify rigging is in PATH: `which uvx`
 3. Check permissions: `ls -la ./hms-hooks/`
 
 ### Large log directories
@@ -191,7 +191,7 @@ If Claude Code sends malformed JSON, check:
 ### Custom Workflows
 After logging, you can trigger workflows:
 ```bash
-rigging configure add --workflow my-validator
+uvx --from rigging-cli rigging configure add --workflow my-validator
 ```
 
 ### Real-time Monitoring
@@ -204,7 +204,7 @@ watch -n 1 'find ./hms-hooks -name "*.json" -mmin -5 | tail -20'
 Export to various formats:
 ```bash
 # Convert to CSV for spreadsheet analysis
-rigging logs export --format csv --output hooks.csv
+uvx --from rigging-cli rigging logs export --format csv --output hooks.csv
 
 # Stream to monitoring systems
 tail -f ./hms-hooks/**/*.json | jq '.hook_type'

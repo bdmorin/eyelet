@@ -6,14 +6,14 @@ Get up and running with Rigging in under 5 minutes!
 
 ```bash
 # Install with uvx (recommended)
-uvx rigging
+uvx --from rigging-cli rigging
 
 # Or with pipx
-pipx install rigging
+pipx install rigging-cli
 
 # Or from source
-git clone https://github.com/bdmorin/rigging
-cd rigging
+git clone https://github.com/bdmorin/rigging-cli
+cd rigging-cli
 uv pip install -e .
 ```
 
@@ -22,7 +22,7 @@ uv pip install -e .
 Install comprehensive logging for ALL Claude Code hooks with one command:
 
 ```bash
-rigging configure install-all
+uvx --from rigging-cli rigging configure install-all
 ```
 
 This will:
@@ -74,20 +74,20 @@ cat ./hms-hooks/PreToolUse/Bash/2025-01-20/*.json | jq .
 
 ```bash
 # Launch the TUI
-rigging
+uvx --from rigging-cli rigging
 
 # List current hooks
-rigging configure list
+uvx --from rigging-cli uvx --from rigging-cli rigging configure list
 
 # View recent executions (once SQLite is implemented)
-rigging logs --tail 20
+uvx --from rigging-cli rigging logs --tail 20
 
 # Install a specific template
-rigging template install bash-validator
+uvx --from rigging-cli rigging template install bash-validator
 
 # Get help on any command
-rigging configure --help
-rigging template --help
+uvx --from rigging-cli rigging configure --help
+uvx --from rigging-cli rigging template --help
 ```
 
 ## Example: Security Monitoring
@@ -119,10 +119,10 @@ find ./hms-hooks/PreToolUse/Bash -name "*.json" | \
 ### Logs not appearing?
 ```bash
 # Verify hooks are installed
-rigging configure list
+uvx --from rigging-cli rigging configure list
 
 # Reinstall if needed
-rigging configure install-all --force
+uvx --from rigging-cli rigging configure install-all --force
 ```
 
 ### Permission issues?
@@ -134,21 +134,21 @@ chmod 755 .claude/settings.json
 
 ### Need to clear all hooks?
 ```bash
-rigging configure clear --force
+uvx --from rigging-cli rigging configure clear --force
 ```
 
 ## Getting Help
 
 ```bash
 # General help
-rigging --help
+uvx --from rigging-cli rigging --help
 
 # Command-specific help
 rigging configure --help
-rigging configure install-all --help
+uvx --from rigging-cli rigging configure install-all --help
 
 # View documentation
-rigging help
+uvx --from rigging-cli rigging help
 ```
 
 Welcome aboard! You're now logging every Claude Code action for complete visibility. ⚓

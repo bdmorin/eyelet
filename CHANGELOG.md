@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-01-28
+
+### Changed
+- Package name changed to `rigging-cli` on PyPI
+- All commands now use `uvx --from rigging-cli rigging`
+- Updated documentation to reflect new package name
+
+### Fixed
+- Correct executable name in PyPI package
+
 ## [0.1.1] - 2025-01-28
 
 ### Added
 - JSON schema validation for Claude settings files
-- `rigging validate settings` command for universal settings validation
+- `uvx --from rigging-cli rigging validate settings` command for universal settings validation
 - VS Code integration with automatic schema mapping
 - Embedded schema for zero-dependency validation
 
@@ -40,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rich terminal output with tables
 - Error handling with helpful messages
 
-[Unreleased]: https://github.com/bdmorin/rigging/compare/v0.1.1...HEAD
-[0.1.1]: https://github.com/bdmorin/rigging/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/bdmorin/rigging/releases/tag/v0.1.0
+[Unreleased]: https://github.com/bdmorin/rigging-cli/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/bdmorin/rigging-cli/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/bdmorin/rigging-cli/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/bdmorin/rigging-cli/releases/tag/v0.1.0

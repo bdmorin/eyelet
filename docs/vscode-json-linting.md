@@ -25,7 +25,7 @@ To enable validation for Claude settings files in ALL your projects:
         "**/claude/settings.json",
         "**/.claude/settings.json"
       ],
-      "url": "https://raw.githubusercontent.com/bdmorin/rigging/main/schemas/claude-settings.schema.json"
+      "url": "https://raw.githubusercontent.com/bdmorin/rigging-cli/main/schemas/claude-settings.schema.json"
     }
   ]
 }
@@ -39,13 +39,13 @@ You can also validate Claude settings files using Rigging:
 
 ```bash
 # Validate current directory's .claude/settings.json
-rigging validate settings
+uvx --from rigging-cli rigging validate settings
 
 # Validate a specific file
-rigging validate settings ~/.claude/settings.json
+uvx --from rigging-cli rigging validate settings ~/.claude/settings.json
 
 # Validate with a custom schema
-rigging validate settings --schema /path/to/schema.json settings.json
+uvx --from rigging-cli rigging validate settings --schema /path/to/schema.json settings.json
 ```
 
 ## Benefits
@@ -74,7 +74,7 @@ The Claude settings schema validates:
       "type": "PreToolUse",
       "handler": {
         "type": "command",
-        "command": "uvx rigging execute --log-only"
+        "command": "uvx --from rigging-cli rigging execute --log-only"
       },
       "matcher": ".*"
     },

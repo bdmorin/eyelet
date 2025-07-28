@@ -6,13 +6,13 @@ Shell completion enables tab-completion for Rigging commands, options, and argum
 
 ```bash
 # Auto-detect and install for your current shell
-rigging completion install
+uvx --from rigging-cli rigging completion install
 
 # Or install for a specific shell
-rigging completion install bash
-rigging completion install zsh
-rigging completion install fish
-rigging completion install powershell
+uvx --from rigging-cli rigging completion install bash
+uvx --from rigging-cli rigging completion install zsh
+uvx --from rigging-cli rigging completion install fish
+uvx --from rigging-cli rigging completion install powershell
 ```
 
 ## Supported Shells
@@ -59,34 +59,34 @@ For PowerShell, add to your profile:
 
 ### Command Completion
 ```bash
-rigging <TAB>
+uvx --from rigging-cli rigging <TAB>
 # Shows: configure, template, logs, execute, discover, completion, help, tui
 ```
 
 ### Subcommand Completion
 ```bash
-rigging configure <TAB>
+uvx --from rigging-cli rigging configure <TAB>
 # Shows: list, add, remove, enable, disable, clear
 ```
 
 ### Option Completion
 ```bash
-rigging logs --<TAB>
+uvx --from rigging-cli rigging logs --<TAB>
 # Shows: --tail, --hook-type, --tool, --status, --json, --details, --follow
 ```
 
 ### Dynamic Value Completion
 ```bash
-rigging logs --hook-type <TAB>
+uvx --from rigging-cli rigging logs --hook-type <TAB>
 # Shows: PreToolUse, PostToolUse, Notification, UserPromptSubmit, Stop, SubagentStop, PreCompact
 
-rigging logs --tool <TAB>
+uvx --from rigging-cli rigging logs --tool <TAB>
 # Shows: Bash, Glob, Grep, Read, Edit, Write, WebFetch, WebSearch, Task
 ```
 
 ### File/Directory Completion
 ```bash
-rigging template import <TAB>
+uvx --from rigging-cli rigging template import <TAB>
 # Shows: Files in current directory
 
 rigging --config-dir <TAB>
@@ -97,18 +97,18 @@ rigging --config-dir <TAB>
 
 ### Check Installation Status
 ```bash
-rigging completion status
+uvx --from rigging-cli rigging completion status
 ```
 
 ### View Completion Script
 ```bash
-rigging completion show bash
-rigging completion show zsh
+uvx --from rigging-cli rigging completion show bash
+uvx --from rigging-cli rigging completion show zsh
 ```
 
 ### Custom Installation Path
 ```bash
-rigging completion install --path /custom/path/completions/
+uvx --from rigging-cli rigging completion install --path /custom/path/completions/
 ```
 
 ## Troubleshooting
@@ -132,7 +132,7 @@ rigging completion install --path /custom/path/completions/
 
 3. **Verify installation:**
    ```bash
-   rigging completion status
+   uvx --from rigging-cli rigging completion status
    ```
 
 ### Permission Issues
@@ -140,14 +140,14 @@ rigging completion install --path /custom/path/completions/
 If you get permission errors during installation:
 ```bash
 # Install to user directory
-rigging completion install --path ~/.local/share/bash-completion/completions/
+uvx --from rigging-cli rigging completion install --path ~/.local/share/bash-completion/completions/
 ```
 
 ### Updating Completion
 
 When Rigging is updated, reinstall completion to get new commands:
 ```bash
-rigging completion install --force
+uvx --from rigging-cli rigging completion install --force
 ```
 
 ## Advanced Usage

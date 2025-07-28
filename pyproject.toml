@@ -1,16 +1,15 @@
 [project]
-name = "rigging"
-version = "0.1.1"
+name = "rigging-cli"
+version = "0.1.2"
 description = "Hook orchestration system for AI agents - All hands to the rigging!"
 readme = "README.md"
 authors = [{name = "Brian Morin"}]
-license = "MIT"
+license = {text = "MIT"}
 requires-python = ">=3.11"
 keywords = ["hooks", "ai", "automation", "orchestration", "claude-code"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -34,13 +33,13 @@ completion = ["click-completion>=0.5.2", "psutil>=5.9.0"]
 dev = ["pytest>=7.4.0", "pytest-cov>=4.1.0", "black>=23.0.0", "ruff>=0.1.0"]
 
 [project.urls]
-Homepage = "https://github.com/bdmorin/rigging"
-Documentation = "https://github.com/bdmorin/rigging#readme"
-Repository = "https://github.com/bdmorin/rigging"
-Issues = "https://github.com/bdmorin/rigging/issues"
+Homepage = "https://github.com/bdmorin/rigging-cli"
+Documentation = "https://github.com/bdmorin/rigging-cli#readme"
+Repository = "https://github.com/bdmorin/rigging-cli"
+Issues = "https://github.com/bdmorin/rigging-cli/issues"
 
 [project.scripts]
-rigging = "rigging.cli.main:cli"
+rigging-cli = "rigging.cli.main:cli"
 
 [tool.setuptools.packages.find]
 where = ["src"]

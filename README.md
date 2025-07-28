@@ -3,30 +3,32 @@
 > "All hands to the rigging!" - A sophisticated hook management system for AI agent workflows
 
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
-[![PyPI version](https://badge.fury.io/py/rigging.svg)](https://badge.fury.io/py/rigging)
+[![PyPI version](https://badge.fury.io/py/rigging-cli.svg)](https://badge.fury.io/py/rigging-cli)
 [![uv](https://img.shields.io/badge/uv-latest-green)](https://github.com/astral-sh/uv)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![CI](https://github.com/bdmorin/rigging/actions/workflows/ci.yml/badge.svg)](https://github.com/bdmorin/rigging/actions/workflows/ci.yml)
+[![CI](https://github.com/bdmorin/rigging-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/bdmorin/rigging-cli/actions/workflows/ci.yml)
 
 Rigging provides comprehensive management, templating, and execution handling for AI agent hooks. Like a ship's rigging that controls the sails and direction, Rigging controls and orchestrates your AI agent's behavior through a powerful workflow system.
 
 ## 🚀 Quick Start
 
+> **Note**: All commands use `uvx --from rigging-cli rigging` because the package is published as `rigging-cli` on PyPI.
+
 ```bash
 # Install with uvx (recommended)
-uvx rigging
+uvx --from rigging-cli rigging
 
 # Install universal logging for ALL hooks (recommended!)
-rigging configure install-all
+uvx --from rigging-cli rigging configure install-all
 
 # Set sail with the TUI
-rigging
+uvx --from rigging-cli rigging
 
 # Configure hooks for your project
-rigging configure --scope project
+uvx --from rigging-cli rigging configure --scope project
 
 # Deploy a template
-rigging template install observability
+uvx --from rigging-cli rigging template install observability
 ```
 
 ## 🎯 Universal Hook Handler
@@ -35,7 +37,7 @@ Rigging includes a powerful universal hook handler that logs EVERY Claude Code h
 
 ```bash
 # Install logging for all hooks with one command
-rigging configure install-all
+uvx --from rigging-cli rigging configure install-all
 
 # Your hooks will be logged to:
 ./hms-hooks/
@@ -79,19 +81,19 @@ Each log contains:
 
 ```bash
 # Core Operations
-rigging configure    # Configure hooks
-rigging execute      # Run as hook endpoint
-rigging logs         # View execution logs
+uvx --from rigging-cli rigging configure    # Configure hooks
+uvx --from rigging-cli rigging execute      # Run as hook endpoint
+uvx --from rigging-cli rigging logs         # View execution logs
 
 # Discovery & Generation  
-rigging discover     # Find available hooks
-rigging generate     # Create hook combinations
-rigging update       # Check for updates
+uvx --from rigging-cli rigging discover     # Find available hooks
+uvx --from rigging-cli rigging generate     # Create hook combinations
+uvx --from rigging-cli rigging update       # Check for updates
 
 # Templates & Workflows
-rigging template list      # Browse available templates
-rigging template install   # Deploy a template
-rigging workflow create    # Build custom workflows
+uvx --from rigging-cli rigging template list      # Browse available templates
+uvx --from rigging-cli rigging template install   # Deploy a template
+uvx --from rigging-cli rigging workflow create    # Build custom workflows
 ```
 
 ## 🎨 Example Hook Configuration
@@ -103,7 +105,7 @@ rigging workflow create    # Build custom workflows
     "matcher": "Bash",
     "handler": {
       "type": "command", 
-      "command": "rigging execute --workflow bash-validator"
+      "command": "uvx --from rigging-cli rigging execute --workflow bash-validator"
     }
   }]
 }
@@ -115,10 +117,10 @@ Rigging provides built-in validation for Claude settings files and VS Code integ
 
 ```bash
 # Validate your Claude settings
-rigging validate settings
+uvx --from rigging-cli rigging validate settings
 
 # Validate a specific file
-rigging validate settings ~/.claude/settings.json
+uvx --from rigging-cli rigging validate settings ~/.claude/settings.json
 ```
 
 ### VS Code Integration
