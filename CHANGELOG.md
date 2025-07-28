@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2025-01-28
+
+### Added
+- Comprehensive GitHub Actions workflows for CI/CD
+- Automated PyPI publishing on GitHub releases
+- Multi-platform testing (Ubuntu, macOS, Windows)
+- Post-publish validation workflow
+- Automatic release creation from version tags
+
+### Fixed  
+- Updated all documentation to use correct uvx commands
+- Fixed markdown linting issues in documentation
+
 ## [0.1.2] - 2025-01-28
 
 ### Changed
@@ -50,7 +63,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rich terminal output with tables
 - Error handling with helpful messages
 
-[Unreleased]: https://github.com/bdmorin/rigging-cli/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/bdmorin/rigging-cli/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/bdmorin/rigging-cli/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/bdmorin/rigging-cli/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/bdmorin/rigging-cli/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/bdmorin/rigging-cli/releases/tag/v0.1.0
