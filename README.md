@@ -7,6 +7,19 @@
 [![uv](https://img.shields.io/badge/uv-latest-green)](https://github.com/astral-sh/uv)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml/badge.svg)](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml)
+[![Status](https://img.shields.io/badge/status-work%20in%20progress-orange)](https://github.com/bdmorin/eyelet)
+
+## ⚠️ Work in Progress
+
+**Note: Eyelet is under active development.** While core hook logging functionality is stable and working, we're currently building:
+- SQLite database logging (in addition to JSON files)
+- Advanced configuration management
+- Query and analytics features
+- Browser-based UI for log exploration
+
+Feel free to use and contribute, but expect breaking changes as we evolve the API.
+
+## 📦 About
 
 Eyelet provides comprehensive management, templating, and execution handling for AI agent hooks. Like an eyelet that securely connects hooks to fabric, Eyelet connects and orchestrates your AI agent's behavior through a reliable workflow system.
 
