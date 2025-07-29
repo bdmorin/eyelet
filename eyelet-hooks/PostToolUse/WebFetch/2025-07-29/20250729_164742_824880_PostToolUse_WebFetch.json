@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-07-29T16:47:42.824880",
+  "timestamp_unix": 1753825662.82488,
+  "hook_type": "PostToolUse",
+  "tool_name": "WebFetch",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "WebFetch",
+    "tool_input": {
+      "url": "https://pypi.org/project/eyelet/0.2.0/",
+      "prompt": "Check if eyelet version 0.2.0 exists on PyPI"
+    },
+    "tool_response": {
+      "bytes": 60402,
+      "code": 200,
+      "codeText": "OK",
+      "result": "Yes, eyelet version 0.2.0 exists on PyPI. Key details:\n\n- Released on Jul 29, 2025\n- Authored by Brian Morin\n- MIT licensed\n- Requires Python >=3.11\n- Described as a \"Hook orchestration system for AI agents\"\n\nThe project's tagline is: \"Connect your workflows!\" It's an AI agent workflow management system with features like dynamic hook discovery, logging, and workflow chaining.",
+      "durationMs": 4523,
+      "url": "https://pypi.org/project/eyelet/0.2.0/"
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/WebFetch/2025-07-29/20250729_164742_824880_PostToolUse_WebFetch.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/WebFetch/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:47:42.829708"
+}

@@ -1,0 +1,82 @@
+{
+  "timestamp": "2025-07-29T16:38:08.262460",
+  "timestamp_unix": 1753825088.26246,
+  "hook_type": "PostToolUse",
+  "tool_name": "MultiEdit",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "MultiEdit",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/docs/setup/COPY_TO_GITHUB.md",
+      "edits": [
+        {
+          "old_string": "    - name: Format check with black\n      run: |\n        uv run black --check .",
+          "new_string": "    - name: Format check with ruff\n      run: |\n        uv run ruff format --check ."
+        }
+      ]
+    },
+    "tool_response": {
+      "filePath": "/Users/bdmorin/src/claude-hooks/docs/setup/COPY_TO_GITHUB.md",
+      "edits": [
+        {
+          "old_string": "    - name: Format check with black\n      run: |\n        uv run black --check .",
+          "new_string": "    - name: Format check with ruff\n      run: |\n        uv run ruff format --check .",
+          "replace_all": false
+        }
+      ],
+      "originalFileContents": "# Copy These Files to GitHub\n\nSince the OAuth app can't create workflows, copy these manually:\n\n## 1. Create .github/workflows/ci.yml\n\nGo to https://github.com/bdmorin/eyelet \u2192 Add file \u2192 Create new file\nName: `.github/workflows/ci.yml`\n\nCopy this content:\n\n```yaml\nname: CI\n\non:\n  push:\n    branches: [ main ]\n  pull_request:\n    branches: [ main ]\n\njobs:\n  test:\n    runs-on: ${{ matrix.os }}\n    strategy:\n      fail-fast: false\n      matrix:\n        os: [ubuntu-latest, macos-latest, windows-latest]\n        python-version: [\"3.11\", \"3.12\"]\n    \n    steps:\n    - uses: actions/checkout@v4\n    \n    - name: Install uv\n      uses: astral-sh/setup-uv@v4\n      with:\n        enable-cache: true\n        cache-dependency-glob: \"uv.lock\"\n    \n    - name: Set up Python ${{ matrix.python-version }}\n      run: uv python install ${{ matrix.python-version }}\n    \n    - name: Install dependencies\n      run: |\n        uv sync --all-extras --dev\n    \n    - name: Lint with ruff\n      run: |\n        uv run ruff check .\n      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'\n    \n    - name: Format check with black\n      run: |\n        uv run black --check .\n      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'\n    \n    - name: Type check with mypy\n      run: |\n        uv run mypy src/eyelet\n      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'\n      continue-on-error: true\n    \n    - name: Test with pytest\n      run: |\n        uv run pytest tests/ -v --cov=eyelet --cov-report=xml\n      continue-on-error: true\n    \n    - name: Upload coverage reports to Codecov\n      uses: codecov/codecov-action@v4\n      if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'\n      with:\n        file: ./coverage.xml\n        flags: unittests\n        name: codecov-umbrella\n      continue-on-error: true\n    \n    - name: Build package\n      run: |\n        uv build\n    \n    - name: Test installation\n      run: |\n        uv pip install dist/*.whl\n        eyelet --version\n        eyelet validate settings --help\n```\n\n## 2. Create .github/workflows/publish.yml\n\nName: `.github/workflows/publish.yml`\n\n```yaml\nname: Publish to PyPI\n\non:\n  release:\n    types: [published]\n\njobs:\n  build-and-publish:\n    runs-on: ubuntu-latest\n    \n    steps:\n    - uses: actions/checkout@v4\n    \n    - name: Install uv\n      uses: astral-sh/setup-uv@v4\n      with:\n        enable-cache: true\n    \n    - name: Set up Python\n      run: uv python install 3.11\n    \n    - name: Build package\n      run: uv build\n    \n    - name: Check package\n      run: |\n        uv pip install twine\n        uv run twine check dist/*\n    \n    - name: Publish to PyPI\n      env:\n        TWINE_USERNAME: __token__\n        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}\n      run: |\n        uv run twine upload dist/*\n```\n\n## 3. Test the Setup\n\nAfter adding both workflows:\n\n1. **Test CI**: Push any change and watch Actions tab\n2. **Test Release**: Create a version tag:\n\n```bash\ngit tag v0.1.3\ngit push origin v0.1.3\n```\n\nThen go to Releases \u2192 Draft a new release \u2192 Choose v0.1.3 tag \u2192 Publish\n\nThis will trigger automatic PyPI publishing! \ud83d\ude80\n\n## 4. Optional: Advanced Workflows\n\nIf you want the full automation (release creation from tags), also add:\n- `release.yml` - Auto-creates GitHub releases from version tags\n- `validate-published.yml` - Tests published packages\n\nBut start with just ci.yml and publish.yml for now!",
+      "structuredPatch": [
+        {
+          "oldStart": 48,
+          "oldLines": 9,
+          "newStart": 48,
+          "newLines": 9,
+          "lines": [
+            "         uv run ruff check .",
+            "       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'",
+            "     ",
+            "-    - name: Format check with black",
+            "+    - name: Format check with ruff",
+            "       run: |",
+            "-        uv run black --check .",
+            "+        uv run ruff format --check .",
+            "       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'",
+            "     ",
+            "     - name: Type check with mypy"
+          ]
+        }
+      ],
+      "userModified": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/MultiEdit/2025-07-29/20250729_163808_262460_PostToolUse_MultiEdit.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/MultiEdit/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:38:08.266715"
+}

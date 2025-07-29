@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-07-29T16:12:30.756800",
+  "timestamp_unix": 1753823550.7568,
+  "hook_type": "PostToolUse",
+  "tool_name": "Bash",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "gh run view 16607233182 --log-failed | grep -A10 -B10 \"error\\|Error\\|ERROR\" | head -50",
+      "description": "Check v0.3.0 release failure"
+    },
+    "tool_response": {
+      "stdout": "create-release\tRun tests\t2025-07-29T20:55:11.4949686Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4949876Z     = help: Remove whitespace from blank line\ncreate-release\tRun tests\t2025-07-29T20:55:11.4950051Z \ncreate-release\tRun tests\t2025-07-29T20:55:11.4950223Z src/eyelet/cli/doctor.py:190:1: W293 [*] Blank line contains whitespace\ncreate-release\tRun tests\t2025-07-29T20:55:11.4950541Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4950846Z 188 |             console.print(f\"   \ud83d\udcca Logging scope: {config.logging.scope}\")\ncreate-release\tRun tests\t2025-07-29T20:55:11.4951308Z 189 |             console.print(f\"   \ud83d\udcca Logging enabled: {config.logging.enabled}\")\ncreate-release\tRun tests\t2025-07-29T20:55:11.4951617Z 190 |         \ncreate-release\tRun tests\t2025-07-29T20:55:11.4951781Z     | ^^^^^^^^ W293\ncreate-release\tRun tests\t2025-07-29T20:55:11.4951974Z 191 |     except Exception as e:\ncreate-release\tRun tests\t2025-07-29T20:55:11.4952251Z 192 |         issues.append(f\"Configuration service error: {e}\")\ncreate-release\tRun tests\t2025-07-29T20:55:11.4952527Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4952707Z     = help: Remove whitespace from blank line\ncreate-release\tRun tests\t2025-07-29T20:55:11.4952883Z \ncreate-release\tRun tests\t2025-07-29T20:55:11.4953053Z src/eyelet/cli/doctor.py:193:1: W293 [*] Blank line contains whitespace\ncreate-release\tRun tests\t2025-07-29T20:55:11.4953371Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4953534Z 191 |     except Exception as e:\ncreate-release\tRun tests\t2025-07-29T20:55:11.4953804Z 192 |         issues.append(f\"Configuration service error: {e}\")\ncreate-release\tRun tests\t2025-07-29T20:55:11.4954078Z 193 |     \ncreate-release\tRun tests\t2025-07-29T20:55:11.4954246Z     | ^^^^ W293\ncreate-release\tRun tests\t2025-07-29T20:55:11.4954431Z 194 |     return issues, warnings\ncreate-release\tRun tests\t2025-07-29T20:55:11.4954649Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4954830Z     = help: Remove whitespace from blank line\ncreate-release\tRun tests\t2025-07-29T20:55:11.4955012Z \ncreate-release\tRun tests\t2025-07-29T20:55:11.4955232Z src/eyelet/cli/doctor.py:197:62: UP006 [*] Use `tuple` instead of `Tuple` for type annotation\ncreate-release\tRun tests\t2025-07-29T20:55:11.4955601Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4955919Z 197 | def check_logging_setup(project_dir: Path, verbose: bool) -> Tuple[List[str], List[str]]:\ncreate-release\tRun tests\t2025-07-29T20:55:11.4956329Z     |                                                              ^^^^^ UP006\n--\ncreate-release\tRun tests\t2025-07-29T20:55:11.4981175Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4981354Z     = help: Remove whitespace from blank line\ncreate-release\tRun tests\t2025-07-29T20:55:11.4981540Z \ncreate-release\tRun tests\t2025-07-29T20:55:11.4981711Z src/eyelet/cli/doctor.py:243:1: W293 [*] Blank line contains whitespace\ncreate-release\tRun tests\t2025-07-29T20:55:11.4982019Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4982177Z 241 |                 else:\ncreate-release\tRun tests\t2025-07-29T20:55:11.4982513Z 242 |                     console.print(\"   \u2705 Log directories in .gitignore\")\ncreate-release\tRun tests\t2025-07-29T20:55:11.4982799Z 243 |         \ncreate-release\tRun tests\t2025-07-29T20:55:11.4982973Z     | ^^^^^^^^ W293\ncreate-release\tRun tests\t2025-07-29T20:55:11.4983165Z 244 |     except Exception as e:\ncreate-release\tRun tests\t2025-07-29T20:55:11.4983428Z 245 |         issues.append(f\"Logging setup error: {e}\")\ncreate-release\tRun tests\t2025-07-29T20:55:11.4983688Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4983887Z     = help: Remove whitespace from blank line\ncreate-release\tRun tests\t2025-07-29T20:55:11.4984069Z \ncreate-release\tRun tests\t2025-07-29T20:55:11.4984236Z src/eyelet/cli/doctor.py:246:1: W293 [*] Blank line contains whitespace\ncreate-release\tRun tests\t2025-07-29T20:55:11.4984550Z     |\ncreate-release\tRun tests\t2025-07-29T20:55:11.4984714Z 244 |     except Exception as e:\ncreate-release\tRun tests\t2025-07-29T20:55:11.4984966Z 245 |         issues.append(f\"Logging setup error: {e}\")\ncreate-release\tRun tests\t2025-07-29T20:55:11.4985223Z 246 |     \ncreate-release\tRun tests\t2025-07-29T20:55:11.4985379Z     | ^^^^ W293\ncreate-release\tRun tests\t2025-07-29T20:55:11.4985565Z 247 |     return issues, warnings",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29/20250729_161230_756800_PostToolUse_Bash.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:12:30.761193"
+}

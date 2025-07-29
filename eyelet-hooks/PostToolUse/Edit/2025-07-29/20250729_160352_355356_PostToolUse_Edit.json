@@ -1,0 +1,73 @@
+{
+  "timestamp": "2025-07-29T16:03:52.355356",
+  "timestamp_unix": 1753823032.355356,
+  "hook_type": "PostToolUse",
+  "tool_name": "Edit",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/docs/universal-hook-handler.md",
+      "old_string": "# Read all PreToolUse Bash logs\nhms_dir = Path(\"./eyelet-hooks\")\nbash_logs = hms_dir.glob(\"PreToolUse/Bash/**/*.json\")",
+      "new_string": "# Read all PreToolUse Bash logs\nhooks_dir = Path(\"./eyelet-hooks\")\nbash_logs = hooks_dir.glob(\"PreToolUse/Bash/**/*.json\")"
+    },
+    "tool_response": {
+      "filePath": "/Users/bdmorin/src/claude-hooks/docs/universal-hook-handler.md",
+      "oldString": "# Read all PreToolUse Bash logs\nhms_dir = Path(\"./eyelet-hooks\")\nbash_logs = hms_dir.glob(\"PreToolUse/Bash/**/*.json\")",
+      "newString": "# Read all PreToolUse Bash logs\nhooks_dir = Path(\"./eyelet-hooks\")\nbash_logs = hooks_dir.glob(\"PreToolUse/Bash/**/*.json\")",
+      "originalFile": "# Universal Hook Handler Guide\n\nThe Universal Hook Handler is Eyelet's comprehensive logging system that captures EVERY hook event from Claude Code, providing complete visibility into AI agent behavior.\n\n## Overview\n\nThe handler logs all hook events to a structured directory system (`./eyelet-hooks/`), creating a complete audit trail of AI agent actions. This is invaluable for:\n\n- Debugging agent behavior\n- Understanding tool usage patterns\n- Security auditing\n- Performance analysis\n- Workflow development\n\n## Quick Installation\n\n```bash\n# Install universal logging for ALL hooks\nuvx --from eyelet eyelet configure install-all\n\n# Or install for user-level (all projects)\nuvx --from eyelet eyelet configure install-all --scope user\n```\n\nThis single command configures Claude Code to send every hook event to Eyelet's universal handler.\n\n## Directory Structure\n\nLogs are organized in a logical hierarchy:\n\n```\n./eyelet-hooks/\n\u251c\u2500\u2500 PreToolUse/           # Before tool execution\n\u2502   \u251c\u2500\u2500 Bash/            # Organized by tool\n\u2502   \u2502   \u2514\u2500\u2500 2025-07-28/  # Daily directories\n\u2502   \u2502       \u2514\u2500\u2500 20250728_133300_236408_PreToolUse_Bash.json\n\u2502   \u251c\u2500\u2500 Read/\n\u2502   \u251c\u2500\u2500 Write/\n\u2502   \u2514\u2500\u2500 .../\n\u251c\u2500\u2500 PostToolUse/          # After tool execution\n\u2502   \u2514\u2500\u2500 {tool}/\n\u2502       \u2514\u2500\u2500 {date}/\n\u251c\u2500\u2500 UserPromptSubmit/     # User interactions\n\u2502   \u2514\u2500\u2500 {date}/\n\u251c\u2500\u2500 Notification/         # UI notifications\n\u251c\u2500\u2500 Stop/                 # Session completions\n\u251c\u2500\u2500 SubagentStop/         # Subagent completions\n\u2514\u2500\u2500 PreCompact/           # Context management\n    \u251c\u2500\u2500 manual/\n    \u2514\u2500\u2500 auto/\n```\n\n## Log File Format\n\nEach log file contains comprehensive data:\n\n```json\n{\n  \"timestamp\": \"2025-07-28T13:33:00.236408\",\n  \"timestamp_unix\": 1753727580.236408,\n  \"hook_type\": \"PreToolUse\",\n  \"tool_name\": \"Bash\",\n  \"session_id\": \"session-abc123\",\n  \"transcript_path\": \"/path/to/transcript.md\",\n  \"cwd\": \"/current/working/directory\",\n  \"environment\": {\n    \"python_version\": \"3.11.5\",\n    \"platform\": \"darwin\",\n    \"eyelet_version\": \"0.1.0\",\n    \"env_vars\": {\n      \"CLAUDE_CODE_SSE_PORT\": \"62007\",\n      \"CLAUDE_CODE_ENTRYPOINT\": \"cli\"\n    }\n  },\n  \"input_data\": {\n    // Complete hook payload from Claude Code\n  },\n  \"metadata\": {\n    \"log_file\": \"/path/to/this/log.json\",\n    \"log_dir\": \"/path/to/log/directory\",\n    \"project_dir\": \"/project/root\"\n  }\n}\n```\n\n## Hook Types Captured\n\n### Tool Hooks\n- **PreToolUse**: Captures tool inputs before execution\n- **PostToolUse**: Captures tool outputs after execution\n\nSupported tools:\n- Bash (shell commands)\n- Read/Write/Edit (file operations)\n- Grep/Glob (search operations)\n- WebFetch/WebSearch (network operations)\n- Task (subagent operations)\n\n### Lifecycle Hooks\n- **UserPromptSubmit**: User prompts before processing\n- **Notification**: UI notifications and idle events\n- **Stop**: Main agent session completion\n- **SubagentStop**: Subagent task completion\n- **PreCompact**: Context window management (manual/auto)\n\n## Usage Examples\n\n### Basic Installation\n```bash\n# Install for current project\nuvx --from eyelet eyelet configure install-all\n\n# Force reinstall (overwrites existing hooks)\nuvx --from eyelet eyelet configure install-all --force\n```\n\n### Viewing Logs\n```bash\n# Browse log directory\nls -la ./eyelet-hooks/\n\n# Find recent Bash commands\nfind ./eyelet-hooks/PreToolUse/Bash -name \"*.json\" -mtime -1\n\n# Search for specific content\ngrep -r \"rm -rf\" ./eyelet-hooks/PreToolUse/Bash/\n```\n\n### Analyzing Logs\n```python\nimport json\nfrom pathlib import Path\n\n# Read all PreToolUse Bash logs\nhms_dir = Path(\"./eyelet-hooks\")\nbash_logs = hms_dir.glob(\"PreToolUse/Bash/**/*.json\")\n\nfor log_file in bash_logs:\n    with open(log_file) as f:\n        data = json.load(f)\n        command = data[\"input_data\"][\"tool_input\"][\"command\"]\n        print(f\"{data['timestamp']}: {command}\")\n```\n\n## Configuration Details\n\nThe `install-all` command creates hooks with:\n- **Handler**: `uvx --from eyelet eyelet execute --log-only`\n- **Matchers**: \n  - PreToolUse/PostToolUse: `.*` (wildcard - all tools)\n  - PreCompact: `manual` and `auto`\n  - Others: No matcher required\n\n## Performance Considerations\n\n- **Non-blocking**: Always returns success (exit 0)\n- **Fast writes**: JSON files are written quickly\n- **No external dependencies**: Pure filesystem operations\n- **Automatic organization**: Daily directories prevent folder bloat\n\n## Security & Privacy\n\n- **Local only**: All logs stay on your machine\n- **No network calls**: Pure filesystem logging\n- **Gitignored**: `eyelet-hooks/` is in .gitignore by default\n- **Sensitive data**: Be aware that logs may contain sensitive information\n\n## Troubleshooting\n\n### Logs not appearing\n1. Check hooks are installed: `uvx --from eyelet eyelet configure list`\n2. Verify eyelet is in PATH: `which uvx`\n3. Check permissions: `ls -la ./eyelet-hooks/`\n\n### Large log directories\n```bash\n# Find and remove logs older than 7 days\nfind ./eyelet-hooks -name \"*.json\" -mtime +7 -delete\n\n# Check disk usage\ndu -sh ./eyelet-hooks/\n```\n\n### Parsing errors\nIf Claude Code sends malformed JSON, check:\n- `./eyelet-hooks/parse_error/` directory\n- Look for `error` field in log files\n\n## Advanced Usage\n\n### Custom Workflows\nAfter logging, you can trigger workflows:\n```bash\nuvx --from eyelet eyelet configure add --workflow my-validator\n```\n\n### Real-time Monitoring\n```bash\n# Watch for new logs\nwatch -n 1 'find ./eyelet-hooks -name \"*.json\" -mmin -5 | tail -20'\n```\n\n### Integration with Analysis Tools\nExport to various formats:\n```bash\n# Convert to CSV for spreadsheet analysis\nuvx --from eyelet eyelet logs export --format csv --output hooks.csv\n\n# Stream to monitoring systems\ntail -f ./eyelet-hooks/**/*.json | jq '.hook_type'\n```\n\n## Best Practices\n\n1. **Regular Cleanup**: Set up log rotation to prevent disk bloat\n2. **Security Review**: Audit logs don't contain secrets\n3. **Performance Monitoring**: Check log sizes periodically\n4. **Backup Important Logs**: Archive interesting sessions\n5. **Privacy Awareness**: Remember logs contain all agent activity\n\n## Future Enhancements\n\nPlanned features:\n- Log compression and rotation\n- Real-time log streaming\n- Built-in analysis tools\n- Webhook notifications\n- Encrypted logging option",
+      "structuredPatch": [
+        {
+          "oldStart": 132,
+          "oldLines": 8,
+          "newStart": 132,
+          "newLines": 8,
+          "lines": [
+            " from pathlib import Path",
+            " ",
+            " # Read all PreToolUse Bash logs",
+            "-hms_dir = Path(\"./eyelet-hooks\")",
+            "-bash_logs = hms_dir.glob(\"PreToolUse/Bash/**/*.json\")",
+            "+hooks_dir = Path(\"./eyelet-hooks\")",
+            "+bash_logs = hooks_dir.glob(\"PreToolUse/Bash/**/*.json\")",
+            " ",
+            " for log_file in bash_logs:",
+            "     with open(log_file) as f:"
+          ]
+        }
+      ],
+      "userModified": false,
+      "replaceAll": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Edit/2025-07-29/20250729_160352_355356_PostToolUse_Edit.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Edit/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:03:52.359911"
+}

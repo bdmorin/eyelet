@@ -1,0 +1,79 @@
+{
+  "timestamp": "2025-07-29T16:35:32.878438",
+  "timestamp_unix": 1753824932.878438,
+  "hook_type": "PostToolUse",
+  "tool_name": "MultiEdit",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "MultiEdit",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/pyproject.toml",
+      "edits": [
+        {
+          "old_string": "dev = [\"pytest>=7.4.0\", \"pytest-cov>=4.1.0\", \"black>=23.0.0\", \"ruff>=0.1.0\", \"mypy>=1.0.0\"]",
+          "new_string": "dev = [\"pytest>=7.4.0\", \"pytest-cov>=4.1.0\", \"ruff>=0.1.0\", \"mypy>=1.0.0\"]"
+        }
+      ]
+    },
+    "tool_response": {
+      "filePath": "/Users/bdmorin/src/claude-hooks/pyproject.toml",
+      "edits": [
+        {
+          "old_string": "dev = [\"pytest>=7.4.0\", \"pytest-cov>=4.1.0\", \"black>=23.0.0\", \"ruff>=0.1.0\", \"mypy>=1.0.0\"]",
+          "new_string": "dev = [\"pytest>=7.4.0\", \"pytest-cov>=4.1.0\", \"ruff>=0.1.0\", \"mypy>=1.0.0\"]",
+          "replace_all": false
+        }
+      ],
+      "originalFileContents": "[project]\nname = \"eyelet\"\nversion = \"0.3.0\"\ndescription = \"Hook orchestration system for AI agents with SQLite logging and powerful analytics\"\nreadme = \"README.md\"\nauthors = [{name = \"Brian Morin\"}]\nlicense = {text = \"MIT\"}\nrequires-python = \">=3.11\"\nkeywords = [\"hooks\", \"ai\", \"automation\", \"orchestration\", \"claude-code\", \"eyelet\"]\nclassifiers = [\n    \"Development Status :: 3 - Alpha\",\n    \"Intended Audience :: Developers\",\n    \"Programming Language :: Python :: 3.11\",\n    \"Programming Language :: Python :: 3.12\",\n    \"Topic :: Software Development :: Libraries :: Python Modules\",\n]\ndependencies = [\n    \"click>=8.1.7\",\n    \"textual>=0.47.0\",\n    \"rich>=13.7.0\",\n    \"pydantic>=2.5.0\",\n    \"pydantic-settings>=2.1.0\",\n    \"httpx>=0.25.2\",\n    \"watchdog>=3.0.0\",\n    \"jinja2>=3.1.2\",\n    \"jsonschema>=4.20.0\",\n    \"sqlalchemy>=2.0.23\",\n    \"claude-code-sdk>=0.0.17\",\n    \"pyyaml>=6.0.1\",\n]\n\n[project.optional-dependencies]\ncompletion = [\"click-completion>=0.5.2\", \"psutil>=5.9.0\"]\ndev = [\"pytest>=7.4.0\", \"pytest-cov>=4.1.0\", \"black>=23.0.0\", \"ruff>=0.1.0\", \"mypy>=1.0.0\"]\n\n[project.urls]\nHomepage = \"https://github.com/bdmorin/eyelet\"\nDocumentation = \"https://github.com/bdmorin/eyelet#readme\"\nRepository = \"https://github.com/bdmorin/eyelet\"\nIssues = \"https://github.com/bdmorin/eyelet/issues\"\n\n[build-system]\nrequires = [\"setuptools>=65\", \"wheel\"]\nbuild-backend = \"setuptools.build_meta\"\n\n[project.scripts]\neyelet = \"eyelet.cli.main:cli\"\n\n[tool.setuptools.packages.find]\nwhere = [\"src\"]\n\n[tool.setuptools.package-data]\neyelet = [\"schemas/*.json\"]\n\n[tool.pytest.ini_options]\ntestpaths = [\"tests\"]\npython_files = [\"test_*.py\"]\naddopts = \"--cov=eyelet --cov-report=xml --cov-report=term-missing\"\n\n[tool.ruff]\ntarget-version = \"py311\"\nline-length = 88\n\n[tool.ruff.format]\n# Use the same settings as Black\nquote-style = \"double\"\nindent-style = \"space\"\nskip-magic-trailing-comma = false\nline-ending = \"auto\"\n\n[tool.ruff.lint]\nselect = [\n    \"E\",  # pycodestyle errors\n    \"W\",  # pycodestyle warnings\n    \"F\",  # pyflakes\n    \"I\",  # isort\n    \"B\",  # flake8-bugbear\n    \"C4\", # flake8-comprehensions\n    \"UP\", # pyupgrade\n]\nignore = [\n    \"E501\",  # line too long, handled by ruff format\n    \"B008\",  # do not perform function calls in argument defaults\n    \"C901\",  # too complex\n]\n\n[tool.mypy]\npython_version = \"3.11\"\ncheck_untyped_defs = true\ndisallow_any_generics = true\ndisallow_incomplete_defs = true\nfollow_imports = \"silent\"\nno_implicit_reexport = true\nwarn_redundant_casts = true\nwarn_unused_ignores = true\n",
+      "structuredPatch": [
+        {
+          "oldStart": 31,
+          "oldLines": 7,
+          "newStart": 31,
+          "newLines": 7,
+          "lines": [
+            " ",
+            " [project.optional-dependencies]",
+            " completion = [\"click-completion>=0.5.2\", \"psutil>=5.9.0\"]",
+            "-dev = [\"pytest>=7.4.0\", \"pytest-cov>=4.1.0\", \"black>=23.0.0\", \"ruff>=0.1.0\", \"mypy>=1.0.0\"]",
+            "+dev = [\"pytest>=7.4.0\", \"pytest-cov>=4.1.0\", \"ruff>=0.1.0\", \"mypy>=1.0.0\"]",
+            " ",
+            " [project.urls]",
+            " Homepage = \"https://github.com/bdmorin/eyelet\""
+          ]
+        }
+      ],
+      "userModified": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/MultiEdit/2025-07-29/20250729_163532_878438_PostToolUse_MultiEdit.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/MultiEdit/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:35:32.883248"
+}

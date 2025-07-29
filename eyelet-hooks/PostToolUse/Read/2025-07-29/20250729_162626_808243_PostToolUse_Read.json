@@ -1,0 +1,55 @@
+{
+  "timestamp": "2025-07-29T16:26:26.808243",
+  "timestamp_unix": 1753824386.808243,
+  "hook_type": "PostToolUse",
+  "tool_name": "Read",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/src/eyelet/services/git_metadata.py",
+      "offset": 50,
+      "limit": 80
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/bdmorin/src/claude-hooks/src/eyelet/services/git_metadata.py",
+        "content": "        except (subprocess.SubprocessError, FileNotFoundError):\n            pass\n\n        return None\n\n    @lru_cache(maxsize=1)\n    def get_current_branch(self) -> str | None:\n        \"\"\"Get current Git branch name.\"\"\"\n        branch = self._run_git_command([\"branch\", \"--show-current\"])\n        if not branch:\n            # Try alternative method for detached HEAD\n            branch = self._run_git_command([\"rev-parse\", \"--abbrev-ref\", \"HEAD\"])\n        return branch\n\n    @lru_cache(maxsize=1)\n    def get_current_commit(self) -> str | None:\n        \"\"\"Get current commit hash (short form).\"\"\"\n        return self._run_git_command([\"rev-parse\", \"--short\", \"HEAD\"])\n\n    @lru_cache(maxsize=1)\n    def get_remote_url(self) -> str | None:\n        \"\"\"Get remote repository URL.\"\"\"\n        url = self._run_git_command([\"remote\", \"get-url\", \"origin\"])\n        if url:\n            # Clean up URL for privacy (remove credentials)\n            if \"@\" in url and \":\" in url:\n                # Handle git@github.com:user/repo.git format\n                parts = url.split(\":\")\n                if len(parts) == 2 and parts[0].endswith(\"github.com\"):\n                    return f\"https://github.com/{parts[1]}\"\n            elif \"https://\" in url and \"@\" in url:\n                # Handle https://user:token@github.com/user/repo.git format\n                parts = url.split(\"@\")\n                if len(parts) == 2:\n                    return f\"https://{parts[1]}\"\n        return url\n\n    def is_dirty(self) -> bool:\n        \"\"\"Check if working directory has uncommitted changes.\"\"\"\n        if not self._is_git_repo:\n            return False\n\n        status = self._run_git_command([\"status\", \"--porcelain\"])\n        return bool(status)\n\n    def get_repo_name(self) -> str | None:\n        \"\"\"Get repository name from remote URL.\"\"\"\n        url = self.get_remote_url()\n        if url:\n            # Extract repo name from URL\n            if url.endswith(\".git\"):\n                url = url[:-4]\n\n            parts = url.split(\"/\")\n            if len(parts) >= 2:\n                return parts[-1]\n\n        # Fallback to directory name\n        return self.working_dir.name\n\n    def get_metadata(self) -> dict[str, Any]:\n        \"\"\"Get all Git metadata as a dictionary.\n\n        Returns:\n            Dictionary with Git information, empty if not a Git repo\n        \"\"\"\n        if not self._is_git_repo:\n            return {}\n\n        metadata = {\n            \"is_git_repo\": True,\n            \"branch\": self.get_current_branch(),\n            \"commit\": self.get_current_commit(),\n            \"dirty\": self.is_dirty(),\n            \"repo_name\": self.get_repo_name(),\n        }\n\n        # Only include remote URL if it's cleaned\n        remote_url = self.get_remote_url()\n        if remote_url and not any(sensitive in remote_url for sensitive in [\"@\", \"token\", \"password\"]):",
+        "numLines": 80,
+        "startLine": 50,
+        "totalLines": 150
+      }
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Read/2025-07-29/20250729_162626_808243_PostToolUse_Read.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Read/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:26:26.812512"
+}

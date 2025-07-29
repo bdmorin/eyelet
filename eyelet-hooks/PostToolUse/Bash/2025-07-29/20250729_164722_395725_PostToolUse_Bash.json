@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-07-29T16:47:22.395725",
+  "timestamp_unix": 1753825642.395725,
+  "hook_type": "PostToolUse",
+  "tool_name": "Bash",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "gh run view 16586952390 --log-failed | head -50",
+      "description": "Check latest publish workflow failure"
+    },
+    "tool_response": {
+      "stdout": "build-and-publish\tPublish to PyPI\t\ufeff2025-07-29T04:48:43.4081598Z ##[group]Run twine upload dist/*\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4081912Z \u001b[36;1mtwine upload dist/*\u001b[0m\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4110388Z shell: /usr/bin/bash -e {0}\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4110852Z env:\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4111270Z   pythonLocation: /opt/hostedtoolcache/Python/3.11.13/x64\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4111672Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.11.13/x64/lib/pkgconfig\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4112050Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.13/x64\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4112378Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.13/x64\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4112719Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.11.13/x64\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4113066Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.11.13/x64/lib\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4113360Z   TWINE_USERNAME: __token__\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4114723Z   TWINE_PASSWORD: ***\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.4114933Z ##[endgroup]\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.6558453Z Uploading distributions to https://upload.pypi.org/legacy/\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.6686270Z Uploading eyelet-0.2.0-py3-none-any.whl\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.6714455Z \u001b[?25l\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.7723568Z \u001b[2K\u001b[35m  0%\u001b[0m \u001b[90m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m \u001b[32m0.0/58.9 kB\u001b[0m \u2022 \u001b[36m--:--\u001b[0m \u2022 \u001b[31m?\u001b[0m\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.8738388Z \u001b[2K\u001b[35m  0%\u001b[0m \u001b[90m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m \u001b[32m0.0/58.9 kB\u001b[0m \u2022 \u001b[36m--:--\u001b[0m \u2022 \u001b[31m?\u001b[0m\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.9573881Z \u001b[2K\u001b[35m100%\u001b[0m \u001b[90m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m \u001b[32m58.9/58.9 kB\u001b[0m \u2022 \u001b[33m00:00\u001b[0m \u2022 \u001b[31m209.9 MB/s\u001b[0m\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.9574980Z \u001b[2K\u001b[35m100%\u001b[0m \u001b[90m\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u001b[0m \u001b[32m58.9/58.9 kB\u001b[0m \u2022 \u001b[33m00:00\u001b[0m \u2022 \u001b[31m209.9 MB/s\u001b[0m\nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.9583239Z \u001b[?25h\u001b[33mWARNING \u001b[0m Error during upload. Retry with the --verbose option for more details. \nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.9590341Z \u001b[31mERROR   \u001b[0m HTTPError: 400 Bad Request from https://upload.pypi.org/legacy/        \nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.9591179Z          File already exists ('eyelet-0.2.0-py3-none-any.whl', with blake2_256  \nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.9591617Z          hash                                                                   \nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.9592017Z          '192dd37af50639da89bdbca4675d40a29841b9ef0d169d825032fb4349c242e4').   \nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.9592524Z          See https://pypi.org/help/#file-name-reuse for more information.       \nbuild-and-publish\tPublish to PyPI\t2025-07-29T04:48:43.9923803Z ##[error]Process completed with exit code 1.",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29/20250729_164722_395725_PostToolUse_Bash.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:47:22.400199"
+}

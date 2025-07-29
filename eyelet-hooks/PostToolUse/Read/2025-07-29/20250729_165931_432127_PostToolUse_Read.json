@@ -1,0 +1,53 @@
+{
+  "timestamp": "2025-07-29T16:59:31.432127",
+  "timestamp_unix": 1753826371.432127,
+  "hook_type": "PostToolUse",
+  "tool_name": "Read",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/.github/workflows/claude-code-review.yml"
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/bdmorin/src/claude-hooks/.github/workflows/claude-code-review.yml",
+        "content": "name: Claude Code Review\n\non:\n  pull_request:\n    types: [opened, synchronize]\n    # Optional: Only run on specific file changes\n    # paths:\n    #   - \"src/**/*.ts\"\n    #   - \"src/**/*.tsx\"\n    #   - \"src/**/*.js\"\n    #   - \"src/**/*.jsx\"\n\njobs:\n  claude-review:\n    # Optional: Filter by PR author\n    # if: |\n    #   github.event.pull_request.user.login == 'external-contributor' ||\n    #   github.event.pull_request.user.login == 'new-developer' ||\n    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'\n    \n    runs-on: ubuntu-latest\n    permissions:\n      contents: read\n      pull-requests: read\n      issues: read\n      id-token: write\n    \n    steps:\n      - name: Checkout repository\n        uses: actions/checkout@v4\n        with:\n          fetch-depth: 1\n\n      - name: Run Claude Code Review\n        id: claude-review\n        uses: anthropics/claude-code-action@beta\n        with:\n          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}\n\n          # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4)\n          # model: \"claude-opus-4-20250514\"\n          \n          # Direct prompt for automated review (no @claude mention needed)\n          direct_prompt: |\n            Please review this pull request and provide feedback on:\n            - Code quality and best practices\n            - Potential bugs or issues\n            - Performance considerations\n            - Security concerns\n            - Test coverage\n            \n            Be constructive and helpful in your feedback.\n\n          # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR\n          # use_sticky_comment: true\n          \n          # Optional: Customize review based on file types\n          # direct_prompt: |\n          #   Review this PR focusing on:\n          #   - For TypeScript files: Type safety and proper interface usage\n          #   - For API endpoints: Security, input validation, and error handling\n          #   - For React components: Performance, accessibility, and best practices\n          #   - For tests: Coverage, edge cases, and test quality\n          \n          # Optional: Different prompts for different authors\n          # direct_prompt: |\n          #   ${{ github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' && \n          #   'Welcome! Please review this PR from a first-time contributor. Be encouraging and provide detailed explanations for any suggestions.' ||\n          #   'Please provide a thorough code review focusing on our coding standards and best practices.' }}\n          \n          # Optional: Add specific tools for running tests or linting\n          # allowed_tools: \"Bash(npm run test),Bash(npm run lint),Bash(npm run typecheck)\"\n          \n          # Optional: Skip review for certain conditions\n          # if: |\n          #   !contains(github.event.pull_request.title, '[skip-review]') &&\n          #   !contains(github.event.pull_request.title, '[WIP]')\n\n",
+        "numLines": 79,
+        "startLine": 1,
+        "totalLines": 79
+      }
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Read/2025-07-29/20250729_165931_432127_PostToolUse_Read.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Read/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 6,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:59:31.439080"
+}

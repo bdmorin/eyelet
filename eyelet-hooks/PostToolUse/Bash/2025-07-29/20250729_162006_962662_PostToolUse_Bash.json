@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-07-29T16:20:06.962662",
+  "timestamp_unix": 1753824006.962662,
+  "hook_type": "PostToolUse",
+  "tool_name": "Bash",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "gh run view 16607594442 --log-failed | grep -A5 -B5 \"error\\|Error\\|ERROR\" | head -50",
+      "description": "Check latest CI failure"
+    },
+    "tool_response": {
+      "stdout": "test (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9905540Z 215 |                 execution.status = \"success\"\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9905820Z 216 |                 execution.output_data = result\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9906296Z 217 |                 output_data = result\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9906535Z     |                 ^^^^^^^^^^^ F841\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9906770Z 218 |             except Exception as e:\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9907023Z 219 |                 execution.status = \"error\"\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9907252Z     |\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9907470Z     = help: Remove assignment to unused variable `output_data`\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9907684Z \ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9907860Z src/eyelet/cli/execute.py:248:1: W293 [*] Blank line contains whitespace\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9908356Z     |\n--\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9910698Z     |\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9910842Z 294 |         try:\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9911065Z 295 |             execution_service.record_execution(execution)\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9911326Z 296 |         except:\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9911507Z     |         ^^^^^^ E722\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9911721Z 297 |             pass  # Don't fail on logging errors\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9911969Z     |\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9912054Z \ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9912206Z src/eyelet/cli/execute.py:309:13: E722 Do not use bare `except`\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9912504Z     |\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9912670Z 307 |                     error_message=str(e)\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9912903Z 308 |                 )\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9913087Z 309 |             except:\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9913391Z     |             ^^^^^^ E722\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9913590Z 310 |                 pass\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9913767Z     |\n--\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9914345Z     |\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9914497Z 309 |             except:\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9914676Z 310 |                 pass\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9914853Z 311 |         \ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9915051Z     | ^^^^^^^^ W293\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9915386Z 312 |         # Update legacy log with error if used\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9915800Z 313 |         if log_file:\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9916266Z     |\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9916563Z     = help: Remove whitespace from blank line\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9916854Z \ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9917116Z src/eyelet/cli/execute.py:328:13: E722 Do not use bare `except`\n--\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9920596Z     |\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9920747Z 252 |         try:\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9920963Z 253 |             execution_service.record_execution(execution)\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9921232Z 254 |         except:\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9921422Z     |         ^^^^^^ E722\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9921633Z 255 |             pass  # Don't fail on logging errors\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9921875Z     |\ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9921957Z \ntest (ubuntu-latest, 3.11)\tLint with ruff\t2025-07-29T21:14:05.9922119Z src/eyelet/cli/execute_old.py:273:13: E722 Do not use bare `except`",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29/20250729_162006_962662_PostToolUse_Bash.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:20:06.966876"
+}

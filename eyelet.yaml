@@ -1,0 +1,14 @@
+logging:
+  add_to_gitignore: true
+  enabled: true
+  format: sqlite
+  global_path: ~/.claude/eyelet-logging
+  path: .eyelet-logs
+  project_path: .eyelet-logging
+  scope: project
+metadata:
+  custom_fields:
+    environment: development
+    project_name: claude-hooks
+  include_hostname: true
+  include_ip: true

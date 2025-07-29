@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-07-29T16:52:05.653195",
+  "timestamp_unix": 1753825925.653195,
+  "hook_type": "PostToolUse",
+  "tool_name": "WebFetch",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "WebFetch",
+    "tool_input": {
+      "url": "https://pypi.org/project/eyelet/",
+      "prompt": "Check the latest version of eyelet on PyPI"
+    },
+    "tool_response": {
+      "bytes": 3101,
+      "code": 200,
+      "codeText": "OK",
+      "result": "The web page content appears to be a JavaScript error handling script with a message: \"JavaScript is disabled in your browser. Please enable JavaScript to proceed.\" The script attempts to dynamically load two additional JavaScript files, with error handling that displays an error message if script loading fails.",
+      "durationMs": 2652,
+      "url": "https://pypi.org/project/eyelet/"
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/WebFetch/2025-07-29/20250729_165205_653195_PostToolUse_WebFetch.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/WebFetch/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:52:05.658084"
+}
