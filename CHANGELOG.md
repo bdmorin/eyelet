@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2025-01-29
+
+### Added
+- Comprehensive documentation suite:
+  - Installation Guide with multiple installation methods
+  - Hook Types & Matchers reference with examples
+  - Creating Workflows guide (future feature documentation)
+  - Template Library with built-in and custom templates
+  - Complete API Reference for CLI, configuration, and Python API
+- Claude Code GitHub integration workflows (from merged PR #1)
+
+### Fixed
+- GitHub Actions workflows now properly reference `eyelet` instead of `rigging`
+- Validate Published Package workflow updated to use correct package name
+
 ## [0.3.0] - 2025-01-29
 
 ### Added
