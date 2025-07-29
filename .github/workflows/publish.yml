@@ -22,12 +22,12 @@ jobs:
     
     - name: Check package
       run: |
-        uv pip install twine
-        uv run twine check dist/*
+        uv pip install --system twine
+        twine check dist/*
     
     - name: Publish to PyPI
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
       run: |
-        uv run twine upload dist/*
+        twine upload dist/*
