@@ -323,7 +323,7 @@ def install_all(ctx, scope, force, dev):
             console.print(f"[yellow]Using development wheel: {latest_wheel.name}[/yellow]")
         else:
             # Use public uvx (requires package to be published to PyPI)
-            eyelet_cmd = "uvx --from eyelet eyelet execute --log-only"
+            eyelet_cmd = "uvx eyelet execute --log-only"
             console.print("[cyan]Using public uvx command (requires PyPI package)[/cyan]")
 
         # PreToolUse and PostToolUse for all tools

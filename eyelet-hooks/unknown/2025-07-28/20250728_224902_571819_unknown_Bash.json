@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-07-28T22:49:02.571819",
+  "timestamp_unix": 1753760942.571819,
+  "hook_type": "unknown",
+  "tool_name": "Bash",
+  "session_id": "unknown",
+  "transcript_path": "",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1",
+      "CLAUDECODE": "1"
+    }
+  },
+  "input_data": {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "echo test"
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/unknown/2025-07-28/20250728_224902_571819_unknown_Bash.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/unknown/2025-07-28",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  }
+}
