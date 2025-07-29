@@ -7,21 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-01-29
+
 ### Added
-- SQLite logging implementation plan
-- Configuration file design (eyelet.yaml for global and project settings)
-- `eyelet doctor` command concept for configuration validation
-- Support for multiple hook commands per hook type
-- Configuration management CLI commands
-- Roadmap for enhanced metadata system
+- Complete SQLite logging implementation with WAL mode and retry logic
+- Configuration file system (eyelet.yaml) for global and project settings
+- `eyelet doctor` command for comprehensive health checks and diagnostics
+- `eyelet query` command suite for searching and analyzing hook logs
+  - `query search` - Full-text search with multiple filters
+  - `query summary` - Session and hook type statistics
+  - `query errors` - Error analysis and debugging
+  - `query session` - View specific session logs
+  - `query grep` - Pattern matching across logs
+- `eyelet configure logging` command to manage logging settings
+- Git metadata enrichment for all logged hooks
+- Process-safe SQLite connections with fork detection
+- Hybrid logging support (JSON files, SQLite, or both)
+- PyYAML dependency for configuration management
 
 ### Fixed
 - SubagentStop hooks now properly logged when using Task tool
 - Hook testing includes SubagentStop verification
+- PosixPath JSON serialization errors
+- Rich console.print() stderr output issues
+- Query commands handle missing execution data gracefully
 
 ### Changed
-- Default logging format decision: JSON (with SQLite as opt-in)
-- Simplified configuration without version field
+- Logging format configuration now accepts comma-separated values (e.g., `--format json,sqlite`)
+- Archive directory removed (tagged as `archive-removal` in git history)
+- Improved error handling with fallback to legacy logging on failures
 
 ## [0.2.0] - 2025-01-28
 
@@ -106,7 +120,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rich terminal output with tables
 - Error handling with helpful messages
 
-[Unreleased]: https://github.com/bdmorin/eyelet/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/bdmorin/eyelet/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/bdmorin/eyelet/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/bdmorin/eyelet/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/bdmorin/eyelet/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/bdmorin/eyelet/compare/v0.1.1...v0.1.2

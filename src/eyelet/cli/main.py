@@ -12,6 +12,7 @@ from eyelet.cli import (
     completion,
     configure,
     discover,
+    doctor,
     execute,
     logs,
     query,
@@ -150,6 +151,7 @@ cli.add_command(query.query)
 cli.add_command(discover.discover)
 cli.add_command(completion.completion)
 cli.add_command(validate.validate)
+cli.add_command(doctor.doctor)
 
 
 @cli.command()

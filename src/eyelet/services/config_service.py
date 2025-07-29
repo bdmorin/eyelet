@@ -66,14 +66,18 @@ class ConfigService:
         """Save global configuration."""
         self.GLOBAL_CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(self.GLOBAL_CONFIG_PATH, 'w') as f:
-            yaml.dump(config.model_dump(), f, default_flow_style=False)
+            # Convert to dict with mode='json' to ensure enums are serialized as strings
+            data = config.model_dump(mode='json')
+            yaml.dump(data, f, default_flow_style=False)
         self._global_config = config
         self._merged_config = None  # Reset cache
     
     def save_project_config(self, config: EyeletConfig) -> None:
         """Save project configuration."""
         with open(self.project_config_path, 'w') as f:
-            yaml.dump(config.model_dump(), f, default_flow_style=False)
+            # Convert to dict with mode='json' to ensure enums are serialized as strings
+            data = config.model_dump(mode='json')
+            yaml.dump(data, f, default_flow_style=False)
         self._project_config = config
         self._merged_config = None  # Reset cache
     
