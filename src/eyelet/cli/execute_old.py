@@ -13,14 +13,12 @@ from eyelet.application.services import ExecutionService, WorkflowService
 from eyelet.domain.models import HookExecution
 from eyelet.infrastructure.database import get_db_path
 from eyelet.infrastructure.repositories import SQLiteExecutionRepository
-from eyelet.services.config_service import ConfigService
-from eyelet.services.hook_logger import HookLogger
 
 console = Console()
 
 
-def create_eyelet_log_entry_legacy(input_data, start_time, project_dir=None):
-    """Legacy JSON file logging - kept for compatibility"""
+def create_eyelet_log_entry(input_data, start_time, project_dir=None):
+    """Create a comprehensive log entry in the eyelet-hooks directory"""
     if project_dir is None:
         project_dir = Path.cwd()
 
@@ -92,10 +90,9 @@ def create_eyelet_log_entry_legacy(input_data, start_time, project_dir=None):
 @click.option('--log-only', is_flag=True, help='Only log, no processing')
 @click.option('--log-result', is_flag=True, help='Log result after execution')
 @click.option('--debug', is_flag=True, help='Enable debug output')
-@click.option('--no-logging', is_flag=True, help='Disable all logging')
-@click.option('--legacy-log', is_flag=True, help='Use legacy JSON file logging only')
+@click.option('--no-eyelet-log', is_flag=True, help='Disable Eyelet logging to files')
 @click.pass_context
-def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
+def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
     """
     Execute as a hook endpoint - Man the guns!
 
@@ -117,7 +114,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
             input_data = json.load(sys.stdin)
     except json.JSONDecodeError as e:
         if debug:
-            console.print(f"[red]Failed to parse JSON input: {e}[/red]")
+            console.print(f"[red]Failed to parse JSON input: {e}[/red]", file=sys.stderr)
         # Still log what we received
         input_data = {
             "hook_event_name": "parse_error",
@@ -126,47 +123,22 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
         }
     except Exception as e:
         if debug:
-            console.print(f"[red]Failed to read input: {e}[/red]")
+            console.print(f"[red]Failed to read input: {e}[/red]", file=sys.stderr)
         input_data = {
             "hook_event_name": "read_error",
             "error": str(e)
         }
 
-    # Initialize configuration and logging
-    project_dir = ctx.obj.get('config_dir', Path.cwd()) if ctx.obj else Path.cwd()
-    
-    # Log using new unified system (unless disabled)
-    hook_logger = None
-    hook_data = None
-    if not no_logging and not legacy_log:
+    # Create Eyelet log entry FIRST - always log everything
+    if not no_eyelet_log:
         try:
-            config_service = ConfigService(project_dir)
-            hook_logger = HookLogger(config_service, project_dir)
-            
-            # Create hook data and log it
-            hook_data = hook_logger._create_hook_data(input_data, start_time)
-            log_results = hook_logger.log_hook(input_data, start_time)
-            
+            log_file, log_data = create_eyelet_log_entry(input_data, start_time, ctx.obj.get('config_dir'))
             if debug:
-                console.print(f"[dim]Logged to: {log_results}[/dim]")
+                console.print(f"[dim]Eyelet log created: {log_file}[/dim]", file=sys.stderr)
         except Exception as e:
             if debug:
-                console.stderr = True
-                console.print(f"[yellow]Unified logging failed: {e}[/yellow]")
-                console.stderr = False
-            # Fall back to legacy logging if requested
-            legacy_log = True
-    
-    # Legacy JSON file logging (if enabled or as fallback)
-    log_file = None
-    if not no_logging and legacy_log:
-        try:
-            log_file, log_data = create_eyelet_log_entry_legacy(input_data, start_time, project_dir)
-            if debug:
-                console.print(f"[dim]Legacy log created: {log_file}[/dim]")
-        except Exception as e:
-            if debug:
-                console.print(f"[yellow]Legacy logging failed: {e}[/yellow]")
+                console.print(f"[yellow]Eyelet logging failed: {e}[/yellow]", file=sys.stderr)
+            # Continue execution even if logging fails
 
     # Extract hook information
     hook_type = input_data.get('hook_event_name', 'unknown')
@@ -193,7 +165,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
         execution = execution_service.record_execution(execution)
 
         if debug:
-            console.print(f"[dim]Hook: {hook_type}, Tool: {tool_name}[/dim]")
+            console.print(f"[dim]Hook: {hook_type}, Tool: {tool_name}[/dim]", file=sys.stderr)
 
         # Process based on options
         if log_only:
@@ -219,7 +191,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
                 execution.status = "error"
                 execution.error_message = str(e)
                 if debug:
-                    console.print(f"[red]Workflow error: {e}[/red]")
+                    console.print(f"[red]Workflow error: {e}[/red]", file=sys.stderr)
 
         else:
             # Default processing
@@ -232,22 +204,8 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
         # Update execution record
         execution_service.record_execution(execution)
 
-        # Update logs with results
-        if hook_logger and hook_data:
-            try:
-                hook_logger.update_hook_result(
-                    hook_data,
-                    status=execution.status,
-                    duration_ms=execution.duration_ms,
-                    output_data=execution.output_data,
-                    error_message=execution.error_message
-                )
-            except Exception as e:
-                if debug:
-                    console.print(f"[yellow]Failed to update hook result: {e}[/yellow]")
-        
-        # Update legacy log if used
-        if log_file:
+        # Update Eyelet log with results if enabled
+        if not no_eyelet_log and 'log_file' in locals():
             try:
                 # Read existing log
                 with open(log_file) as f:
@@ -267,7 +225,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
                     json.dump(final_log_data, f, indent=2, default=str)
             except Exception as e:
                 if debug:
-                    console.print(f"[yellow]Failed to update Eyelet log: {e}[/yellow]")
+                    console.print(f"[yellow]Failed to update Eyelet log: {e}[/yellow]", file=sys.stderr)
 
         # Output any required response
         if execution.output_data and not log_only:
@@ -275,7 +233,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
             if execution.output_data.get("block", False):
                 # Return error code to block the action
                 if debug:
-                    console.print("[yellow]Blocking action[/yellow]")
+                    console.print("[yellow]Blocking action[/yellow]", file=sys.stderr)
                 sys.exit(2)
 
             # Check for response data
@@ -296,21 +254,8 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
         except:
             pass  # Don't fail on logging errors
 
-        # Update logs with error
-        if hook_logger and hook_data:
-            try:
-                hook_logger.update_hook_result(
-                    hook_data,
-                    status="error",
-                    duration_ms=execution.duration_ms,
-                    output_data={},
-                    error_message=str(e)
-                )
-            except:
-                pass
-        
-        # Update legacy log with error if used
-        if log_file:
+        # Update Eyelet log with error if enabled
+        if not no_eyelet_log and 'log_file' in locals():
             try:
                 with open(log_file) as f:
                     final_log_data = json.load(f)
@@ -329,7 +274,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
                 pass
 
         if debug:
-            console.print(f"[red]Execution error: {e}[/red]")
+            console.print(f"[red]Execution error: {e}[/red]", file=sys.stderr)
 
         # Exit with success to not disrupt Claude Code
         sys.exit(0)

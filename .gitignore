@@ -69,6 +69,8 @@ uv.lock
 workflows/user/*
 .claude/settings.json.backup
 eyelet-hooks/
+.eyelet-logs/
+.eyelet-logging/
 test-*.json
 tmp-test/claude-code/
 claude-code/

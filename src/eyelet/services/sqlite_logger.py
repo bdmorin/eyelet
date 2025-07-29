@@ -1,30 +1,19 @@
 """SQLite logging implementation with retry logic."""
 
 import json
-import sqlite3
-import time
 import socket
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from datetime import datetime
 
 from eyelet.domain.hooks import HookData
+from eyelet.services.sqlite_connection import ProcessLocalConnection, sqlite_retry
 
 
 class SQLiteLogger:
-    """SQLite logger with exponential backoff retry logic."""
+    """SQLite logger with best practices for high-concurrency logging."""
     
-    # SQLite pragmas for optimal performance
-    PRAGMAS = [
-        "PRAGMA journal_mode = WAL",
-        "PRAGMA synchronous = normal",
-        "PRAGMA cache_size = -64000",      # 64MB cache
-        "PRAGMA temp_store = memory",
-        "PRAGMA mmap_size = 268435456",    # 256MB memory-mapped I/O
-        "PRAGMA busy_timeout = 10000"      # 10 second timeout
-    ]
-    
-    # Database schema
+    # Database schema with modern SQLite features
     SCHEMA = """
     CREATE TABLE IF NOT EXISTS hooks (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,7 +27,11 @@ class SQLiteLogger:
         hostname TEXT,
         ip_address TEXT,
         project_dir TEXT,
-        data JSON NOT NULL
+        -- Store as BLOB for JSONB optimization in SQLite 3.45+
+        data BLOB NOT NULL CHECK(json_valid(data)),
+        -- Generated columns for frequently queried JSON fields
+        error_code TEXT GENERATED ALWAYS AS (json_extract(data, '$.execution.error_message')) STORED,
+        git_branch TEXT GENERATED ALWAYS AS (json_extract(data, '$.metadata.git_branch')) STORED
     );
     
     -- Indexes for common queries
@@ -47,6 +40,11 @@ class SQLiteLogger:
     CREATE INDEX IF NOT EXISTS idx_hook_type ON hooks(hook_type);
     CREATE INDEX IF NOT EXISTS idx_tool_name ON hooks(tool_name);
     CREATE INDEX IF NOT EXISTS idx_project_dir ON hooks(project_dir);
+    CREATE INDEX IF NOT EXISTS idx_error_code ON hooks(error_code) WHERE error_code IS NOT NULL;
+    CREATE INDEX IF NOT EXISTS idx_git_branch ON hooks(git_branch) WHERE git_branch IS NOT NULL;
+    
+    -- Composite index for time-based queries by type
+    CREATE INDEX IF NOT EXISTS idx_type_timestamp ON hooks(hook_type, timestamp DESC);
     """
     
     def __init__(self, db_path: Path):
@@ -56,24 +54,19 @@ class SQLiteLogger:
             db_path: Path to SQLite database file
         """
         self.db_path = db_path
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
+        self._conn_manager = ProcessLocalConnection(db_path)
         self._initialize_db()
     
+    @sqlite_retry(max_attempts=5)
     def _initialize_db(self) -> None:
         """Initialize database with schema."""
-        with self._get_connection() as conn:
-            conn.executescript(self.SCHEMA)
-    
-    def _get_connection(self) -> sqlite3.Connection:
-        """Get a database connection with optimized settings."""
-        conn = sqlite3.connect(str(self.db_path), timeout=10.0)
-        conn.row_factory = sqlite3.Row
+        conn = self._conn_manager.connection
+        conn.executescript(self.SCHEMA)
         
-        # Apply performance pragmas
-        for pragma in self.PRAGMAS:
-            conn.execute(pragma)
-        
-        return conn
+        # Set initial schema version
+        current_version = conn.execute("PRAGMA user_version").fetchone()[0]
+        if current_version == 0:
+            conn.execute("PRAGMA user_version = 1")
     
     def _get_hostname(self) -> str:
         """Get hostname safely."""
@@ -90,15 +83,18 @@ class SQLiteLogger:
         except:
             return "unknown"
     
-    def log_hook(self, hook_data: HookData, max_retries: int = 5) -> bool:
-        """Log hook data to SQLite with retry logic.
+    @sqlite_retry(max_attempts=10, base_delay=0.05)
+    def log_hook(self, hook_data: HookData) -> bool:
+        """Log hook data to SQLite with automatic retry.
         
         Args:
             hook_data: Hook data to log
-            max_retries: Maximum number of retry attempts
             
         Returns:
             True if successful, False otherwise
+        
+        Raises:
+            sqlite3.OperationalError: If database is locked after all retries
         """
         # Extract core fields for indexing
         timestamp = hook_data.timestamp_unix
@@ -112,8 +108,12 @@ class SQLiteLogger:
         ip_address = self._get_ip_address()
         project_dir = str(hook_data.cwd)
         
-        # Full data as JSON
-        data_json = json.dumps(hook_data.model_dump())
+        # Full data as JSON (with Path conversion)
+        data_dict = hook_data.model_dump()
+        # Convert Path objects to strings
+        if 'cwd' in data_dict and hasattr(data_dict['cwd'], '__fspath__'):
+            data_dict['cwd'] = str(data_dict['cwd'])
+        data_json = json.dumps(data_dict, default=str)
         
         # SQL insert statement
         sql = """
@@ -128,27 +128,13 @@ class SQLiteLogger:
             status, duration_ms, hostname, ip_address, project_dir, data_json
         )
         
-        # Retry logic with exponential backoff
-        for attempt in range(max_retries):
-            try:
-                with self._get_connection() as conn:
-                    conn.execute(sql, values)
-                    conn.commit()
-                return True
-            except sqlite3.OperationalError as e:
-                if "locked" in str(e).lower() and attempt < max_retries - 1:
-                    # Exponential backoff: 0.1s, 0.2s, 0.4s, 0.8s, 1.6s
-                    wait_time = 0.1 * (2 ** attempt)
-                    time.sleep(wait_time)
-                else:
-                    # Log error but don't crash
-                    print(f"SQLite error after {attempt + 1} attempts: {e}")
-                    return False
-            except Exception as e:
-                print(f"Unexpected error logging to SQLite: {e}")
-                return False
-        
-        return False
+        try:
+            conn = self._conn_manager.connection
+            conn.execute(sql, values)
+            return True
+        except Exception as e:
+            # Re-raise to trigger retry decorator
+            raise
     
     def query_hooks(
         self,
@@ -199,6 +185,51 @@ class SQLiteLogger:
         """
         params.append(limit)
         
-        with self._get_connection() as conn:
-            cursor = conn.execute(sql, params)
-            return [dict(row) for row in cursor.fetchall()]
+        conn = self._conn_manager.connection
+        cursor = conn.execute(sql, params)
+        return [dict(row) for row in cursor.fetchall()]
+    
+    def batch_insert(self, hook_data_list: List[HookData]) -> int:
+        """Batch insert multiple hook records for better performance.
+        
+        Args:
+            hook_data_list: List of hook data to insert
+            
+        Returns:
+            Number of records inserted
+        """
+        if not hook_data_list:
+            return 0
+        
+        sql = """
+        INSERT INTO hooks (
+            timestamp, timestamp_iso, session_id, hook_type, tool_name,
+            status, duration_ms, hostname, ip_address, project_dir, data
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        
+        values_list = []
+        for hook_data in hook_data_list:
+            values = (
+                hook_data.timestamp_unix,
+                hook_data.timestamp,
+                hook_data.session_id,
+                hook_data.hook_type,
+                hook_data.tool_name or None,
+                hook_data.execution.status if hook_data.execution else "unknown",
+                hook_data.execution.duration_ms if hook_data.execution else None,
+                self._get_hostname(),
+                self._get_ip_address(),
+                str(hook_data.cwd),
+                json.dumps(hook_data.model_dump())
+            )
+            values_list.append(values)
+        
+        @sqlite_retry(max_attempts=10)
+        def _batch_insert():
+            conn = self._conn_manager.connection
+            with conn:
+                conn.executemany(sql, values_list)
+            return len(values_list)
+        
+        return _batch_insert()

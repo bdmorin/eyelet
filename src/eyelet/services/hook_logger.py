@@ -11,20 +11,23 @@ from eyelet.domain.config import LogFormat, LogScope
 from eyelet.domain.hooks import HookData
 from eyelet.services.config_service import ConfigService
 from eyelet.services.sqlite_logger import SQLiteLogger
+from eyelet.services.git_metadata import GitMetadata
 
 
 class HookLogger:
     """Unified logger that handles both JSON file and SQLite logging."""
     
-    def __init__(self, config_service: ConfigService):
+    def __init__(self, config_service: ConfigService, project_dir: Optional[Path] = None):
         """Initialize hook logger.
         
         Args:
             config_service: Configuration service instance
+            project_dir: Project directory for context
         """
         self.config_service = config_service
         self.config = config_service.get_config()
         self._sqlite_loggers: Dict[str, SQLiteLogger] = {}
+        self._git_metadata = GitMetadata(project_dir)
     
     def _get_sqlite_logger(self, path: Path) -> SQLiteLogger:
         """Get or create SQLite logger for path."""
@@ -62,6 +65,32 @@ class HookLogger:
             input_data=input_data,
             metadata={}
         )
+        
+        # Add Git metadata if enabled
+        if self.config.metadata.include_hostname or self.config.metadata.include_ip:
+            # Add system metadata
+            import socket
+            if self.config.metadata.include_hostname:
+                try:
+                    hook_data.metadata['hostname'] = socket.gethostname()
+                except:
+                    pass
+            
+            if self.config.metadata.include_ip:
+                try:
+                    hostname = socket.gethostname()
+                    hook_data.metadata['ip_address'] = socket.gethostbyname(hostname)
+                except:
+                    pass
+        
+        # Add Git metadata
+        git_info = self._git_metadata.get_metadata()
+        if git_info:
+            hook_data.metadata['git'] = git_info
+        
+        # Add custom fields from config
+        if self.config.metadata.custom_fields:
+            hook_data.metadata.update(self.config.metadata.custom_fields)
         
         return hook_data
     
@@ -128,6 +157,9 @@ class HookLogger:
         # Create hook data
         hook_data = self._create_hook_data(input_data, start_time)
         
+        # Store for potential updates
+        self._last_hook_data = hook_data
+        
         # Get logging paths
         paths = self.config_service.get_effective_logging_paths()
         results = {"status": "success", "logs": []}
@@ -179,12 +211,13 @@ class HookLogger:
         be handled differently in a future implementation.
         """
         # Update hook data
-        hook_data.execution = {
-            "status": status,
-            "duration_ms": duration_ms,
-            "output_data": output_data or {},
-            "error_message": error_message
-        }
+        from eyelet.domain.hooks import ExecutionResult
+        hook_data.execution = ExecutionResult(
+            status=status,
+            duration_ms=duration_ms,
+            output_data=output_data or {},
+            error_message=error_message
+        )
         hook_data.completed_at = datetime.now().isoformat()
         
         # If we logged to JSON files, update them
