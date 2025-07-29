@@ -24,8 +24,8 @@ from eyelet.presentation.tui import launch_tui
 console = Console()
 
 CONTEXT_SETTINGS = {
-    'help_option_names': ['-h', '--help'],
-    'max_content_width': 120,
+    "help_option_names": ["-h", "--help"],
+    "max_content_width": 120,
 }
 
 
@@ -34,22 +34,30 @@ class EyeletCLI(click.Group):
 
     def format_help(self, ctx, formatter):
         # Custom header
-        console.print(Panel.fit(
-            Text.from_markup(
-                "[bold cyan]⚓ Eyelet[/bold cyan] - Hook Orchestration for AI Agents\n"
-                "[dim]All hands to the eyelet![/dim]"
-            ),
-            border_style="cyan"
-        ))
+        console.print(
+            Panel.fit(
+                Text.from_markup(
+                    "[bold cyan]⚓ Eyelet[/bold cyan] - Hook Orchestration for AI Agents\n"
+                    "[dim]All hands to the eyelet![/dim]"
+                ),
+                border_style="cyan",
+            )
+        )
 
         # Version info
         console.print(f"[dim]Version: {__version__}[/dim]\n")
 
         # Description
         console.print("[bold]Description:[/bold]")
-        console.print("  Eyelet provides comprehensive management, templating, and execution")
-        console.print("  handling for AI agent hooks. Like a ship's eyelet that controls the")
-        console.print("  sails, Eyelet controls and orchestrates your AI agent's behavior.\n")
+        console.print(
+            "  Eyelet provides comprehensive management, templating, and execution"
+        )
+        console.print(
+            "  handling for AI agent hooks. Like a ship's eyelet that controls the"
+        )
+        console.print(
+            "  sails, Eyelet controls and orchestrates your AI agent's behavior.\n"
+        )
 
         # Usage
         console.print("[bold]Usage:[/bold]")
@@ -86,12 +94,18 @@ class EyeletCLI(click.Group):
         console.print("  [dim]# Enable tab completion for your shell[/dim]")
         console.print("  eyelet completion install\n")
 
-        console.print("[dim]Run 'eyelet COMMAND --help' for more information on a command.[/dim]")
+        console.print(
+            "[dim]Run 'eyelet COMMAND --help' for more information on a command.[/dim]"
+        )
 
 
-@click.group(cls=EyeletCLI, invoke_without_command=True, context_settings=CONTEXT_SETTINGS)
+@click.group(
+    cls=EyeletCLI, invoke_without_command=True, context_settings=CONTEXT_SETTINGS
+)
 @click.version_option(version=__version__, prog_name="eyelet")
-@click.option('--config-dir', type=Path, help='Configuration directory (default: current dir)')
+@click.option(
+    "--config-dir", type=Path, help="Configuration directory (default: current dir)"
+)
 @click.pass_context
 def cli(ctx, config_dir):
     """
@@ -103,7 +117,7 @@ def cli(ctx, config_dir):
     handling for AI agent hooks. Run without arguments to launch the TUI.
     """
     ctx.ensure_object(dict)
-    ctx.obj['config_dir'] = config_dir or Path.cwd()
+    ctx.obj["config_dir"] = config_dir or Path.cwd()
 
     # If no command provided, launch TUI
     if ctx.invoked_subcommand is None:
@@ -115,7 +129,7 @@ def cli(ctx, config_dir):
 @click.pass_context
 def status(ctx):
     """Check the ship's status - show current configuration"""
-    config_dir = ctx.obj['config_dir']
+    config_dir = ctx.obj["config_dir"]
     console.print(f"[bold]Configuration Directory:[/bold] {config_dir}")
 
     # Check for Claude settings
@@ -166,6 +180,7 @@ def get_completion():
     """Enable Click's built-in completion support"""
     try:
         import click_completion
+
         click_completion.init()
     except ImportError:
         pass  # Optional dependency

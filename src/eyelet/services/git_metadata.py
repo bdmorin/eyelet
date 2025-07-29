@@ -25,7 +25,7 @@ class GitMetadata:
                 cwd=self.working_dir,
                 capture_output=True,
                 text=True,
-                timeout=1
+                timeout=1,
             )
             return result.returncode == 0
         except (subprocess.SubprocessError, FileNotFoundError):
@@ -42,7 +42,7 @@ class GitMetadata:
                 cwd=self.working_dir,
                 capture_output=True,
                 text=True,
-                timeout=2
+                timeout=2,
             )
             if result.returncode == 0:
                 return result.stdout.strip()
@@ -122,7 +122,9 @@ class GitMetadata:
 
         # Only include remote URL if it's cleaned
         remote_url = self.get_remote_url()
-        if remote_url and not any(sensitive in remote_url for sensitive in ["@", "token", "password"]):
+        if remote_url and not any(
+            sensitive in remote_url for sensitive in ["@", "token", "password"]
+        ):
             metadata["remote_url"] = remote_url
 
         # Add user info if available
@@ -133,7 +135,9 @@ class GitMetadata:
         # Add last commit info
         last_commit_msg = self._run_git_command(["log", "-1", "--pretty=%s"])
         if last_commit_msg:
-            metadata["last_commit_message"] = last_commit_msg[:100]  # Truncate long messages
+            metadata["last_commit_message"] = last_commit_msg[
+                :100
+            ]  # Truncate long messages
 
         # Filter out None values
         return {k: v for k, v in metadata.items() if v is not None}

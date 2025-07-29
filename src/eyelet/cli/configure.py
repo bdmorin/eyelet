@@ -49,14 +49,20 @@ def configure():
 
 
 @configure.command()
-@click.option('--scope', type=click.Choice(['project', 'user']), default='project',
-              help='Configuration scope')
+@click.option(
+    "--scope",
+    type=click.Choice(["project", "user"]),
+    default="project",
+    help="Configuration scope",
+)
 @click.pass_context
 def list(ctx, scope):
     """List current hook configuration - Check the manifest"""
     if ctx.obj is None:
-        ctx.obj = {'config_dir': Path.cwd()}
-    config_dir = ctx.obj.get('config_dir', Path.cwd()) if scope == 'project' else Path.home()
+        ctx.obj = {"config_dir": Path.cwd()}
+    config_dir = (
+        ctx.obj.get("config_dir", Path.cwd()) if scope == "project" else Path.home()
+    )
     config_service = ConfigurationService(config_dir)
 
     try:
@@ -77,7 +83,7 @@ def list(ctx, scope):
                 hook.type,
                 hook.matcher or "-",
                 f"{hook.handler.type}: {hook.handler.command or hook.handler.workflow or '-'}",
-                "✓" if hook.enabled else "✗"
+                "✓" if hook.enabled else "✗",
             )
 
         console.print(table)
@@ -86,14 +92,20 @@ def list(ctx, scope):
 
 
 @configure.command()
-@click.option('--scope', type=click.Choice(['project', 'user']), default='project',
-              help='Configuration scope')
+@click.option(
+    "--scope",
+    type=click.Choice(["project", "user"]),
+    default="project",
+    help="Configuration scope",
+)
 @click.pass_context
 def add(ctx, scope):
     """Add a new hook - Splice the mainbrace!"""
     if ctx.obj is None:
-        ctx.obj = {'config_dir': Path.cwd()}
-    config_dir = ctx.obj.get('config_dir', Path.cwd()) if scope == 'project' else Path.home()
+        ctx.obj = {"config_dir": Path.cwd()}
+    config_dir = (
+        ctx.obj.get("config_dir", Path.cwd()) if scope == "project" else Path.home()
+    )
     config_service = ConfigurationService(config_dir)
     HookService(InMemoryHookRepository())
 
@@ -103,9 +115,7 @@ def add(ctx, scope):
     # Select hook type
     hook_types = [ht.value for ht in HookType]
     hook_type = Prompt.ask(
-        "Select hook type",
-        choices=hook_types,
-        default=HookType.PRE_TOOL_USE.value
+        "Select hook type", choices=hook_types, default=HookType.PRE_TOOL_USE.value
     )
 
     # Select matcher if applicable
@@ -113,22 +123,16 @@ def add(ctx, scope):
     if hook_type in [HookType.PRE_TOOL_USE.value, HookType.POST_TOOL_USE.value]:
         tool_matchers = [tm.value for tm in ToolMatcher]
         matcher = Prompt.ask(
-            "Select tool matcher",
-            choices=tool_matchers,
-            default=ToolMatcher.ALL.value
+            "Select tool matcher", choices=tool_matchers, default=ToolMatcher.ALL.value
         )
     elif hook_type == HookType.PRE_COMPACT.value:
         matcher = Prompt.ask(
-            "Select compact trigger",
-            choices=["manual", "auto"],
-            default="manual"
+            "Select compact trigger", choices=["manual", "auto"], default="manual"
         )
 
     # Configure handler
     handler_type = Prompt.ask(
-        "Select handler type",
-        choices=["command", "workflow"],
-        default="command"
+        "Select handler type", choices=["command", "workflow"], default="command"
     )
 
     if handler_type == "command":
@@ -143,7 +147,7 @@ def add(ctx, scope):
         type=HookType(hook_type),
         matcher=matcher,
         handler=handler,
-        description=Prompt.ask("Description (optional)", default="")
+        description=Prompt.ask("Description (optional)", default=""),
     )
 
     try:
@@ -163,15 +167,21 @@ def add(ctx, scope):
 
 
 @configure.command()
-@click.argument('hook_id')
-@click.option('--scope', type=click.Choice(['project', 'user']), default='project',
-              help='Configuration scope')
+@click.argument("hook_id")
+@click.option(
+    "--scope",
+    type=click.Choice(["project", "user"]),
+    default="project",
+    help="Configuration scope",
+)
 @click.pass_context
 def remove(ctx, hook_id, scope):
     """Remove a hook - Cut away the old eyelet"""
     if ctx.obj is None:
-        ctx.obj = {'config_dir': Path.cwd()}
-    config_dir = ctx.obj.get('config_dir', Path.cwd()) if scope == 'project' else Path.home()
+        ctx.obj = {"config_dir": Path.cwd()}
+    config_dir = (
+        ctx.obj.get("config_dir", Path.cwd()) if scope == "project" else Path.home()
+    )
     config_service = ConfigurationService(config_dir)
 
     try:
@@ -187,9 +197,13 @@ def remove(ctx, hook_id, scope):
 
 
 @configure.command()
-@click.argument('hook_id')
-@click.option('--scope', type=click.Choice(['project', 'user']), default='project',
-              help='Configuration scope')
+@click.argument("hook_id")
+@click.option(
+    "--scope",
+    type=click.Choice(["project", "user"]),
+    default="project",
+    help="Configuration scope",
+)
 @click.pass_context
 def enable(ctx, hook_id, scope):
     """Enable a hook - Hoist the colors!"""
@@ -197,9 +211,13 @@ def enable(ctx, hook_id, scope):
 
 
 @configure.command()
-@click.argument('hook_id')
-@click.option('--scope', type=click.Choice(['project', 'user']), default='project',
-              help='Configuration scope')
+@click.argument("hook_id")
+@click.option(
+    "--scope",
+    type=click.Choice(["project", "user"]),
+    default="project",
+    help="Configuration scope",
+)
 @click.pass_context
 def disable(ctx, hook_id, scope):
     """Disable a hook - Strike the colors"""
@@ -209,8 +227,10 @@ def disable(ctx, hook_id, scope):
 def _toggle_hook(ctx, hook_id, scope, enabled):
     """Helper to enable/disable hooks"""
     if ctx.obj is None:
-        ctx.obj = {'config_dir': Path.cwd()}
-    config_dir = ctx.obj.get('config_dir', Path.cwd()) if scope == 'project' else Path.home()
+        ctx.obj = {"config_dir": Path.cwd()}
+    config_dir = (
+        ctx.obj.get("config_dir", Path.cwd()) if scope == "project" else Path.home()
+    )
     config_service = ConfigurationService(config_dir)
 
     try:
@@ -234,15 +254,21 @@ def _toggle_hook(ctx, hook_id, scope, enabled):
 
 
 @configure.command()
-@click.option('--scope', type=click.Choice(['project', 'user']), default='project',
-              help='Configuration scope')
-@click.option('--force', is_flag=True, help='Clear without confirmation')
+@click.option(
+    "--scope",
+    type=click.Choice(["project", "user"]),
+    default="project",
+    help="Configuration scope",
+)
+@click.option("--force", is_flag=True, help="Clear without confirmation")
 @click.pass_context
 def clear(ctx, scope, force):
     """Clear all hooks - Abandon ship!"""
     if ctx.obj is None:
-        ctx.obj = {'config_dir': Path.cwd()}
-    config_dir = ctx.obj.get('config_dir', Path.cwd()) if scope == 'project' else Path.home()
+        ctx.obj = {"config_dir": Path.cwd()}
+    config_dir = (
+        ctx.obj.get("config_dir", Path.cwd()) if scope == "project" else Path.home()
+    )
     config_service = ConfigurationService(config_dir)
 
     try:
@@ -265,11 +291,19 @@ def clear(ctx, scope, force):
         console.print(f"[red]Error clearing hooks: {e}[/red]")
 
 
-@configure.command(name='install-all')
-@click.option('--scope', type=click.Choice(['project', 'user']), default='project',
-              help='Configuration scope')
-@click.option('--force', is_flag=True, help='Overwrite existing hooks without confirmation')
-@click.option('--dev', is_flag=True, help='Use local development wheel instead of public uvx')
+@configure.command(name="install-all")
+@click.option(
+    "--scope",
+    type=click.Choice(["project", "user"]),
+    default="project",
+    help="Configuration scope",
+)
+@click.option(
+    "--force", is_flag=True, help="Overwrite existing hooks without confirmation"
+)
+@click.option(
+    "--dev", is_flag=True, help="Use local development wheel instead of public uvx"
+)
 @click.pass_context
 def install_all(ctx, scope, force, dev):
     """
@@ -291,8 +325,10 @@ def install_all(ctx, scope, force, dev):
     """
     # Handle case where ctx.obj is not initialized (e.g., when run via uvx)
     if ctx.obj is None:
-        ctx.obj = {'config_dir': Path.cwd()}
-    config_dir = ctx.obj.get('config_dir', Path.cwd()) if scope == 'project' else Path.home()
+        ctx.obj = {"config_dir": Path.cwd()}
+    config_dir = (
+        ctx.obj.get("config_dir", Path.cwd()) if scope == "project" else Path.home()
+    )
     config_service = ConfigurationService(config_dir)
 
     try:
@@ -300,7 +336,9 @@ def install_all(ctx, scope, force, dev):
 
         # Check for existing hooks
         if config.hooks and not force:
-            if not Confirm.ask(f"This will replace {len(config.hooks)} existing hooks. Continue?"):
+            if not Confirm.ask(
+                f"This will replace {len(config.hooks)} existing hooks. Continue?"
+            ):
                 console.print("[yellow]Installation cancelled[/yellow]")
                 return
 
@@ -314,19 +352,27 @@ def install_all(ctx, scope, force, dev):
             cwd = Path.cwd()
             wheel_path = cwd / "dist"
             if not wheel_path.exists():
-                console.print("[red]No dist/ directory found. Run 'uv build' first![/red]")
+                console.print(
+                    "[red]No dist/ directory found. Run 'uv build' first![/red]"
+                )
                 return
             wheel_files = list(wheel_path.glob("eyelet-*.whl"))
             if not wheel_files:
-                console.print("[red]No wheel file found in dist/. Run 'uv build' first![/red]")
+                console.print(
+                    "[red]No wheel file found in dist/. Run 'uv build' first![/red]"
+                )
                 return
             latest_wheel = max(wheel_files, key=lambda p: p.stat().st_mtime)
             eyelet_cmd = f"uvx --from {str(latest_wheel)} eyelet execute --log-only"
-            console.print(f"[yellow]Using development wheel: {latest_wheel.name}[/yellow]")
+            console.print(
+                f"[yellow]Using development wheel: {latest_wheel.name}[/yellow]"
+            )
         else:
             # Use public uvx (requires package to be published to PyPI)
             eyelet_cmd = "uvx eyelet execute --log-only"
-            console.print("[cyan]Using public uvx command (requires PyPI package)[/cyan]")
+            console.print(
+                "[cyan]Using public uvx command (requires PyPI package)[/cyan]"
+            )
 
         # PreToolUse and PostToolUse for all tools
 
@@ -335,24 +381,22 @@ def install_all(ctx, scope, force, dev):
             hook = Hook(
                 type=hook_type,
                 matcher=".*",  # Matches all tools
-                handler=Handler(
-                    type=HandlerType.COMMAND,
-                    command=eyelet_cmd
-                ),
-                description=f"Universal Eyelet logging for all {hook_type.value} events"
+                handler=Handler(type=HandlerType.COMMAND, command=eyelet_cmd),
+                description=f"Universal Eyelet logging for all {hook_type.value} events",
             )
             all_hooks.append(hook)
 
         # Hooks without matchers
-        for hook_type in [HookType.USER_PROMPT_SUBMIT, HookType.NOTIFICATION,
-                         HookType.STOP, HookType.SUBAGENT_STOP]:
+        for hook_type in [
+            HookType.USER_PROMPT_SUBMIT,
+            HookType.NOTIFICATION,
+            HookType.STOP,
+            HookType.SUBAGENT_STOP,
+        ]:
             hook = Hook(
                 type=hook_type,
-                handler=Handler(
-                    type=HandlerType.COMMAND,
-                    command=eyelet_cmd
-                ),
-                description=f"Universal Eyelet logging for {hook_type.value}"
+                handler=Handler(type=HandlerType.COMMAND, command=eyelet_cmd),
+                description=f"Universal Eyelet logging for {hook_type.value}",
             )
             all_hooks.append(hook)
 
@@ -361,11 +405,8 @@ def install_all(ctx, scope, force, dev):
             hook = Hook(
                 type=HookType.PRE_COMPACT,
                 matcher=matcher,
-                handler=Handler(
-                    type=HandlerType.COMMAND,
-                    command=eyelet_cmd
-                ),
-                description=f"Universal Eyelet logging for PreCompact ({matcher})"
+                handler=Handler(type=HandlerType.COMMAND, command=eyelet_cmd),
+                description=f"Universal Eyelet logging for PreCompact ({matcher})",
             )
             all_hooks.append(hook)
 
@@ -378,7 +419,9 @@ def install_all(ctx, scope, force, dev):
         config_service.save_configuration(config)
 
         # Success message
-        console.print(f"[green]✓ Installed {len(all_hooks)} universal logging hooks![/green]")
+        console.print(
+            f"[green]✓ Installed {len(all_hooks)} universal logging hooks![/green]"
+        )
         console.print("\n[bold]Hooks installed:[/bold]")
 
         table = Table()
@@ -387,11 +430,7 @@ def install_all(ctx, scope, force, dev):
         table.add_column("Description", style="white")
 
         for hook in all_hooks:
-            table.add_row(
-                hook.type,
-                hook.matcher or "-",
-                hook.description
-            )
+            table.add_row(hook.type, hook.matcher or "-", hook.description)
 
         console.print(table)
         console.print("\n[dim]All hooks will log to: ./eyelet-hooks/[/dim]")
@@ -399,19 +438,28 @@ def install_all(ctx, scope, force, dev):
 
     except Exception as e:
         import traceback
+
         console.print(f"[red]Error installing hooks: {e}[/red]")
         console.print(f"[dim]{traceback.format_exc()}[/dim]")
 
 
 @configure.command()
-@click.option('--format',
-              help='Logging format(s) - comma-separated list (e.g., "json", "sqlite", "json,sqlite")')
-@click.option('--scope', type=click.Choice(['global', 'project', 'both']),
-              help='Logging scope (global ~/.claude, project local, or both)')
-@click.option('--enabled/--disabled', default=None,
-              help='Enable or disable logging')
-@click.option('--global', 'is_global', is_flag=True,
-              help='Configure global settings instead of project')
+@click.option(
+    "--format",
+    help='Logging format(s) - comma-separated list (e.g., "json", "sqlite", "json,sqlite")',
+)
+@click.option(
+    "--scope",
+    type=click.Choice(["global", "project", "both"]),
+    help="Logging scope (global ~/.claude, project local, or both)",
+)
+@click.option("--enabled/--disabled", default=None, help="Enable or disable logging")
+@click.option(
+    "--global",
+    "is_global",
+    is_flag=True,
+    help="Configure global settings instead of project",
+)
 @click.pass_context
 def logging(ctx, format, scope, enabled, is_global):
     """
@@ -443,7 +491,9 @@ def logging(ctx, format, scope, enabled, is_global):
         console.print("\n[bold]Current Logging Configuration[/bold]")
         console.print(f"Format: [cyan]{config.logging.format.value}[/cyan]")
         console.print(f"Scope: [cyan]{config.logging.scope.value}[/cyan]")
-        console.print(f"Enabled: [cyan]{'Yes' if config.logging.enabled else 'No'}[/cyan]")
+        console.print(
+            f"Enabled: [cyan]{'Yes' if config.logging.enabled else 'No'}[/cyan]"
+        )
 
         if is_global:
             console.print("\n[dim]Showing global configuration[/dim]")
@@ -451,9 +501,13 @@ def logging(ctx, format, scope, enabled, is_global):
             # Check if there's a project override
             project_config = config_service.load_project_config()
             if project_config and project_config.logging:
-                console.print("\n[dim]Project configuration overrides global settings[/dim]")
+                console.print(
+                    "\n[dim]Project configuration overrides global settings[/dim]"
+                )
             else:
-                console.print("\n[dim]Using global configuration (no project override)[/dim]")
+                console.print(
+                    "\n[dim]Using global configuration (no project override)[/dim]"
+                )
         return
 
     # Load appropriate config
@@ -467,10 +521,10 @@ def logging(ctx, format, scope, enabled, is_global):
 
     if format is not None:
         # Parse comma-separated formats
-        formats = [f.strip().lower() for f in format.split(',')]
+        formats = [f.strip().lower() for f in format.split(",")]
 
         # Validate formats
-        valid_formats = ['json', 'sqlite']
+        valid_formats = ["json", "sqlite"]
         for fmt in formats:
             if fmt not in valid_formats:
                 console.print(f"[red]Invalid format: {fmt}[/red]")
@@ -480,11 +534,13 @@ def logging(ctx, format, scope, enabled, is_global):
         # Determine the LogFormat enum value
         if len(formats) == 1:
             config.logging.format = LogFormat(formats[0])
-        elif set(formats) == {'json', 'sqlite'}:
+        elif set(formats) == {"json", "sqlite"}:
             config.logging.format = LogFormat.BOTH
         else:
             # For future expansion when we have more formats
-            console.print("[yellow]Warning: Multiple format support currently limited to json,sqlite[/yellow]")
+            console.print(
+                "[yellow]Warning: Multiple format support currently limited to json,sqlite[/yellow]"
+            )
             config.logging.format = LogFormat.BOTH
 
         changed = True
@@ -507,10 +563,16 @@ def logging(ctx, format, scope, enabled, is_global):
         console.print("\n[green]✓ Logging configuration updated![/green]")
         console.print(f"Format: [cyan]{config.logging.format.value}[/cyan]")
         console.print(f"Scope: [cyan]{config.logging.scope.value}[/cyan]")
-        console.print(f"Enabled: [cyan]{'Yes' if config.logging.enabled else 'No'}[/cyan]")
+        console.print(
+            f"Enabled: [cyan]{'Yes' if config.logging.enabled else 'No'}[/cyan]"
+        )
 
         # Show where config was saved
-        saved_path = config_service.global_config_path if is_global else config_service.project_config_path
+        saved_path = (
+            config_service.global_config_path
+            if is_global
+            else config_service.project_config_path
+        )
         console.print(f"\n[dim]Configuration saved to: {saved_path}[/dim]")
 
         # Special message for SQLite
@@ -521,4 +583,6 @@ def logging(ctx, format, scope, enabled, is_global):
                 console.print("  • Global: ~/.claude/eyelet-logs/hooks.db")
             if config.logging.scope in [LogScope.PROJECT, LogScope.BOTH]:
                 console.print("  • Project: .eyelet-logs/hooks.db")
-            console.print("\n[dim]Use 'eyelet query' commands to explore the data[/dim]")
+            console.print(
+                "\n[dim]Use 'eyelet query' commands to explore the data[/dim]"
+            )

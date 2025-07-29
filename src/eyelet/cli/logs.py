@@ -16,16 +16,29 @@ console = Console()
 
 
 @click.command()
-@click.option('--tail', '-n', type=int, default=50, help='Number of recent entries to show')
-@click.option('--hook-type', help='Filter by hook type (e.g., PreToolUse, PostToolUse)')
-@click.option('--tool', help='Filter by tool name (e.g., Bash, Read, Write)')
-@click.option('--status', type=click.Choice(['success', 'error', 'pending', 'running']),
-              help='Filter by execution status')
-@click.option('--json', 'output_json', is_flag=True, help='Output as JSON for processing')
-@click.option('--details', '-d', is_flag=True, help='Show detailed execution information')
-@click.option('--follow', '-f', is_flag=True, help='Follow log in real-time (like tail -f)')
-@click.option('--since', help='Show logs since timestamp (e.g., "1h", "30m", "2023-01-01")')
-@click.option('--until', help='Show logs until timestamp')
+@click.option(
+    "--tail", "-n", type=int, default=50, help="Number of recent entries to show"
+)
+@click.option("--hook-type", help="Filter by hook type (e.g., PreToolUse, PostToolUse)")
+@click.option("--tool", help="Filter by tool name (e.g., Bash, Read, Write)")
+@click.option(
+    "--status",
+    type=click.Choice(["success", "error", "pending", "running"]),
+    help="Filter by execution status",
+)
+@click.option(
+    "--json", "output_json", is_flag=True, help="Output as JSON for processing"
+)
+@click.option(
+    "--details", "-d", is_flag=True, help="Show detailed execution information"
+)
+@click.option(
+    "--follow", "-f", is_flag=True, help="Follow log in real-time (like tail -f)"
+)
+@click.option(
+    "--since", help='Show logs since timestamp (e.g., "1h", "30m", "2023-01-01")'
+)
+@click.option("--until", help="Show logs until timestamp")
 def logs(tail, hook_type, tool, status, output_json, details, follow, since, until):
     """
     View hook execution logs - Check the ship's log
@@ -63,9 +76,7 @@ def logs(tail, hook_type, tool, status, output_json, details, follow, since, unt
 
     Use --details to see full input/output data for each execution.
     """
-    execution_service = ExecutionService(
-        SQLiteExecutionRepository(get_db_path())
-    )
+    execution_service = ExecutionService(SQLiteExecutionRepository(get_db_path()))
 
     if follow:
         # Real-time log following
@@ -75,8 +86,7 @@ def logs(tail, hook_type, tool, status, output_json, details, follow, since, unt
 
     # Get executions
     executions = execution_service.list_executions(
-        hook_type=HookType(hook_type) if hook_type else None,
-        limit=tail
+        hook_type=HookType(hook_type) if hook_type else None, limit=tail
     )
 
     # Apply additional filters
@@ -127,13 +137,7 @@ def _show_table_logs(executions):
         # Format duration
         duration = f"{exc.duration_ms}ms" if exc.duration_ms else "-"
 
-        table.add_row(
-            time_str,
-            exc.hook_type,
-            exc.tool_name or "-",
-            status,
-            duration
-        )
+        table.add_row(time_str, exc.hook_type, exc.tool_name or "-", status, duration)
 
     console.print(table)
 
@@ -142,14 +146,18 @@ def _show_table_logs(executions):
     success = len([e for e in executions if e.status == "success"])
     errors = len([e for e in executions if e.status == "error"])
 
-    console.print(f"\n[dim]Total: {total} | Success: {success} | Errors: {errors}[/dim]")
+    console.print(
+        f"\n[dim]Total: {total} | Success: {success} | Errors: {errors}[/dim]"
+    )
 
 
 def _show_detailed_logs(executions):
     """Show detailed log information"""
     for exc in reversed(executions):  # Show newest first
         # Header
-        console.print(f"\n[bold cyan]═══ {exc.timestamp.strftime('%Y-%m-%d %H:%M:%S')} ═══[/bold cyan]")
+        console.print(
+            f"\n[bold cyan]═══ {exc.timestamp.strftime('%Y-%m-%d %H:%M:%S')} ═══[/bold cyan]"
+        )
 
         # Basic info
         console.print(f"[bold]Hook:[/bold] {exc.hook_type}")
@@ -192,8 +200,7 @@ def _follow_logs(execution_service, hook_type, tool, status):
         while True:
             # Get recent executions
             executions = execution_service.list_executions(
-                hook_type=HookType(hook_type) if hook_type else None,
-                limit=10
+                hook_type=HookType(hook_type) if hook_type else None, limit=10
             )
 
             # Apply filters
@@ -230,11 +237,7 @@ def _print_log_line(exc):
         status = "[dim]◯[/dim]"
 
     # Build log line
-    parts = [
-        f"[dim]{time_str}[/dim]",
-        status,
-        f"[cyan]{exc.hook_type}[/cyan]"
-    ]
+    parts = [f"[dim]{time_str}[/dim]", status, f"[cyan]{exc.hook_type}[/cyan]"]
 
     if exc.tool_name:
         parts.append(f"[green]{exc.tool_name}[/green]")

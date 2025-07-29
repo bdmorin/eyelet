@@ -66,18 +66,18 @@ class ConfigService:
     def save_global_config(self, config: EyeletConfig) -> None:
         """Save global configuration."""
         self.GLOBAL_CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.GLOBAL_CONFIG_PATH, 'w') as f:
+        with open(self.GLOBAL_CONFIG_PATH, "w") as f:
             # Convert to dict with mode='json' to ensure enums are serialized as strings
-            data = config.model_dump(mode='json')
+            data = config.model_dump(mode="json")
             yaml.dump(data, f, default_flow_style=False)
         self._global_config = config
         self._merged_config = None  # Reset cache
 
     def save_project_config(self, config: EyeletConfig) -> None:
         """Save project configuration."""
-        with open(self.project_config_path, 'w') as f:
+        with open(self.project_config_path, "w") as f:
             # Convert to dict with mode='json' to ensure enums are serialized as strings
-            data = config.model_dump(mode='json')
+            data = config.model_dump(mode="json")
             yaml.dump(data, f, default_flow_style=False)
         self._project_config = config
         self._merged_config = None  # Reset cache
@@ -101,7 +101,7 @@ class ConfigService:
 
         # Apply updates with dot notation support
         for key, value in updates.items():
-            parts = key.split('.')
+            parts = key.split(".")
             current = config_dict
 
             # Navigate to the nested location
@@ -128,7 +128,7 @@ class ConfigService:
 
         # Global path
         global_path = Path(os.path.expanduser(config.logging.global_path))
-        paths['global'] = global_path
+        paths["global"] = global_path
 
         # Project path
         if config.logging.path:
@@ -136,6 +136,6 @@ class ConfigService:
             project_path = self.project_dir / config.logging.path
         else:
             project_path = self.project_dir / config.logging.project_path
-        paths['project'] = project_path
+        paths["project"] = project_path
 
         return paths

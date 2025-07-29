@@ -19,5 +19,5 @@ __all__ = [
     "generate_enhancement_hook",
     "generate_workflow_hook",
     "list_available_templates",
-    "get_template_info"
+    "get_template_info",
 ]

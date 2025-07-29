@@ -48,14 +48,31 @@ class EyeletTUI(App):
             Static("Hook Orchestration for AI Agents", classes="subtitle"),
             Static("All hands to the eyelet!", classes="subtitle"),
             Vertical(
-                Button("Configure Hooks", variant="primary", classes="menu-button", id="configure"),
-                Button("Browse Templates", variant="primary", classes="menu-button", id="templates"),
-                Button("View Logs", variant="primary", classes="menu-button", id="logs"),
-                Button("Discover Hooks", variant="primary", classes="menu-button", id="discover"),
+                Button(
+                    "Configure Hooks",
+                    variant="primary",
+                    classes="menu-button",
+                    id="configure",
+                ),
+                Button(
+                    "Browse Templates",
+                    variant="primary",
+                    classes="menu-button",
+                    id="templates",
+                ),
+                Button(
+                    "View Logs", variant="primary", classes="menu-button", id="logs"
+                ),
+                Button(
+                    "Discover Hooks",
+                    variant="primary",
+                    classes="menu-button",
+                    id="discover",
+                ),
                 Button("Settings", classes="menu-button", id="settings"),
                 Button("Help", classes="menu-button", id="help"),
             ),
-            id="main-menu"
+            id="main-menu",
         )
         yield Footer()
 

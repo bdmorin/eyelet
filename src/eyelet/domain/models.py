@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class HookType(str, Enum):
     """Available hook types in Claude Code"""
+
     PRE_TOOL_USE = "PreToolUse"
     POST_TOOL_USE = "PostToolUse"
     NOTIFICATION = "Notification"
@@ -20,6 +21,7 @@ class HookType(str, Enum):
 
 class ToolMatcher(str, Enum):
     """Available tool matchers for hooks"""
+
     TASK = "Task"
     BASH = "Bash"
     GLOB = "Glob"
@@ -35,12 +37,14 @@ class ToolMatcher(str, Enum):
 
 class PreCompactMatcher(str, Enum):
     """Special matchers for PreCompact hooks"""
+
     MANUAL = "manual"
     AUTO = "auto"
 
 
 class HandlerType(str, Enum):
     """Types of hook handlers"""
+
     COMMAND = "command"
     WORKFLOW = "workflow"
     INLINE = "inline"
@@ -48,6 +52,7 @@ class HandlerType(str, Enum):
 
 class Handler(BaseModel):
     """Hook handler configuration"""
+
     type: HandlerType
     command: str | None = None
     workflow: str | None = None
@@ -58,6 +63,7 @@ class Handler(BaseModel):
 
 class Hook(BaseModel):
     """A configured hook"""
+
     id: str | None = Field(default=None, description="Unique identifier")
     type: HookType
     matcher: str | None = Field(default=None, description="Tool or event matcher")
@@ -74,13 +80,17 @@ class Hook(BaseModel):
         if self.type in [HookType.PRE_TOOL_USE, HookType.POST_TOOL_USE]:
             return self.matcher is not None
         elif self.type == HookType.PRE_COMPACT:
-            return self.matcher in [PreCompactMatcher.MANUAL.value, PreCompactMatcher.AUTO.value]
+            return self.matcher in [
+                PreCompactMatcher.MANUAL.value,
+                PreCompactMatcher.AUTO.value,
+            ]
         else:
             return self.matcher is None
 
 
 class HookExecution(BaseModel):
     """Record of a hook execution"""
+
     id: int | None = None
     hook_id: str
     hook_type: HookType
@@ -97,6 +107,7 @@ class HookExecution(BaseModel):
 
 class Workflow(BaseModel):
     """A workflow definition"""
+
     id: str
     name: str
     description: str | None = None
@@ -108,6 +119,7 @@ class Workflow(BaseModel):
 
 class Template(BaseModel):
     """A hook configuration template"""
+
     id: str
     name: str
     description: str
@@ -121,6 +133,7 @@ class Template(BaseModel):
 
 class HookConfiguration(BaseModel):
     """Complete hook configuration"""
+
     hooks: list[Hook] = Field(default_factory=list)
     version: str = "1.0"
     metadata: dict[str, Any] = Field(default_factory=dict)

@@ -14,8 +14,8 @@ TEMPLATES = {
             "Block 'rm -rf /' commands",
             "Prevent sudo without approval",
             "Validate file paths",
-            "Check for destructive operations"
-        ]
+            "Check for destructive operations",
+        ],
     },
     "logger": {
         "name": "Universal Logger Hook",
@@ -27,8 +27,8 @@ TEMPLATES = {
             "Command history tracking",
             "Performance monitoring",
             "Usage analytics",
-            "Debugging tool interactions"
-        ]
+            "Debugging tool interactions",
+        ],
     },
     "enhancer": {
         "name": "Output Enhancement Hook",
@@ -40,8 +40,8 @@ TEMPLATES = {
             "Format command outputs",
             "Add context to results",
             "Filter sensitive information",
-            "Add metadata"
-        ]
+            "Add metadata",
+        ],
     },
     "workflow": {
         "name": "Workflow Coordination Hook",
@@ -53,19 +53,16 @@ TEMPLATES = {
             "Multi-step processes",
             "State machine management",
             "Dependency tracking",
-            "Conditional execution"
-        ]
-    }
+            "Conditional execution",
+        ],
+    },
 }
 
 
 def list_available_templates() -> list[dict[str, Any]]:
     """List all available hook templates."""
     return [
-        {
-            "id": template_id,
-            **template_info
-        }
+        {"id": template_id, **template_info}
         for template_id, template_info in TEMPLATES.items()
     ]
 
@@ -75,17 +72,14 @@ def get_template_info(template_id: str) -> dict[str, Any]:
     if template_id not in TEMPLATES:
         raise ValueError(f"Template '{template_id}' not found")
 
-    return {
-        "id": template_id,
-        **TEMPLATES[template_id]
-    }
+    return {"id": template_id, **TEMPLATES[template_id]}
 
 
 def generate_safety_hook(
     language: str = "python",
     tool_filter: str = "Bash",
     dangerous_patterns: list[str] = None,
-    custom_message: str = None
+    custom_message: str = None,
 ) -> str:
     """Generate a safety check hook.
 
@@ -104,17 +98,21 @@ def generate_safety_hook(
             "mkfs.",
             "dd if=/dev/zero",
             ":(){ :|:& };:",  # Fork bomb
-            "curl.*|.*sh",    # Pipe to shell
-            "wget.*|.*sh"     # Pipe to shell
+            "curl.*|.*sh",  # Pipe to shell
+            "wget.*|.*sh",  # Pipe to shell
         ]
 
     if custom_message is None:
         custom_message = "Command blocked for safety"
 
     if language == "python":
-        return _generate_python_safety_hook(tool_filter, dangerous_patterns, custom_message)
+        return _generate_python_safety_hook(
+            tool_filter, dangerous_patterns, custom_message
+        )
     elif language == "rust":
-        return _generate_rust_safety_hook(tool_filter, dangerous_patterns, custom_message)
+        return _generate_rust_safety_hook(
+            tool_filter, dangerous_patterns, custom_message
+        )
     else:
         raise ValueError(f"Unsupported language: {language}")
 
@@ -122,7 +120,7 @@ def generate_safety_hook(
 def generate_logging_hook(
     log_location: str = "eyelet-hooks",
     include_outputs: bool = True,
-    hook_types: list[str] = None
+    hook_types: list[str] = None,
 ) -> str:
     """Generate a comprehensive logging hook.
 
@@ -138,8 +136,7 @@ def generate_logging_hook(
 
 
 def generate_enhancement_hook(
-    enhancement_type: str = "format",
-    target_tools: list[str] = None
+    enhancement_type: str = "format", target_tools: list[str] = None
 ) -> str:
     """Generate an output enhancement hook.
 
@@ -154,8 +151,7 @@ def generate_enhancement_hook(
 
 
 def generate_workflow_hook(
-    workflow_type: str = "sequential",
-    state_storage: str = "file"
+    workflow_type: str = "sequential", state_storage: str = "file"
 ) -> str:
     """Generate a workflow coordination hook.
 
@@ -168,9 +164,14 @@ def generate_workflow_hook(
 
 # Internal template generators
 
-def _generate_python_safety_hook(tool_filter: str, dangerous_patterns: list[str], message: str) -> str:
+
+def _generate_python_safety_hook(
+    tool_filter: str, dangerous_patterns: list[str], message: str
+) -> str:
     """Generate Python safety hook based on tenx-hooks pattern."""
-    patterns_code = ",\\n        ".join([f'"{pattern}"' for pattern in dangerous_patterns])
+    patterns_code = ",\\n        ".join(
+        [f'"{pattern}"' for pattern in dangerous_patterns]
+    )
 
     return f'''#!/usr/bin/env python3
 """
@@ -233,11 +234,15 @@ if __name__ == "__main__":
 '''
 
 
-def _generate_rust_safety_hook(tool_filter: str, dangerous_patterns: list[str], message: str) -> str:
+def _generate_rust_safety_hook(
+    tool_filter: str, dangerous_patterns: list[str], message: str
+) -> str:
     """Generate Rust safety hook based on tenx-hooks example."""
-    patterns_rust = ", \n        ".join([f'"{pattern}"' for pattern in dangerous_patterns])
+    patterns_rust = ", \n        ".join(
+        [f'"{pattern}"' for pattern in dangerous_patterns]
+    )
 
-    return f'''// Rust safety hook for Claude Code
+    return f"""// Rust safety hook for Claude Code
 // Based on tenx-hooks example: https://github.com/tenxhq/tenx-hooks
 
 use code_hooks::*;
@@ -261,10 +266,12 @@ fn main() -> Result<()> {{
 
     input.approve("OK").respond()
 }}
-'''
+"""
 
 
-def _generate_python_logging_hook(log_location: str, include_outputs: bool, hook_types: list[str]) -> str:
+def _generate_python_logging_hook(
+    log_location: str, include_outputs: bool, hook_types: list[str]
+) -> str:
     """Generate comprehensive logging hook."""
     return f'''#!/usr/bin/env python3
 """
@@ -348,7 +355,9 @@ if __name__ == "__main__":
 '''
 
 
-def _generate_python_enhancement_hook(enhancement_type: str, target_tools: list[str]) -> str:
+def _generate_python_enhancement_hook(
+    enhancement_type: str, target_tools: list[str]
+) -> str:
     """Generate output enhancement hook."""
     tools_list = ", ".join([f'"{tool}"' for tool in target_tools])
 

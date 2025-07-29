@@ -10,10 +10,10 @@ from rich.panel import Panel
 
 console = Console()
 
-SHELLS = ['bash', 'zsh', 'fish', 'powershell']
+SHELLS = ["bash", "zsh", "fish", "powershell"]
 
 COMPLETION_SCRIPTS = {
-    'bash': '''
+    "bash": """
 # Eyelet completion for Bash
 _eyelet_completion() {
     local IFS=$'\\n'
@@ -39,8 +39,8 @@ _eyelet_completion() {
 }
 
 complete -F _eyelet_completion -o nosort eyelet
-''',
-    'zsh': '''
+""",
+    "zsh": """
 # Eyelet completion for Zsh
 _eyelet_completion() {
     local -a completions
@@ -74,8 +74,8 @@ _eyelet_completion() {
 }
 
 compdef _eyelet_completion eyelet
-''',
-    'fish': '''
+""",
+    "fish": """
 # Eyelet completion for Fish
 function _eyelet_completion
     set -l response (env COMP_WORDS=(commandline -cp) COMP_CWORD=(commandline -t) _EYELET_COMPLETE=fish_complete eyelet)
@@ -94,8 +94,8 @@ function _eyelet_completion
 end
 
 complete -c eyelet -f -a "(_eyelet_completion)"
-''',
-    'powershell': '''
+""",
+    "powershell": """
 # Eyelet completion for PowerShell
 Register-ArgumentCompleter -Native -CommandName eyelet -ScriptBlock {
     param($wordToComplete, $commandAst, $cursorPosition)
@@ -116,7 +116,7 @@ Register-ArgumentCompleter -Native -CommandName eyelet -ScriptBlock {
         }
     }
 }
-'''
+""",
 }
 
 
@@ -127,8 +127,8 @@ def completion():
 
 
 @completion.command()
-@click.argument('shell', type=click.Choice(SHELLS), required=False)
-@click.option('--path', help='Path to install completion script')
+@click.argument("shell", type=click.Choice(SHELLS), required=False)
+@click.option("--path", help="Path to install completion script")
 def install(shell, path):
     """
     Install shell completion - Ready the eyelet for smooth sailing!
@@ -148,7 +148,9 @@ def install(shell, path):
     if not shell:
         shell = _detect_shell()
         if not shell:
-            console.print("[red]Could not detect shell. Please specify: bash, zsh, fish, or powershell[/red]")
+            console.print(
+                "[red]Could not detect shell. Please specify: bash, zsh, fish, or powershell[/red]"
+            )
             sys.exit(1)
 
     console.print(f"[bold]Installing completion for {shell}...[/bold]")
@@ -169,29 +171,37 @@ def install(shell, path):
         install_path.parent.mkdir(parents=True, exist_ok=True)
 
         # Write completion script
-        with open(install_path, 'w') as f:
+        with open(install_path, "w") as f:
             f.write(completion_script)
 
-        console.print(f"[green]✓ Completion script installed to: {install_path}[/green]")
+        console.print(
+            f"[green]✓ Completion script installed to: {install_path}[/green]"
+        )
 
         # Shell-specific instructions
-        if shell == 'bash':
-            rc_file = Path.home() / '.bashrc'
-            source_line = f'source {install_path}'
+        if shell == "bash":
+            rc_file = Path.home() / ".bashrc"
+            source_line = f"source {install_path}"
             console.print(f"\n[yellow]Add this line to your {rc_file}:[/yellow]")
             console.print(f"[cyan]{source_line}[/cyan]")
-        elif shell == 'zsh':
-            rc_file = Path.home() / '.zshrc'
-            source_line = f'source {install_path}'
+        elif shell == "zsh":
+            rc_file = Path.home() / ".zshrc"
+            source_line = f"source {install_path}"
             console.print(f"\n[yellow]Add this line to your {rc_file}:[/yellow]")
             console.print(f"[cyan]{source_line}[/cyan]")
-        elif shell == 'fish':
-            console.print("\n[green]Fish will automatically load the completion.[/green]")
-        elif shell == 'powershell':
-            console.print("\n[yellow]Add this line to your PowerShell profile:[/yellow]")
+        elif shell == "fish":
+            console.print(
+                "\n[green]Fish will automatically load the completion.[/green]"
+            )
+        elif shell == "powershell":
+            console.print(
+                "\n[yellow]Add this line to your PowerShell profile:[/yellow]"
+            )
             console.print(f"[cyan]. {install_path}[/cyan]")
 
-        console.print("\n[dim]Restart your shell or source the file to enable completion.[/dim]")
+        console.print(
+            "\n[dim]Restart your shell or source the file to enable completion.[/dim]"
+        )
 
     except Exception as e:
         console.print(f"[red]Failed to install completion: {e}[/red]")
@@ -199,7 +209,7 @@ def install(shell, path):
 
 
 @completion.command()
-@click.argument('shell', type=click.Choice(SHELLS))
+@click.argument("shell", type=click.Choice(SHELLS))
 def show(shell):
     """
     Show completion script for a shell - Inspect the eyelet!
@@ -208,11 +218,13 @@ def show(shell):
     """
     completion_script = COMPLETION_SCRIPTS[shell]
 
-    console.print(Panel(
-        completion_script,
-        title=f"{shell.title()} Completion Script",
-        border_style="cyan"
-    ))
+    console.print(
+        Panel(
+            completion_script,
+            title=f"{shell.title()} Completion Script",
+            border_style="cyan",
+        )
+    )
 
     console.print(f"\n[dim]To install, run: eyelet completion install {shell}[/dim]")
 
@@ -236,20 +248,21 @@ def status():
 
 def _detect_shell():
     """Detect the current shell"""
-    shell_env = os.environ.get('SHELL', '')
+    shell_env = os.environ.get("SHELL", "")
 
-    if 'bash' in shell_env:
-        return 'bash'
-    elif 'zsh' in shell_env:
-        return 'zsh'
-    elif 'fish' in shell_env:
-        return 'fish'
-    elif sys.platform == 'win32':
-        return 'powershell'
+    if "bash" in shell_env:
+        return "bash"
+    elif "zsh" in shell_env:
+        return "zsh"
+    elif "fish" in shell_env:
+        return "fish"
+    elif sys.platform == "win32":
+        return "powershell"
 
     # Try to detect from parent process
     try:
         import psutil
+
         parent = psutil.Process(os.getppid())
         parent_name = parent.name().lower()
 
@@ -266,37 +279,37 @@ def _get_completion_path(shell):
     """Get the default completion installation path for a shell"""
     home = Path.home()
 
-    if shell == 'bash':
+    if shell == "bash":
         # Try common bash completion directories
         dirs = [
-            home / '.bash_completion.d',
-            Path('/etc/bash_completion.d'),
-            Path('/usr/local/etc/bash_completion.d'),
-            home / '.config' / 'bash_completion.d'
+            home / ".bash_completion.d",
+            Path("/etc/bash_completion.d"),
+            Path("/usr/local/etc/bash_completion.d"),
+            home / ".config" / "bash_completion.d",
         ]
         for d in dirs:
             if d.exists() and os.access(d, os.W_OK):
-                return d / 'eyelet'
+                return d / "eyelet"
         # Fallback
-        return home / '.eyelet-completion.bash'
+        return home / ".eyelet-completion.bash"
 
-    elif shell == 'zsh':
+    elif shell == "zsh":
         # Zsh completion paths
         dirs = [
-            home / '.zsh' / 'completions',
-            home / '.config' / 'zsh' / 'completions',
-            Path('/usr/local/share/zsh/site-functions'),
+            home / ".zsh" / "completions",
+            home / ".config" / "zsh" / "completions",
+            Path("/usr/local/share/zsh/site-functions"),
         ]
         for d in dirs:
             if d.exists() and os.access(d, os.W_OK):
-                return d / '_eyelet'
+                return d / "_eyelet"
         # Fallback
-        return home / '.eyelet-completion.zsh'
+        return home / ".eyelet-completion.zsh"
 
-    elif shell == 'fish':
-        return home / '.config' / 'fish' / 'completions' / 'eyelet.fish'
+    elif shell == "fish":
+        return home / ".config" / "fish" / "completions" / "eyelet.fish"
 
-    elif shell == 'powershell':
-        return home / '.eyelet-completion.ps1'
+    elif shell == "powershell":
+        return home / ".eyelet-completion.ps1"
 
-    return home / f'.eyelet-completion.{shell}'
+    return home / f".eyelet-completion.{shell}"

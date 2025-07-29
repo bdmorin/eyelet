@@ -23,18 +23,20 @@ def create_eyelet_log_entry(input_data, start_time, project_dir=None):
         project_dir = Path.cwd()
 
     # Extract hook information
-    hook_type = input_data.get('hook_event_name', 'unknown')
-    tool_name = input_data.get('tool_name', '')
+    hook_type = input_data.get("hook_event_name", "unknown")
+    tool_name = input_data.get("tool_name", "")
 
     # Build directory structure
     # Format: ./eyelet-hooks/{hook_type}/{tool_name}/{date}/
     eyelet_dir = project_dir / "eyelet-hooks"
 
-    if hook_type in ['PreToolUse', 'PostToolUse'] and tool_name:
+    if hook_type in ["PreToolUse", "PostToolUse"] and tool_name:
         log_dir = eyelet_dir / hook_type / tool_name / start_time.strftime("%Y-%m-%d")
-    elif hook_type == 'PreCompact':
-        compact_type = input_data.get('compact_type', 'unknown')
-        log_dir = eyelet_dir / hook_type / compact_type / start_time.strftime("%Y-%m-%d")
+    elif hook_type == "PreCompact":
+        compact_type = input_data.get("compact_type", "unknown")
+        log_dir = (
+            eyelet_dir / hook_type / compact_type / start_time.strftime("%Y-%m-%d")
+        )
     else:
         # For hooks without tools (Notification, UserPromptSubmit, Stop, etc.)
         log_dir = eyelet_dir / hook_type / start_time.strftime("%Y-%m-%d")
@@ -58,39 +60,40 @@ def create_eyelet_log_entry(input_data, start_time, project_dir=None):
         "timestamp_unix": start_time.timestamp(),
         "hook_type": hook_type,
         "tool_name": tool_name,
-        "session_id": input_data.get('session_id', 'unknown'),
-        "transcript_path": input_data.get('transcript_path', ''),
-        "cwd": input_data.get('cwd', os.getcwd()),
+        "session_id": input_data.get("session_id", "unknown"),
+        "transcript_path": input_data.get("transcript_path", ""),
+        "cwd": input_data.get("cwd", os.getcwd()),
         "environment": {
             "python_version": sys.version,
             "platform": sys.platform,
             "eyelet_version": "0.2.0",  # TODO: Import from __version__
             "env_vars": {
-                k: v for k, v in os.environ.items()
-                if k.startswith(('CLAUDE', 'EYELET', 'ANTHROPIC'))
-            }
+                k: v
+                for k, v in os.environ.items()
+                if k.startswith(("CLAUDE", "EYELET", "ANTHROPIC"))
+            },
         },
         "input_data": input_data,
         "metadata": {
             "log_file": str(log_file),
             "log_dir": str(log_dir),
             "project_dir": str(project_dir),
-        }
+        },
     }
 
     # Write the log file
-    with open(log_file, 'w') as f:
+    with open(log_file, "w") as f:
         json.dump(log_data, f, indent=2, default=str)
 
     return log_file, log_data
 
 
 @click.command()
-@click.option('--workflow', help='Workflow to execute')
-@click.option('--log-only', is_flag=True, help='Only log, no processing')
-@click.option('--log-result', is_flag=True, help='Log result after execution')
-@click.option('--debug', is_flag=True, help='Enable debug output')
-@click.option('--no-eyelet-log', is_flag=True, help='Disable Eyelet logging to files')
+@click.option("--workflow", help="Workflow to execute")
+@click.option("--log-only", is_flag=True, help="Only log, no processing")
+@click.option("--log-result", is_flag=True, help="Log result after execution")
+@click.option("--debug", is_flag=True, help="Enable debug output")
+@click.option("--no-eyelet-log", is_flag=True, help="Disable Eyelet logging to files")
 @click.pass_context
 def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
     """
@@ -108,41 +111,46 @@ def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
             input_data = {
                 "hook_event_name": "test",
                 "test_mode": True,
-                "timestamp": start_time.isoformat()
+                "timestamp": start_time.isoformat(),
             }
         else:
             input_data = json.load(sys.stdin)
     except json.JSONDecodeError as e:
         if debug:
-            console.print(f"[red]Failed to parse JSON input: {e}[/red]", file=sys.stderr)
+            console.print(
+                f"[red]Failed to parse JSON input: {e}[/red]", file=sys.stderr
+            )
         # Still log what we received
         input_data = {
             "hook_event_name": "parse_error",
             "error": str(e),
-            "raw_input": sys.stdin.read() if not sys.stdin.isatty() else "no input"
+            "raw_input": sys.stdin.read() if not sys.stdin.isatty() else "no input",
         }
     except Exception as e:
         if debug:
             console.print(f"[red]Failed to read input: {e}[/red]", file=sys.stderr)
-        input_data = {
-            "hook_event_name": "read_error",
-            "error": str(e)
-        }
+        input_data = {"hook_event_name": "read_error", "error": str(e)}
 
     # Create Eyelet log entry FIRST - always log everything
     if not no_eyelet_log:
         try:
-            log_file, log_data = create_eyelet_log_entry(input_data, start_time, ctx.obj.get('config_dir'))
+            log_file, log_data = create_eyelet_log_entry(
+                input_data, start_time, ctx.obj.get("config_dir")
+            )
             if debug:
-                console.print(f"[dim]Eyelet log created: {log_file}[/dim]", file=sys.stderr)
+                console.print(
+                    f"[dim]Eyelet log created: {log_file}[/dim]", file=sys.stderr
+                )
         except Exception as e:
             if debug:
-                console.print(f"[yellow]Eyelet logging failed: {e}[/yellow]", file=sys.stderr)
+                console.print(
+                    f"[yellow]Eyelet logging failed: {e}[/yellow]", file=sys.stderr
+                )
             # Continue execution even if logging fails
 
     # Extract hook information
-    hook_type = input_data.get('hook_event_name', 'unknown')
-    tool_name = input_data.get('tool_name', None)
+    hook_type = input_data.get("hook_event_name", "unknown")
+    tool_name = input_data.get("tool_name", None)
 
     # Create execution record
     execution = HookExecution(
@@ -150,13 +158,11 @@ def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
         hook_type=hook_type,
         tool_name=tool_name,
         input_data=input_data,
-        status="running"
+        status="running",
     )
 
     # Initialize services
-    execution_service = ExecutionService(
-        SQLiteExecutionRepository(get_db_path())
-    )
+    execution_service = ExecutionService(SQLiteExecutionRepository(get_db_path()))
 
     output_data = {}
 
@@ -165,7 +171,9 @@ def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
         execution = execution_service.record_execution(execution)
 
         if debug:
-            console.print(f"[dim]Hook: {hook_type}, Tool: {tool_name}[/dim]", file=sys.stderr)
+            console.print(
+                f"[dim]Hook: {hook_type}, Tool: {tool_name}[/dim]", file=sys.stderr
+            )
 
         # Process based on options
         if log_only:
@@ -199,33 +207,38 @@ def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
             execution.output_data = {"action": "processed"}
 
         # Calculate duration
-        execution.duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)
+        execution.duration_ms = int(
+            (datetime.now() - start_time).total_seconds() * 1000
+        )
 
         # Update execution record
         execution_service.record_execution(execution)
 
         # Update Eyelet log with results if enabled
-        if not no_eyelet_log and 'log_file' in locals():
+        if not no_eyelet_log and "log_file" in locals():
             try:
                 # Read existing log
                 with open(log_file) as f:
                     final_log_data = json.load(f)
 
                 # Add execution results
-                final_log_data['execution'] = {
-                    'status': execution.status,
-                    'duration_ms': execution.duration_ms,
-                    'output_data': execution.output_data,
-                    'error_message': execution.error_message
+                final_log_data["execution"] = {
+                    "status": execution.status,
+                    "duration_ms": execution.duration_ms,
+                    "output_data": execution.output_data,
+                    "error_message": execution.error_message,
                 }
-                final_log_data['completed_at'] = datetime.now().isoformat()
+                final_log_data["completed_at"] = datetime.now().isoformat()
 
                 # Write updated log
-                with open(log_file, 'w') as f:
+                with open(log_file, "w") as f:
                     json.dump(final_log_data, f, indent=2, default=str)
             except Exception as e:
                 if debug:
-                    console.print(f"[yellow]Failed to update Eyelet log: {e}[/yellow]", file=sys.stderr)
+                    console.print(
+                        f"[yellow]Failed to update Eyelet log: {e}[/yellow]",
+                        file=sys.stderr,
+                    )
 
         # Output any required response
         if execution.output_data and not log_only:
@@ -247,7 +260,9 @@ def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
         # Record failure
         execution.status = "error"
         execution.error_message = str(e)
-        execution.duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)
+        execution.duration_ms = int(
+            (datetime.now() - start_time).total_seconds() * 1000
+        )
 
         try:
             execution_service.record_execution(execution)
@@ -255,20 +270,20 @@ def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
             pass  # Don't fail on logging errors
 
         # Update Eyelet log with error if enabled
-        if not no_eyelet_log and 'log_file' in locals():
+        if not no_eyelet_log and "log_file" in locals():
             try:
                 with open(log_file) as f:
                     final_log_data = json.load(f)
 
-                final_log_data['execution'] = {
-                    'status': 'error',
-                    'duration_ms': execution.duration_ms,
-                    'error': str(e),
-                    'error_type': type(e).__name__
+                final_log_data["execution"] = {
+                    "status": "error",
+                    "duration_ms": execution.duration_ms,
+                    "error": str(e),
+                    "error_type": type(e).__name__,
                 }
-                final_log_data['completed_at'] = datetime.now().isoformat()
+                final_log_data["completed_at"] = datetime.now().isoformat()
 
-                with open(log_file, 'w') as f:
+                with open(log_file, "w") as f:
                     json.dump(final_log_data, f, indent=2, default=str)
             except Exception:
                 pass

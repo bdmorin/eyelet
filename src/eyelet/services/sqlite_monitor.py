@@ -74,7 +74,11 @@ class PerformanceStats:
             "avg_query_ms": f"{self.avg_query_time:.2f}",
             "total_retries": self.retry_count,
             "lock_waits": len(self.lock_wait_times),
-            "avg_lock_wait_ms": f"{sum(self.lock_wait_times) * 1000 / len(self.lock_wait_times):.2f}" if self.lock_wait_times else "0.00"
+            "avg_lock_wait_ms": (
+                f"{sum(self.lock_wait_times) * 1000 / len(self.lock_wait_times):.2f}"
+                if self.lock_wait_times
+                else "0.00"
+            ),
         }
 
 
@@ -98,47 +102,50 @@ class SQLiteMonitor:
         stats = {}
 
         # Database size
-        stats['size_mb'] = self.db_path.stat().st_size / (1024 * 1024)
+        stats["size_mb"] = self.db_path.stat().st_size / (1024 * 1024)
 
         # Table statistics
-        table_info = conn.execute("""
+        table_info = conn.execute(
+            """
             SELECT COUNT(*) as total_rows,
                    COUNT(DISTINCT session_id) as unique_sessions,
                    COUNT(DISTINCT hook_type) as hook_types,
                    MIN(timestamp) as oldest_record,
                    MAX(timestamp) as newest_record
             FROM hooks
-        """).fetchone()
+        """
+        ).fetchone()
 
-        stats['total_rows'] = table_info[0]
-        stats['unique_sessions'] = table_info[1]
-        stats['hook_types'] = table_info[2]
+        stats["total_rows"] = table_info[0]
+        stats["unique_sessions"] = table_info[1]
+        stats["hook_types"] = table_info[2]
 
         if table_info[3]:
             oldest = datetime.fromtimestamp(table_info[3])
             newest = datetime.fromtimestamp(table_info[4])
-            stats['oldest_record'] = oldest.isoformat()
-            stats['newest_record'] = newest.isoformat()
-            stats['time_span_days'] = (newest - oldest).days
+            stats["oldest_record"] = oldest.isoformat()
+            stats["newest_record"] = newest.isoformat()
+            stats["time_span_days"] = (newest - oldest).days
 
         # WAL mode status
         wal_mode = conn.execute("PRAGMA journal_mode").fetchone()[0]
-        stats['wal_mode'] = wal_mode == "wal"
+        stats["wal_mode"] = wal_mode == "wal"
 
         # Cache statistics
         cache_stats = conn.execute("PRAGMA cache_stats").fetchone()
         if cache_stats:
-            stats['cache_hit_rate'] = f"{(cache_stats[0] / (cache_stats[0] + cache_stats[1]) * 100):.1f}%"
+            stats["cache_hit_rate"] = (
+                f"{(cache_stats[0] / (cache_stats[0] + cache_stats[1]) * 100):.1f}%"
+            )
 
         # Index usage (check if our indexes are being used)
-        stats['indexes'] = []
+        stats["indexes"] = []
         for row in conn.execute("PRAGMA index_list(hooks)"):
             index_name = row[1]
             index_info = conn.execute(f"PRAGMA index_info({index_name})").fetchall()
-            stats['indexes'].append({
-                'name': index_name,
-                'columns': [col[2] for col in index_info]
-            })
+            stats["indexes"].append(
+                {"name": index_name, "columns": [col[2] for col in index_info]}
+            )
 
         return stats
 
@@ -149,64 +156,70 @@ class SQLiteMonitor:
         since = time.time() - (minutes * 60)
 
         # Recent activity by hook type
-        activity = conn.execute("""
+        activity = conn.execute(
+            """
             SELECT hook_type, COUNT(*) as count,
                    AVG(duration_ms) as avg_duration
             FROM hooks
             WHERE timestamp > ?
             GROUP BY hook_type
             ORDER BY count DESC
-        """, (since,)).fetchall()
+        """,
+            (since,),
+        ).fetchall()
 
         return {
-            'period_minutes': minutes,
-            'activity_by_type': [
+            "period_minutes": minutes,
+            "activity_by_type": [
                 {
-                    'hook_type': row[0],
-                    'count': row[1],
-                    'avg_duration_ms': f"{row[2]:.2f}" if row[2] else "N/A"
+                    "hook_type": row[0],
+                    "count": row[1],
+                    "avg_duration_ms": f"{row[2]:.2f}" if row[2] else "N/A",
                 }
                 for row in activity
-            ]
+            ],
         }
 
     def check_health(self) -> dict[str, any]:
         """Perform health checks on the database."""
         conn = self._conn_manager.connection
 
-        health = {
-            'status': 'healthy',
-            'issues': []
-        }
+        health = {"status": "healthy", "issues": []}
 
         # Check integrity
         try:
             result = conn.execute("PRAGMA integrity_check").fetchone()
             if result[0] != "ok":
-                health['status'] = 'unhealthy'
-                health['issues'].append(f"Integrity check failed: {result[0]}")
+                health["status"] = "unhealthy"
+                health["issues"].append(f"Integrity check failed: {result[0]}")
         except Exception as e:
-            health['status'] = 'unhealthy'
-            health['issues'].append(f"Integrity check error: {e}")
+            health["status"] = "unhealthy"
+            health["issues"].append(f"Integrity check error: {e}")
 
         # Check WAL size (should checkpoint if too large)
-        if self.db_path.with_suffix('.db-wal').exists():
-            wal_size = self.db_path.with_suffix('.db-wal').stat().st_size / (1024 * 1024)
+        if self.db_path.with_suffix(".db-wal").exists():
+            wal_size = self.db_path.with_suffix(".db-wal").stat().st_size / (
+                1024 * 1024
+            )
             if wal_size > 100:  # 100MB threshold
-                health['issues'].append(f"WAL file large ({wal_size:.1f}MB), consider checkpoint")
+                health["issues"].append(
+                    f"WAL file large ({wal_size:.1f}MB), consider checkpoint"
+                )
 
         # Check database size
         db_size = self.db_path.stat().st_size / (1024 * 1024)
         if db_size > 1000:  # 1GB threshold
-            health['issues'].append(f"Database size large ({db_size:.1f}MB), consider cleanup")
+            health["issues"].append(
+                f"Database size large ({db_size:.1f}MB), consider cleanup"
+            )
 
         # Check for long-running transactions
         active_txns = conn.execute("PRAGMA lock_status").fetchall()
         if active_txns:
-            health['issues'].append(f"Active transactions detected: {len(active_txns)}")
+            health["issues"].append(f"Active transactions detected: {len(active_txns)}")
 
-        if health['issues'] and health['status'] == 'healthy':
-            health['status'] = 'warning'
+        if health["issues"] and health["status"] == "healthy":
+            health["status"] = "warning"
 
         return health
 

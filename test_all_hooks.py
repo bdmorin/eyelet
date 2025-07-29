@@ -19,72 +19,58 @@ print(f"Test ID: {TEST_ID}")
 TOOLS_TO_TEST = {
     "Bash": {
         "hooks": ["PreToolUse", "PostToolUse"],
-        "test_command": f'echo "Hook test {TEST_ID}"'
+        "test_command": f'echo "Hook test {TEST_ID}"',
     },
-    "Read": {
-        "hooks": ["PreToolUse", "PostToolUse"],
-        "test_file": "/tmp/hook_test.txt"
-    },
+    "Read": {"hooks": ["PreToolUse", "PostToolUse"], "test_file": "/tmp/hook_test.txt"},
     "Write": {
         "hooks": ["PreToolUse", "PostToolUse"],
         "test_file": "/tmp/hook_test_write.txt",
-        "content": f"Test content {TEST_ID}"
+        "content": f"Test content {TEST_ID}",
     },
     "Edit": {
         "hooks": ["PreToolUse", "PostToolUse"],
         "test_file": "/tmp/hook_test_edit.txt",
         "old_string": "original",
-        "new_string": f"edited {TEST_ID}"
+        "new_string": f"edited {TEST_ID}",
     },
     "MultiEdit": {
         "hooks": ["PreToolUse", "PostToolUse"],
-        "test_file": "/tmp/hook_test_multiedit.txt"
+        "test_file": "/tmp/hook_test_multiedit.txt",
     },
-    "Grep": {
-        "hooks": ["PreToolUse", "PostToolUse"],
-        "pattern": TEST_ID
-    },
-    "Glob": {
-        "hooks": ["PreToolUse", "PostToolUse"],
-        "pattern": "*.py"
-    },
-    "LS": {
-        "hooks": ["PreToolUse", "PostToolUse"],
-        "path": "/tmp"
-    },
+    "Grep": {"hooks": ["PreToolUse", "PostToolUse"], "pattern": TEST_ID},
+    "Glob": {"hooks": ["PreToolUse", "PostToolUse"], "pattern": "*.py"},
+    "LS": {"hooks": ["PreToolUse", "PostToolUse"], "path": "/tmp"},
     "TodoWrite": {
         "hooks": ["PreToolUse", "PostToolUse"],
-        "todos": [{"content": f"Test todo {TEST_ID}", "status": "pending", "priority": "low", "id": "test1"}]
+        "todos": [
+            {
+                "content": f"Test todo {TEST_ID}",
+                "status": "pending",
+                "priority": "low",
+                "id": "test1",
+            }
+        ],
     },
     "WebSearch": {
         "hooks": ["PreToolUse", "PostToolUse"],
-        "query": f"test search {TEST_ID}"
+        "query": f"test search {TEST_ID}",
     },
     "WebFetch": {
         "hooks": ["PreToolUse", "PostToolUse"],
         "url": "https://example.com",
-        "prompt": f"Find {TEST_ID}"
-    }
+        "prompt": f"Find {TEST_ID}",
+    },
 }
 
 # Other hook types to test
 OTHER_HOOKS = {
-    "UserPromptSubmit": {
-        "description": "Triggered when user submits a prompt"
-    },
-    "Notification": {
-        "description": "Triggered for notifications"
-    },
-    "Stop": {
-        "description": "Triggered when stopping"
-    },
-    "SubagentStop": {
-        "description": "Triggered when subagent stops"
-    },
-    "PreCompact": {
-        "description": "Triggered before compacting context"
-    }
+    "UserPromptSubmit": {"description": "Triggered when user submits a prompt"},
+    "Notification": {"description": "Triggered for notifications"},
+    "Stop": {"description": "Triggered when stopping"},
+    "SubagentStop": {"description": "Triggered when subagent stops"},
+    "PreCompact": {"description": "Triggered before compacting context"},
 }
+
 
 def find_logs_with_test_id(base_dir, start_time, test_id):
     """Find all log files created after start_time containing test_id."""
@@ -113,16 +99,21 @@ def find_logs_with_test_id(base_dir, start_time, test_id):
                     if key not in found_logs:
                         found_logs[key] = []
 
-                    found_logs[key].append({
-                        "file": str(log_file),
-                        "timestamp": data.get("timestamp"),
-                        "tool_input": data.get("input_data", {}).get("tool_input", {}),
-                        "status": data.get("execution", {}).get("status")
-                    })
+                    found_logs[key].append(
+                        {
+                            "file": str(log_file),
+                            "timestamp": data.get("timestamp"),
+                            "tool_input": data.get("input_data", {}).get(
+                                "tool_input", {}
+                            ),
+                            "status": data.get("execution", {}).get("status"),
+                        }
+                    )
         except Exception as e:
             print(f"Error reading {log_file}: {e}")
 
     return found_logs
+
 
 def print_test_plan():
     """Print the test plan."""
@@ -142,6 +133,7 @@ def print_test_plan():
     print("2. Please execute each of the following tool calls:")
     print("3. After execution, verify the results with:")
     print(f"   mise run test-hooks-verify {TEST_ID}")
+
 
 def generate_test_commands():
     """Generate the commands for testing each tool."""
@@ -164,15 +156,21 @@ def generate_test_commands():
 
     # Write
     commands.append("\n# Write tool test")
-    commands.append(f"Write to file /tmp/hook_test_write.txt with content: Test content {TEST_ID}")
+    commands.append(
+        f"Write to file /tmp/hook_test_write.txt with content: Test content {TEST_ID}"
+    )
 
     # Edit
     commands.append("\n# Edit tool test")
-    commands.append(f"Edit file /tmp/hook_test_edit.txt, replace 'original' with 'edited {TEST_ID}'")
+    commands.append(
+        f"Edit file /tmp/hook_test_edit.txt, replace 'original' with 'edited {TEST_ID}'"
+    )
 
     # MultiEdit
     commands.append("\n# MultiEdit tool test")
-    commands.append(f"MultiEdit file /tmp/hook_test_multiedit.txt, replace 'line2' with 'modified {TEST_ID}'")
+    commands.append(
+        f"MultiEdit file /tmp/hook_test_multiedit.txt, replace 'line2' with 'modified {TEST_ID}'"
+    )
 
     # Grep
     commands.append("\n# Grep tool test")
@@ -205,6 +203,7 @@ def generate_test_commands():
     timestamp_file = Path("/tmp/hook_test_timestamp.txt")
     timestamp_file.write_text(str(datetime.now().timestamp()))
 
+
 def verify_logs(test_id):
     """Verify that all expected logs were created."""
     print(f"\n=== VERIFYING LOGS FOR TEST ID: {test_id} ===")
@@ -231,7 +230,7 @@ def verify_logs(test_id):
     print("\n=== DETAILED RESULTS ===")
     for tool, config in TOOLS_TO_TEST.items():
         print(f"\n{tool}:")
-        for hook in config['hooks']:
+        for hook in config["hooks"]:
             expected_count += 1
             key = f"{hook}:{tool}"
             if key in found_logs:
@@ -257,7 +256,9 @@ def verify_logs(test_id):
     print("\n=== SUMMARY ===")
     print(f"Expected tool hooks: {expected_count}")
     print(f"Found tool hooks: {found_count}")
-    print(f"Coverage: {found_count}/{expected_count} ({found_count/expected_count*100:.1f}%)")
+    print(
+        f"Coverage: {found_count}/{expected_count} ({found_count/expected_count*100:.1f}%)"
+    )
 
     # List any unexpected logs
     unexpected = []
@@ -270,6 +271,7 @@ def verify_logs(test_id):
         print(f"\nUnexpected logs found: {', '.join(unexpected)}")
 
     return found_count == expected_count
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "--verify":

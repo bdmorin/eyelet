@@ -27,6 +27,7 @@ def get_db_path() -> Path:
 
 class HookExecutionModel(Base):
     """SQLAlchemy model for hook executions"""
+
     __tablename__ = "executions"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -43,6 +44,7 @@ class HookExecutionModel(Base):
 
 class WorkflowResultModel(Base):
     """SQLAlchemy model for workflow results"""
+
     __tablename__ = "workflow_results"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -54,6 +56,7 @@ class WorkflowResultModel(Base):
 
 class TemplateModel(Base):
     """SQLAlchemy model for templates"""
+
     __tablename__ = "templates"
 
     id = Column(Integer, primary_key=True, autoincrement=True)

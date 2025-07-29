@@ -107,7 +107,7 @@ class ConfigurationService:
                     hook = Hook(
                         type=HookType(hook_data["type"]),
                         matcher=hook_data.get("matcher"),
-                        handler=handler
+                        handler=handler,
                     )
                     hooks.append(hook)
             elif isinstance(hooks_data, dict):
@@ -116,13 +116,12 @@ class ConfigurationService:
                     for entry in hook_entries:
                         for hook_config in entry.get("hooks", []):
                             handler = Handler(
-                                type=hook_config["type"],
-                                command=hook_config["command"]
+                                type=hook_config["type"], command=hook_config["command"]
                             )
                             hook = Hook(
                                 type=HookType(hook_type),
                                 matcher=entry.get("matcher"),
-                                handler=handler
+                                handler=handler,
                             )
                             hooks.append(hook)
 
@@ -151,10 +150,7 @@ class ConfigurationService:
 
                 hook_entry = {
                     "hooks": [
-                        {
-                            "type": hook.handler.type,
-                            "command": hook.handler.command
-                        }
+                        {"type": hook.handler.type, "command": hook.handler.command}
                     ]
                 }
 
@@ -168,10 +164,10 @@ class ConfigurationService:
 
         # Save with backup
         if self.claude_settings_path.exists():
-            backup_path = self.claude_settings_path.with_suffix('.json.backup')
+            backup_path = self.claude_settings_path.with_suffix(".json.backup")
             backup_path.write_text(self.claude_settings_path.read_text())
 
-        with open(self.claude_settings_path, 'w') as f:
+        with open(self.claude_settings_path, "w") as f:
             json.dump(settings, f, indent=2)
 
 
@@ -190,16 +186,11 @@ class ExecutionService:
         return self.execution_repo.get(execution_id)
 
     def list_executions(
-        self,
-        hook_type: HookType | None = None,
-        limit: int = 100,
-        offset: int = 0
+        self, hook_type: HookType | None = None, limit: int = 100, offset: int = 0
     ) -> list[HookExecution]:
         """List executions with optional filtering"""
         return self.execution_repo.get_recent(
-            hook_type=hook_type,
-            limit=limit,
-            offset=offset
+            hook_type=hook_type, limit=limit, offset=offset
         )
 
     def get_execution_stats(self) -> dict[str, Any]:
@@ -225,9 +216,7 @@ class TemplateService:
         return self.template_repo.get(template_id)
 
     def install_template(
-        self,
-        template_id: str,
-        variables: dict[str, Any] | None = None
+        self, template_id: str, variables: dict[str, Any] | None = None
     ) -> list[Hook]:
         """Install a template, returning the created hooks"""
         template = self.template_repo.get(template_id)
@@ -267,9 +256,7 @@ class WorkflowService:
         self.workflow_path = workflow_path
 
     def execute_workflow(
-        self,
-        workflow_id: str,
-        context: dict[str, Any]
+        self, workflow_id: str, context: dict[str, Any]
     ) -> dict[str, Any]:
         """Execute a workflow with the given context"""
         # This is a placeholder - actual implementation would:

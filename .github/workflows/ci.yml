@@ -65,5 +65,5 @@ jobs:
     - name: Test installation
       run: |
         uv pip install dist/*.whl
-        eyelet --version
-        eyelet validate settings --help
+        uv run eyelet --version
+        uv run eyelet validate settings --help

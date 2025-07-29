@@ -15,11 +15,11 @@ console = Console()
 
 
 @click.command()
-@click.option('--workflow', help='Workflow to execute')
-@click.option('--log-only', is_flag=True, help='Only log, no processing')
-@click.option('--log-result', is_flag=True, help='Log result after execution')
-@click.option('--debug', is_flag=True, help='Enable debug output')
-@click.option('--no-logging', is_flag=True, help='Disable all logging')
+@click.option("--workflow", help="Workflow to execute")
+@click.option("--log-only", is_flag=True, help="Only log, no processing")
+@click.option("--log-result", is_flag=True, help="Log result after execution")
+@click.option("--debug", is_flag=True, help="Enable debug output")
+@click.option("--no-logging", is_flag=True, help="Disable all logging")
 @click.pass_context
 def execute(ctx, workflow, log_only, log_result, debug, no_logging):
     """
@@ -29,7 +29,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging):
     It reads JSON from stdin and processes according to configuration.
     """
     start_time = datetime.now()
-    project_dir = ctx.obj.get('config_dir', Path.cwd()) if ctx.obj else Path.cwd()
+    project_dir = ctx.obj.get("config_dir", Path.cwd()) if ctx.obj else Path.cwd()
 
     # Initialize services
     config_service = ConfigService(project_dir)
@@ -42,26 +42,25 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging):
             input_data = {
                 "hook_event_name": "test",
                 "test_mode": True,
-                "timestamp": start_time.isoformat()
+                "timestamp": start_time.isoformat(),
             }
         else:
             input_data = json.load(sys.stdin)
     except json.JSONDecodeError as e:
         if debug:
-            console.print(f"[red]Failed to parse JSON input: {e}[/red]", file=sys.stderr)
+            console.print(
+                f"[red]Failed to parse JSON input: {e}[/red]", file=sys.stderr
+            )
         # Still log what we received
         input_data = {
             "hook_event_name": "parse_error",
             "error": str(e),
-            "raw_input": sys.stdin.read() if not sys.stdin.isatty() else "no input"
+            "raw_input": sys.stdin.read() if not sys.stdin.isatty() else "no input",
         }
     except Exception as e:
         if debug:
             console.print(f"[red]Failed to read input: {e}[/red]", file=sys.stderr)
-        input_data = {
-            "hook_event_name": "read_error",
-            "error": str(e)
-        }
+        input_data = {"hook_event_name": "read_error", "error": str(e)}
 
     # Extract hook information
     # hook_type = input_data.get('hook_event_name', 'unknown')
@@ -105,7 +104,9 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging):
         # Check for blocking directives in hook data
         if input_data.get("block", False):
             if debug:
-                console.print("[yellow]Blocking action requested[/yellow]", file=sys.stderr)
+                console.print(
+                    "[yellow]Blocking action requested[/yellow]", file=sys.stderr
+                )
             sys.exit(2)  # Exit code 2 indicates blocked action
 
     except Exception as e:
@@ -118,18 +119,21 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging):
     duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)
 
     # Update hook with results (if we logged)
-    if log_results and hasattr(hook_logger, '_last_hook_data'):
+    if log_results and hasattr(hook_logger, "_last_hook_data"):
         try:
             hook_logger.update_hook_result(
                 hook_logger._last_hook_data,
                 status=status,
                 duration_ms=duration_ms,
                 output_data=output_data,
-                error_message=error_message
+                error_message=error_message,
             )
         except Exception as e:
             if debug:
-                console.print(f"[yellow]Failed to update hook result: {e}[/yellow]", file=sys.stderr)
+                console.print(
+                    f"[yellow]Failed to update hook result: {e}[/yellow]",
+                    file=sys.stderr,
+                )
 
     # Output any required response
     if output_data and not log_only:

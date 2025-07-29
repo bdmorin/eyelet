@@ -22,7 +22,7 @@ def template():
 
 
 @template.command()
-@click.option('--category', help='Filter by category')
+@click.option("--category", help="Filter by category")
 def list(category):
     """List available templates - Check the armory"""
     template_dir = Path.home() / ".eyelet" / "templates"
@@ -45,18 +45,14 @@ def list(category):
 
     for tmpl in templates:
         table.add_row(
-            tmpl.id,
-            tmpl.name,
-            tmpl.category,
-            tmpl.description,
-            str(len(tmpl.hooks))
+            tmpl.id, tmpl.name, tmpl.category, tmpl.description, str(len(tmpl.hooks))
         )
 
     console.print(table)
 
 
 @template.command()
-@click.argument('template_id')
+@click.argument("template_id")
 def show(template_id):
     """Show template details - Inspect the ordinance"""
     template_dir = Path.home() / ".eyelet" / "templates"
@@ -93,14 +89,18 @@ def show(template_id):
 
 
 @template.command()
-@click.argument('template_id')
-@click.option('--scope', type=click.Choice(['project', 'user']), default='project',
-              help='Installation scope')
-@click.option('--var', '-v', multiple=True, help='Set template variables (key=value)')
+@click.argument("template_id")
+@click.option(
+    "--scope",
+    type=click.Choice(["project", "user"]),
+    default="project",
+    help="Installation scope",
+)
+@click.option("--var", "-v", multiple=True, help="Set template variables (key=value)")
 @click.pass_context
 def install(ctx, template_id, scope, var):
     """Install a template - Load the cannons!"""
-    config_dir = ctx.obj['config_dir'] if scope == 'project' else Path.home()
+    config_dir = ctx.obj["config_dir"] if scope == "project" else Path.home()
     template_dir = Path.home() / ".eyelet" / "templates"
 
     template_service = TemplateService(FileTemplateRepository(template_dir))
@@ -109,8 +109,8 @@ def install(ctx, template_id, scope, var):
     # Parse variables
     variables = {}
     for var_str in var:
-        if '=' in var_str:
-            key, value = var_str.split('=', 1)
+        if "=" in var_str:
+            key, value = var_str.split("=", 1)
             variables[key] = value
 
     try:
@@ -126,7 +126,7 @@ def install(ctx, template_id, scope, var):
                 if var_name not in variables:
                     value = Prompt.ask(
                         f"Value for '{var_name}'",
-                        default=str(default_value) if default_value else None
+                        default=str(default_value) if default_value else None,
                     )
                     variables[var_name] = value
 
@@ -143,7 +143,9 @@ def install(ctx, template_id, scope, var):
         # Save configuration
         config_service.save_configuration(config)
 
-        console.print(f"[green]✓ Template '{tmpl.name}' installed successfully![/green]")
+        console.print(
+            f"[green]✓ Template '{tmpl.name}' installed successfully![/green]"
+        )
         console.print(f"Added {len(hooks)} hooks to {scope} configuration")
 
     except TemplateError as e:
@@ -153,7 +155,7 @@ def install(ctx, template_id, scope, var):
 
 
 @template.command()
-@click.argument('template_file', type=click.Path(exists=True))
+@click.argument("template_file", type=click.Path(exists=True))
 def import_template(template_file):
     """Import a template file - Bring aboard new ordinance"""
     template_dir = Path.home() / ".eyelet" / "templates"
@@ -165,6 +167,7 @@ def import_template(template_file):
 
         # Validate and save
         from eyelet.domain.models import Template
+
         tmpl = Template(**template_data)
 
         # Check if already exists
@@ -187,8 +190,8 @@ def import_template(template_file):
 
 
 @template.command()
-@click.argument('template_id')
-@click.argument('output_file', type=click.Path())
+@click.argument("template_id")
+@click.argument("output_file", type=click.Path())
 def export(template_id, output_file):
     """Export a template - Share the wealth"""
     template_dir = Path.home() / ".eyelet" / "templates"
@@ -203,7 +206,7 @@ def export(template_id, output_file):
         output_path = Path(output_file)
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             json.dump(tmpl.model_dump(), f, indent=2, default=str)
 
         console.print(f"[green]✓ Template exported to {output_file}[/green]")
@@ -224,7 +227,7 @@ def create():
     category = Prompt.ask(
         "Category",
         choices=["security", "monitoring", "development", "testing", "custom"],
-        default="custom"
+        default="custom",
     )
     author = Prompt.ask("Author name (optional)", default="")
 
@@ -234,6 +237,7 @@ def create():
 
     # Create template
     from eyelet.domain.models import Template
+
     tmpl = Template(
         id=template_id,
         name=name,
@@ -241,7 +245,7 @@ def create():
         category=category,
         author=author or None,
         tags=tags,
-        hooks=[]
+        hooks=[],
     )
 
     # Add hooks interactively

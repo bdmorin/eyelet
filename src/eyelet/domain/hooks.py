@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 class ExecutionResult(BaseModel):
     """Result of hook execution."""
+
     status: str
     duration_ms: int | None = None
     output_data: dict[str, Any] | None = None
@@ -37,4 +38,5 @@ class HookData(BaseModel):
 
     class Config:
         """Pydantic config."""
+
         arbitrary_types_allowed = True

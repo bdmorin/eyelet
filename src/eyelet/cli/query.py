@@ -22,17 +22,19 @@ def query(ctx):
 
 
 @query.command()
-@click.option('--hook-type', help='Filter by hook type (e.g., PreToolUse)')
-@click.option('--tool', help='Filter by tool name (e.g., Bash)')
-@click.option('--session', help='Filter by session ID')
-@click.option('--since', help='Start time (e.g., "1h", "24h", "2024-01-01")')
-@click.option('--status', help='Filter by status (success, error)')
-@click.option('--branch', help='Filter by git branch')
-@click.option('--errors-only', is_flag=True, help='Show only errors')
-@click.option('--limit', default=20, help='Maximum results')
-@click.option('--format', type=click.Choice(['table', 'json', 'raw']), default='table')
+@click.option("--hook-type", help="Filter by hook type (e.g., PreToolUse)")
+@click.option("--tool", help="Filter by tool name (e.g., Bash)")
+@click.option("--session", help="Filter by session ID")
+@click.option("--since", help='Start time (e.g., "1h", "24h", "2024-01-01")')
+@click.option("--status", help="Filter by status (success, error)")
+@click.option("--branch", help="Filter by git branch")
+@click.option("--errors-only", is_flag=True, help="Show only errors")
+@click.option("--limit", default=20, help="Maximum results")
+@click.option("--format", type=click.Choice(["table", "json", "raw"]), default="table")
 @click.pass_context
-def search(ctx, hook_type, tool, session, since, status, branch, errors_only, limit, format):
+def search(
+    ctx, hook_type, tool, session, since, status, branch, errors_only, limit, format
+):
     """Search hook logs with filters."""
     config_service = ConfigService()
     query_service = QueryService(config_service)
@@ -40,10 +42,10 @@ def search(ctx, hook_type, tool, session, since, status, branch, errors_only, li
     # Parse since parameter
     since_dt = None
     if since:
-        if since.endswith('h'):
+        if since.endswith("h"):
             hours = int(since[:-1])
             since_dt = datetime.now() - timedelta(hours=hours)
-        elif since.endswith('d'):
+        elif since.endswith("d"):
             days = int(since[:-1])
             since_dt = datetime.now() - timedelta(days=days)
         else:
@@ -62,7 +64,7 @@ def search(ctx, hook_type, tool, session, since, status, branch, errors_only, li
         status=status,
         git_branch=branch,
         has_error=errors_only,
-        limit=limit
+        limit=limit,
     )
 
     # Execute query
@@ -73,9 +75,9 @@ def search(ctx, hook_type, tool, session, since, status, branch, errors_only, li
         return
 
     # Display results
-    if format == 'json':
+    if format == "json":
         console.print(json.dumps(results, indent=2, default=str))
-    elif format == 'raw':
+    elif format == "raw":
         for result in results:
             console.print(result)
     else:  # table
@@ -88,34 +90,34 @@ def search(ctx, hook_type, tool, session, since, status, branch, errors_only, li
         table.add_column("Session", style="dim")
 
         for result in results:
-            timestamp = datetime.fromisoformat(result['timestamp'])
+            timestamp = datetime.fromisoformat(result["timestamp"])
             time_str = timestamp.strftime("%H:%M:%S")
 
-            execution = result.get('execution') or {}
-            status = execution.get('status', 'unknown') if execution else 'unknown'
-            if status == 'error':
+            execution = result.get("execution") or {}
+            status = execution.get("status", "unknown") if execution else "unknown"
+            if status == "error":
                 status = f"[red]{status}[/red]"
-            elif status == 'success':
+            elif status == "success":
                 status = f"[green]{status}[/green]"
 
-            duration = execution.get('duration_ms', '') if execution else ''
+            duration = execution.get("duration_ms", "") if execution else ""
             if duration:
                 duration = f"{duration}ms"
 
             table.add_row(
                 time_str,
-                result.get('hook_type', ''),
-                result.get('tool_name', ''),
+                result.get("hook_type", ""),
+                result.get("tool_name", ""),
                 status,
                 duration,
-                result.get('session_id', '')[:8] + "..."
+                result.get("session_id", "")[:8] + "...",
             )
 
         console.print(table)
 
 
 @query.command()
-@click.option('--since', default='24h', help='Time period (e.g., "1h", "24h")')
+@click.option("--since", default="24h", help='Time period (e.g., "1h", "24h")')
 @click.pass_context
 def summary(ctx, since):
     """Show summary statistics of hook activity."""
@@ -123,10 +125,10 @@ def summary(ctx, since):
     query_service = QueryService(config_service)
 
     # Parse since parameter
-    if since.endswith('h'):
+    if since.endswith("h"):
         hours = int(since[:-1])
         since_dt = datetime.now() - timedelta(hours=hours)
-    elif since.endswith('d'):
+    elif since.endswith("d"):
         days = int(since[:-1])
         since_dt = datetime.now() - timedelta(days=days)
     else:
@@ -144,31 +146,37 @@ def summary(ctx, since):
     console.print(f"Avg duration: [magenta]{stats['avg_duration_ms']}ms[/magenta]")
 
     # Hook type breakdown
-    if stats['by_type']:
+    if stats["by_type"]:
         console.print("\n[bold]By Hook Type:[/bold]")
-        for hook_type, count in sorted(stats['by_type'].items(), key=lambda x: x[1], reverse=True):
+        for hook_type, count in sorted(
+            stats["by_type"].items(), key=lambda x: x[1], reverse=True
+        ):
             console.print(f"  {hook_type}: {count}")
 
     # Tool breakdown
-    if stats['by_tool']:
+    if stats["by_tool"]:
         console.print("\n[bold]By Tool:[/bold]")
-        for tool, count in sorted(stats['by_tool'].items(), key=lambda x: x[1], reverse=True):
+        for tool, count in sorted(
+            stats["by_tool"].items(), key=lambda x: x[1], reverse=True
+        ):
             console.print(f"  {tool}: {count}")
 
     # Status breakdown
-    if stats['by_status']:
+    if stats["by_status"]:
         console.print("\n[bold]By Status:[/bold]")
-        for status, count in sorted(stats['by_status'].items(), key=lambda x: x[1], reverse=True):
-            if status == 'error':
+        for status, count in sorted(
+            stats["by_status"].items(), key=lambda x: x[1], reverse=True
+        ):
+            if status == "error":
                 console.print(f"  [red]{status}: {count}[/red]")
-            elif status == 'success':
+            elif status == "success":
                 console.print(f"  [green]{status}: {count}[/green]")
             else:
                 console.print(f"  {status}: {count}")
 
 
 @query.command()
-@click.option('--limit', default=10, help='Number of errors to show')
+@click.option("--limit", default=10, help="Number of errors to show")
 @click.pass_context
 def errors(ctx, limit):
     """Show recent errors."""
@@ -185,13 +193,13 @@ def errors(ctx, limit):
     console.print(f"\n[bold red]Recent Errors ({len(errors)})[/bold red]\n")
 
     for i, error in enumerate(errors):
-        timestamp = datetime.fromisoformat(error['timestamp'])
-        execution = error.get('execution', {})
-        error_msg = execution.get('error_message', 'Unknown error')
+        timestamp = datetime.fromisoformat(error["timestamp"])
+        execution = error.get("execution", {})
+        error_msg = execution.get("error_message", "Unknown error")
 
         console.print(f"[bold]{i+1}. {timestamp.strftime('%Y-%m-%d %H:%M:%S')}[/bold]")
         console.print(f"   Hook: {error['hook_type']}")
-        if error.get('tool_name'):
+        if error.get("tool_name"):
             console.print(f"   Tool: {error['tool_name']}")
         console.print(f"   Error: [red]{error_msg}[/red]")
         console.print(f"   Session: {error['session_id'][:16]}...")
@@ -199,7 +207,7 @@ def errors(ctx, limit):
 
 
 @query.command()
-@click.argument('session_id')
+@click.argument("session_id")
 @click.pass_context
 def session(ctx, session_id):
     """Show timeline for a specific session."""
@@ -217,11 +225,11 @@ def session(ctx, session_id):
     console.print(f"Total events: {len(timeline)}\n")
 
     for event in timeline:
-        timestamp = datetime.fromisoformat(event['timestamp'])
+        timestamp = datetime.fromisoformat(event["timestamp"])
         time_str = timestamp.strftime("%H:%M:%S.%f")[:-3]
 
-        hook_type = event['hook_type']
-        tool_name = event.get('tool_name', '')
+        hook_type = event["hook_type"]
+        tool_name = event.get("tool_name", "")
 
         if tool_name:
             console.print(f"[cyan]{time_str}[/cyan] {hook_type} - {tool_name}")
@@ -229,19 +237,21 @@ def session(ctx, session_id):
             console.print(f"[cyan]{time_str}[/cyan] {hook_type}")
 
         # Show additional details for certain events
-        if hook_type == 'UserPromptSubmit':
-            prompt = event.get('input_data', {}).get('prompt', '')
+        if hook_type == "UserPromptSubmit":
+            prompt = event.get("input_data", {}).get("prompt", "")
             if prompt:
                 console.print(f"  [dim]Prompt: {prompt[:80]}...[/dim]")
-        elif hook_type in ['PreToolUse', 'PostToolUse'] and tool_name == 'Bash':
-            command = event.get('input_data', {}).get('tool_input', {}).get('command', '')
+        elif hook_type in ["PreToolUse", "PostToolUse"] and tool_name == "Bash":
+            command = (
+                event.get("input_data", {}).get("tool_input", {}).get("command", "")
+            )
             if command:
                 console.print(f"  [dim]Command: {command[:80]}...[/dim]")
 
 
 @query.command()
-@click.argument('search_term')
-@click.option('--limit', default=20, help='Maximum results')
+@click.argument("search_term")
+@click.option("--limit", default=20, help="Maximum results")
 @click.pass_context
 def grep(ctx, search_term, limit):
     """Search for a term in all log data."""
@@ -255,21 +265,25 @@ def grep(ctx, search_term, limit):
         console.print(f"[yellow]No logs containing '{search_term}' found[/yellow]")
         return
 
-    console.print(f"\n[bold]Search Results[/bold] for '{search_term}' ({len(results)} matches)\n")
+    console.print(
+        f"\n[bold]Search Results[/bold] for '{search_term}' ({len(results)} matches)\n"
+    )
 
     for result in results:
-        timestamp = datetime.fromisoformat(result['timestamp'])
-        console.print(f"[cyan]{timestamp.strftime('%Y-%m-%d %H:%M:%S')}[/cyan] - {result['hook_type']}")
+        timestamp = datetime.fromisoformat(result["timestamp"])
+        console.print(
+            f"[cyan]{timestamp.strftime('%Y-%m-%d %H:%M:%S')}[/cyan] - {result['hook_type']}"
+        )
 
         # Show context where term was found
         # This is a simple implementation - could be enhanced
         data_str = json.dumps(result, indent=2)
-        lines = data_str.split('\n')
+        lines = data_str.split("\n")
         for i, line in enumerate(lines):
             if search_term.lower() in line.lower():
                 start = max(0, i - 1)
                 end = min(len(lines), i + 2)
-                context = '\n'.join(lines[start:end])
+                context = "\n".join(lines[start:end])
                 syntax = Syntax(context, "json", theme="monokai", line_numbers=False)
                 console.print(syntax)
                 break

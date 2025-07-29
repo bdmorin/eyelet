@@ -21,21 +21,25 @@ def discover():
 
 
 @discover.command()
-@click.option('--source', type=click.Choice(['static', 'docs', 'runtime', 'all']),
-              default='all', help='Discovery source')
-@click.option('--json', 'output_json', is_flag=True, help='Output as JSON')
+@click.option(
+    "--source",
+    type=click.Choice(["static", "docs", "runtime", "all"]),
+    default="all",
+    help="Discovery source",
+)
+@click.option("--json", "output_json", is_flag=True, help="Output as JSON")
 def hooks(source, output_json):
     """Discover all available hook types"""
     discovery_service = DiscoveryService()
 
     try:
-        if source == 'all':
+        if source == "all":
             hook_types = discovery_service.discover_all_hooks()
-        elif source == 'static':
+        elif source == "static":
             hook_types = discovery_service.get_static_hooks()
-        elif source == 'docs':
+        elif source == "docs":
             hook_types = discovery_service.discover_from_docs()
-        elif source == 'runtime':
+        elif source == "runtime":
             hook_types = discovery_service.discover_from_runtime()
 
         if output_json:
@@ -50,21 +54,25 @@ def hooks(source, output_json):
 
 
 @discover.command()
-@click.option('--source', type=click.Choice(['static', 'docs', 'runtime', 'all']),
-              default='all', help='Discovery source')
-@click.option('--json', 'output_json', is_flag=True, help='Output as JSON')
+@click.option(
+    "--source",
+    type=click.Choice(["static", "docs", "runtime", "all"]),
+    default="all",
+    help="Discovery source",
+)
+@click.option("--json", "output_json", is_flag=True, help="Output as JSON")
 def tools(source, output_json):
     """Discover all available tools"""
     discovery_service = DiscoveryService()
 
     try:
-        if source == 'all':
+        if source == "all":
             tools = discovery_service.discover_all_tools()
-        elif source == 'static':
+        elif source == "static":
             tools = discovery_service.get_static_tools()
-        elif source == 'docs':
+        elif source == "docs":
             tools = discovery_service.discover_tools_from_docs()
-        elif source == 'runtime':
+        elif source == "runtime":
             tools = discovery_service.discover_tools_from_runtime()
 
         if output_json:
@@ -79,8 +87,12 @@ def tools(source, output_json):
 
 
 @discover.command()
-@click.option('--format', type=click.Choice(['table', 'tree', 'json']),
-              default='table', help='Output format')
+@click.option(
+    "--format",
+    type=click.Choice(["table", "tree", "json"]),
+    default="table",
+    help="Output format",
+)
 def matrix(format):
     """Generate the complete hook/tool combination matrix"""
     discovery_service = DiscoveryService()
@@ -88,9 +100,9 @@ def matrix(format):
     try:
         matrix = discovery_service.generate_combination_matrix()
 
-        if format == 'json':
+        if format == "json":
             print(json.dumps(matrix, indent=2))
-        elif format == 'tree':
+        elif format == "tree":
             _display_matrix_tree(matrix)
         else:
             _display_matrix_table(matrix)
@@ -116,8 +128,8 @@ def validate():
         table.add_column("Details", style="yellow")
 
         for component, result in validation_results.items():
-            status = "[green]✓[/green]" if result['valid'] else "[red]✗[/red]"
-            details = result.get('message', '')
+            status = "[green]✓[/green]" if result["valid"] else "[red]✗[/red]"
+            details = result.get("message", "")
             table.add_row(component, status, details)
 
         console.print(table)
@@ -140,7 +152,7 @@ def _display_hooks(hook_types):
         HookType.USER_PROMPT_SUBMIT: "Processes user prompts",
         HookType.STOP: "Runs when main agent stops",
         HookType.SUBAGENT_STOP: "Runs when subagent stops",
-        HookType.PRE_COMPACT: "Runs before context compaction"
+        HookType.PRE_COMPACT: "Runs before context compaction",
     }
 
     requires_matcher = {
@@ -150,14 +162,14 @@ def _display_hooks(hook_types):
         HookType.NOTIFICATION: "No",
         HookType.USER_PROMPT_SUBMIT: "No",
         HookType.STOP: "No",
-        HookType.SUBAGENT_STOP: "No"
+        HookType.SUBAGENT_STOP: "No",
     }
 
     for hook_type in hook_types:
         table.add_row(
             hook_type.value,
             requires_matcher.get(hook_type, "Unknown"),
-            descriptions.get(hook_type, "")
+            descriptions.get(hook_type, ""),
         )
 
     console.print(table)
@@ -181,7 +193,7 @@ def _display_tools(tools):
         "MultiEdit": "File I/O",
         "Write": "File I/O",
         "WebFetch": "Network",
-        "WebSearch": "Network"
+        "WebSearch": "Network",
     }
 
     descriptions = {
@@ -194,7 +206,7 @@ def _display_tools(tools):
         "MultiEdit": "Multiple file edits",
         "Write": "Write file contents",
         "WebFetch": "Fetch web content",
-        "WebSearch": "Search the web"
+        "WebSearch": "Search the web",
     }
 
     for tool in tools:
@@ -204,7 +216,7 @@ def _display_tools(tools):
         table.add_row(
             tool.value,
             categories.get(tool.value, "Other"),
-            descriptions.get(tool.value, "")
+            descriptions.get(tool.value, ""),
         )
 
     console.print(table)
@@ -231,11 +243,7 @@ def _display_matrix_table(matrix):
         combinations = len(matchers) if matchers else 1
         total_combinations += combinations
 
-        table.add_row(
-            hook_type,
-            matcher_list,
-            str(combinations)
-        )
+        table.add_row(hook_type, matcher_list, str(combinations))
 
     console.print(table)
     console.print(f"\n[bold]Total combinations: {total_combinations}[/bold]")

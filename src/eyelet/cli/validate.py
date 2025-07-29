@@ -24,7 +24,7 @@ def get_embedded_schema():
                     {
                         "type": "array",
                         "description": "Array of hook configurations (legacy format)",
-                        "items": {"$ref": "#/definitions/hook"}
+                        "items": {"$ref": "#/definitions/hook"},
                     },
                     {
                         "type": "object",
@@ -32,11 +32,11 @@ def get_embedded_schema():
                         "patternProperties": {
                             "^(PreToolUse|PostToolUse|UserPromptSubmit|Notification|Stop|SubagentStop|PreCompact)$": {
                                 "type": "array",
-                                "items": {"$ref": "#/definitions/hook_entry"}
+                                "items": {"$ref": "#/definitions/hook_entry"},
                             }
                         },
-                        "additionalProperties": False
-                    }
+                        "additionalProperties": False,
+                    },
                 ]
             }
         },
@@ -50,36 +50,67 @@ def get_embedded_schema():
                         "type": "string",
                         "description": "The type of hook event",
                         "enum": [
-                            "PreToolUse", "PostToolUse", "UserPromptSubmit",
-                            "Notification", "Stop", "SubagentStop", "PreCompact"
-                        ]
+                            "PreToolUse",
+                            "PostToolUse",
+                            "UserPromptSubmit",
+                            "Notification",
+                            "Stop",
+                            "SubagentStop",
+                            "PreCompact",
+                        ],
                     },
                     "handler": {"$ref": "#/definitions/handler"},
                     "matcher": {
                         "type": "string",
-                        "description": "Regex pattern for tool matching or 'manual'/'auto' for PreCompact"
-                    }
+                        "description": "Regex pattern for tool matching or 'manual'/'auto' for PreCompact",
+                    },
                 },
                 "allOf": [
                     {
-                        "if": {"properties": {"type": {"enum": ["PreToolUse", "PostToolUse"]}}},
+                        "if": {
+                            "properties": {
+                                "type": {"enum": ["PreToolUse", "PostToolUse"]}
+                            }
+                        },
                         "then": {
                             "required": ["matcher"],
-                            "properties": {"matcher": {"type": "string", "description": "Regex pattern to match tool names"}}
-                        }
+                            "properties": {
+                                "matcher": {
+                                    "type": "string",
+                                    "description": "Regex pattern to match tool names",
+                                }
+                            },
+                        },
                     },
                     {
                         "if": {"properties": {"type": {"const": "PreCompact"}}},
                         "then": {
                             "required": ["matcher"],
-                            "properties": {"matcher": {"type": "string", "enum": ["manual", "auto"], "description": "Type of compaction trigger"}}
-                        }
+                            "properties": {
+                                "matcher": {
+                                    "type": "string",
+                                    "enum": ["manual", "auto"],
+                                    "description": "Type of compaction trigger",
+                                }
+                            },
+                        },
                     },
                     {
-                        "if": {"properties": {"type": {"enum": ["UserPromptSubmit", "Notification", "Stop", "SubagentStop"]}}},
-                        "then": {"properties": {"matcher": {"not": {}}}}
-                    }
-                ]
+                        "if": {
+                            "properties": {
+                                "type": {
+                                    "enum": [
+                                        "UserPromptSubmit",
+                                        "Notification",
+                                        "Stop",
+                                        "SubagentStop",
+                                    ]
+                                }
+                            }
+                        },
+                        "then": {"properties": {"matcher": {"not": {}}}},
+                    },
+                ],
             },
             "handler": {
                 "type": "object",
@@ -88,35 +119,44 @@ def get_embedded_schema():
                     "type": {
                         "type": "string",
                         "enum": ["command", "workflow", "script"],
-                        "description": "Type of handler"
+                        "description": "Type of handler",
                     }
                 },
                 "oneOf": [
                     {
                         "properties": {
                             "type": {"const": "command"},
-                            "command": {"type": "string", "description": "Command to execute"}
+                            "command": {
+                                "type": "string",
+                                "description": "Command to execute",
+                            },
                         },
                         "required": ["command"],
-                        "additionalProperties": False
+                        "additionalProperties": False,
                     },
                     {
                         "properties": {
                             "type": {"const": "workflow"},
-                            "workflow": {"type": "string", "description": "Path to workflow file"}
+                            "workflow": {
+                                "type": "string",
+                                "description": "Path to workflow file",
+                            },
                         },
                         "required": ["workflow"],
-                        "additionalProperties": False
+                        "additionalProperties": False,
                     },
                     {
                         "properties": {
                             "type": {"const": "script"},
-                            "script": {"type": "string", "description": "Script content to execute"}
+                            "script": {
+                                "type": "string",
+                                "description": "Script content to execute",
+                            },
                         },
                         "required": ["script"],
-                        "additionalProperties": False
-                    }
-                ]
+                        "additionalProperties": False,
+                    },
+                ],
             },
             "hook_entry": {
                 "type": "object",
@@ -125,24 +165,29 @@ def get_embedded_schema():
                     "handler": {"$ref": "#/definitions/handler"},
                     "matcher": {
                         "type": "string",
-                        "description": "Regex pattern for tool matching or 'manual'/'auto' for PreCompact"
-                    }
-                }
-            }
-        }
+                        "description": "Regex pattern for tool matching or 'manual'/'auto' for PreCompact",
+                    },
+                },
+            },
+        },
     }
 
 
-@click.group(name='validate')
+@click.group(name="validate")
 def validate():
     """Validate configurations - Check the ship's papers!"""
     pass
 
 
-@validate.command(name='settings')
-@click.argument('settings_file', type=click.Path(exists=True, path_type=Path), required=False)
-@click.option('--schema', type=click.Path(exists=True, path_type=Path),
-              help='Path to JSON schema file')
+@validate.command(name="settings")
+@click.argument(
+    "settings_file", type=click.Path(exists=True, path_type=Path), required=False
+)
+@click.option(
+    "--schema",
+    type=click.Path(exists=True, path_type=Path),
+    help="Path to JSON schema file",
+)
 @click.pass_context
 def validate_settings(ctx, settings_file, schema):
     """
@@ -158,7 +203,9 @@ def validate_settings(ctx, settings_file, schema):
         settings_file = Path.cwd() / ".claude" / "settings.json"
         if not settings_file.exists():
             console.print("[red]No settings.json found in .claude/[/red]")
-            console.print("[dim]Specify a file path or run from a directory with .claude/settings.json[/dim]")
+            console.print(
+                "[dim]Specify a file path or run from a directory with .claude/settings.json[/dim]"
+            )
             return
 
     # Find schema file
@@ -167,15 +214,25 @@ def validate_settings(ctx, settings_file, schema):
         # First try pkg_resources for installed package
         try:
             import pkg_resources
-            schema_path = Path(pkg_resources.resource_filename('eyelet', 'schemas/claude-settings.schema.json'))
+
+            schema_path = Path(
+                pkg_resources.resource_filename(
+                    "eyelet", "schemas/claude-settings.schema.json"
+                )
+            )
             if not schema_path.exists():
                 raise FileNotFoundError()
         except Exception:
             # Fall back to embedded schema
             try:
                 import importlib.resources as resources
+
                 # For Python 3.9+
-                schema_content = resources.files('eyelet').joinpath('schemas/claude-settings.schema.json').read_text()
+                schema_content = (
+                    resources.files("eyelet")
+                    .joinpath("schemas/claude-settings.schema.json")
+                    .read_text()
+                )
                 schema_data = json.loads(schema_content)
                 # Skip file loading since we have the data
                 skip_schema_load = True
@@ -208,8 +265,8 @@ def validate_settings(ctx, settings_file, schema):
         console.print(f"[green]✓[/green] {settings_file} is valid!")
 
         # Show summary
-        if 'hooks' in settings_data:
-            hooks_data = settings_data['hooks']
+        if "hooks" in settings_data:
+            hooks_data = settings_data["hooks"]
 
             # Count hooks based on format
             if isinstance(hooks_data, list):
@@ -217,7 +274,7 @@ def validate_settings(ctx, settings_file, schema):
                 hook_count = len(hooks_data)
                 hook_types = {}
                 for hook in hooks_data:
-                    hook_type = hook['type']
+                    hook_type = hook["type"]
                     if hook_type not in hook_types:
                         hook_types[hook_type] = []
                     hook_types[hook_type].append(hook)
@@ -243,18 +300,19 @@ def validate_settings(ctx, settings_file, schema):
             for hook_type, hooks in sorted(hook_types.items()):
                 if isinstance(hooks_data, list):
                     # Old format
-                    matchers = [h.get('matcher', '-') for h in hooks]
+                    matchers = [h.get("matcher", "-") for h in hooks]
                 elif isinstance(hooks_data, dict):
                     # New format - extract matchers from hook entries
-                    matchers = [entry.get('matcher', '-') for entry in hooks]
+                    matchers = [entry.get("matcher", "-") for entry in hooks]
                 else:
-                    matchers = ['-']
+                    matchers = ["-"]
 
                 unique_matchers = list(set(matchers))
                 table.add_row(
                     hook_type,
                     str(len(hooks)),
-                    ", ".join(unique_matchers[:3]) + ("..." if len(unique_matchers) > 3 else "")
+                    ", ".join(unique_matchers[:3])
+                    + ("..." if len(unique_matchers) > 3 else ""),
                 )
 
             console.print(table)
@@ -274,8 +332,12 @@ def validate_settings(ctx, settings_file, schema):
         # Provide helpful suggestions
         console.print("\n[bold]Common issues:[/bold]")
         if "enum" in str(e):
-            console.print("• Check that hook types and handler types use correct values")
-            console.print("• Valid hook types: PreToolUse, PostToolUse, UserPromptSubmit, etc.")
+            console.print(
+                "• Check that hook types and handler types use correct values"
+            )
+            console.print(
+                "• Valid hook types: PreToolUse, PostToolUse, UserPromptSubmit, etc."
+            )
             console.print("• Valid handler types: command, workflow, script")
         if "required" in str(e):
             console.print("• Ensure all required fields are present")
@@ -285,14 +347,14 @@ def validate_settings(ctx, settings_file, schema):
             console.print("• PreCompact matcher must be 'manual' or 'auto'")
 
 
-@validate.command(name='hooks')
+@validate.command(name="hooks")
 @click.pass_context
 def validate_hooks(ctx):
     """Validate all hooks in current configuration"""
     from eyelet.application.services import ConfigurationService
     from eyelet.domain.exceptions import HookConfigurationError
 
-    config_dir = ctx.obj.get('config_dir', Path.cwd()) if ctx.obj else Path.cwd()
+    config_dir = ctx.obj.get("config_dir", Path.cwd()) if ctx.obj else Path.cwd()
     config_service = ConfigurationService(config_dir)
 
     try:
@@ -310,20 +372,32 @@ def validate_hooks(ctx):
         for i, hook in enumerate(config.hooks):
             # Validate matcher
             if not hook.is_valid_matcher():
-                errors.append(f"Hook {i+1} ({hook.type}): Invalid matcher '{hook.matcher}'")
+                errors.append(
+                    f"Hook {i+1} ({hook.type}): Invalid matcher '{hook.matcher}'"
+                )
 
             # Check handler
             if hook.handler.type == "command" and not hook.handler.command:
-                errors.append(f"Hook {i+1} ({hook.type}): Command handler missing command")
+                errors.append(
+                    f"Hook {i+1} ({hook.type}): Command handler missing command"
+                )
             elif hook.handler.type == "workflow" and not hook.handler.workflow:
-                errors.append(f"Hook {i+1} ({hook.type}): Workflow handler missing workflow path")
+                errors.append(
+                    f"Hook {i+1} ({hook.type}): Workflow handler missing workflow path"
+                )
             elif hook.handler.type == "script" and not hook.handler.script:
-                errors.append(f"Hook {i+1} ({hook.type}): Script handler missing script content")
+                errors.append(
+                    f"Hook {i+1} ({hook.type}): Script handler missing script content"
+                )
 
             # Warnings
-            if hook.handler.type == "command" and "uvx eyelet" in (hook.handler.command or ""):
+            if hook.handler.type == "command" and "uvx eyelet" in (
+                hook.handler.command or ""
+            ):
                 if "execute" not in hook.handler.command:
-                    warnings.append(f"Hook {i+1} ({hook.type}): Command should include 'execute' subcommand")
+                    warnings.append(
+                        f"Hook {i+1} ({hook.type}): Command should include 'execute' subcommand"
+                    )
 
         # Display results
         if errors:

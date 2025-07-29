@@ -16,8 +16,8 @@ console = Console()
 
 
 @click.command()
-@click.option('--fix', is_flag=True, help='Automatically fix issues where possible')
-@click.option('--verbose', is_flag=True, help='Show detailed diagnostic information')
+@click.option("--fix", is_flag=True, help="Automatically fix issues where possible")
+@click.option("--verbose", is_flag=True, help="Show detailed diagnostic information")
 @click.pass_context
 def doctor(ctx, fix, verbose):
     """
@@ -34,7 +34,7 @@ def doctor(ctx, fix, verbose):
 
     issues = []
     warnings = []
-    project_dir = ctx.obj.get('config_dir', Path.cwd()) if ctx.obj else Path.cwd()
+    project_dir = ctx.obj.get("config_dir", Path.cwd()) if ctx.obj else Path.cwd()
 
     # 1. Check Claude Code Integration
     console.print("[bold]1. Claude Code Integration[/bold]")
@@ -67,19 +67,23 @@ def doctor(ctx, fix, verbose):
     warnings.extend(dep_issues[1])
 
     # Summary
-    console.print("\n" + "="*50 + "\n")
+    console.print("\n" + "=" * 50 + "\n")
 
     if not issues and not warnings:
         console.print("✅ [bold green]All systems operational![/bold green]")
         console.print("Your Eyelet configuration is healthy. ⚓")
     else:
         if issues:
-            console.print(f"❌ [bold red]Found {len(issues)} critical issues[/bold red]")
+            console.print(
+                f"❌ [bold red]Found {len(issues)} critical issues[/bold red]"
+            )
             for issue in issues:
                 console.print(f"   • {issue}")
 
         if warnings:
-            console.print(f"\n⚠️  [bold yellow]Found {len(warnings)} warnings[/bold yellow]")
+            console.print(
+                f"\n⚠️  [bold yellow]Found {len(warnings)} warnings[/bold yellow]"
+            )
             for warning in warnings:
                 console.print(f"   • {warning}")
 
@@ -88,10 +92,14 @@ def doctor(ctx, fix, verbose):
             fixed = attempt_fixes(issues, warnings, project_dir)
             console.print(f"Fixed {fixed} issues.")
         else:
-            console.print("\n💡 Run with [bold]--fix[/bold] to automatically fix issues where possible.")
+            console.print(
+                "\n💡 Run with [bold]--fix[/bold] to automatically fix issues where possible."
+            )
 
 
-def check_claude_integration(project_dir: Path, verbose: bool) -> tuple[list[str], list[str]]:
+def check_claude_integration(
+    project_dir: Path, verbose: bool
+) -> tuple[list[str], list[str]]:
     """Check Claude Code settings and hook configuration."""
     issues = []
     warnings = []
@@ -99,7 +107,7 @@ def check_claude_integration(project_dir: Path, verbose: bool) -> tuple[list[str
     # Check for Claude settings
     settings_paths = [
         project_dir / ".claude" / "settings.json",
-        Path.home() / ".claude" / "settings.json"
+        Path.home() / ".claude" / "settings.json",
     ]
 
     settings_found = False
@@ -116,14 +124,14 @@ def check_claude_integration(project_dir: Path, verbose: bool) -> tuple[list[str
                     settings = json.load(f)
 
                 # Check hook configuration
-                hooks = settings.get('hooks', {})
+                hooks = settings.get("hooks", {})
                 for _hook_type, hook_list in hooks.items():
                     if isinstance(hook_list, list):
                         for entry in hook_list:
-                            if 'hooks' in entry:
-                                for hook in entry['hooks']:
+                            if "hooks" in entry:
+                                for hook in entry["hooks"]:
                                     total_hooks += 1
-                                    if 'eyelet' in hook.get('command', ''):
+                                    if "eyelet" in hook.get("command", ""):
                                         eyelet_hooks += 1
 
                 if verbose:
@@ -147,7 +155,9 @@ def check_claude_integration(project_dir: Path, verbose: bool) -> tuple[list[str
     return issues, warnings
 
 
-def check_configuration(project_dir: Path, verbose: bool) -> tuple[list[str], list[str]]:
+def check_configuration(
+    project_dir: Path, verbose: bool
+) -> tuple[list[str], list[str]]:
     """Check Eyelet configuration files."""
     issues = []
     warnings = []
@@ -191,7 +201,9 @@ def check_configuration(project_dir: Path, verbose: bool) -> tuple[list[str], li
     return issues, warnings
 
 
-def check_logging_setup(project_dir: Path, verbose: bool) -> tuple[list[str], list[str]]:
+def check_logging_setup(
+    project_dir: Path, verbose: bool
+) -> tuple[list[str], list[str]]:
     """Check logging directories and permissions."""
     issues = []
     warnings = []
@@ -203,7 +215,7 @@ def check_logging_setup(project_dir: Path, verbose: bool) -> tuple[list[str], li
 
         # Check project logging
         if config.logging.scope in [LogScope.PROJECT, LogScope.BOTH]:
-            project_path = paths['project']
+            project_path = paths["project"]
             if project_path.exists():
                 if os.access(project_path, os.W_OK):
                     console.print(f"   ✅ Project logs: {project_path}")
@@ -214,7 +226,7 @@ def check_logging_setup(project_dir: Path, verbose: bool) -> tuple[list[str], li
 
         # Check global logging
         if config.logging.scope in [LogScope.GLOBAL, LogScope.BOTH]:
-            global_path = paths['global']
+            global_path = paths["global"]
             if global_path.exists():
                 if os.access(global_path, os.W_OK):
                     console.print(f"   ✅ Global logs: {global_path}")
@@ -225,16 +237,18 @@ def check_logging_setup(project_dir: Path, verbose: bool) -> tuple[list[str], li
 
         # Check .gitignore
         if config.logging.add_to_gitignore:
-            gitignore_path = project_dir / '.gitignore'
+            gitignore_path = project_dir / ".gitignore"
             if gitignore_path.exists():
                 with open(gitignore_path) as f:
                     gitignore_content = f.read()
 
-                log_dirs = ['.eyelet-logs', '.eyelet-logging', 'eyelet-hooks']
+                log_dirs = [".eyelet-logs", ".eyelet-logging", "eyelet-hooks"]
                 missing_ignores = [d for d in log_dirs if d not in gitignore_content]
 
                 if missing_ignores:
-                    warnings.append(f"Log directories not in .gitignore: {', '.join(missing_ignores)}")
+                    warnings.append(
+                        f"Log directories not in .gitignore: {', '.join(missing_ignores)}"
+                    )
                 else:
                     console.print("   ✅ Log directories in .gitignore")
 
@@ -244,7 +258,9 @@ def check_logging_setup(project_dir: Path, verbose: bool) -> tuple[list[str], li
     return issues, warnings
 
 
-def check_database_health(project_dir: Path, verbose: bool) -> tuple[list[str], list[str]]:
+def check_database_health(
+    project_dir: Path, verbose: bool
+) -> tuple[list[str], list[str]]:
     """Check SQLite database health."""
     issues = []
     warnings = []
@@ -261,11 +277,12 @@ def check_database_health(project_dir: Path, verbose: bool) -> tuple[list[str], 
 
         # Check each database
         for location, base_path in paths.items():
-            if (config.logging.scope == LogScope.PROJECT and location == 'global') or \
-               (config.logging.scope == LogScope.GLOBAL and location == 'project'):
+            if (config.logging.scope == LogScope.PROJECT and location == "global") or (
+                config.logging.scope == LogScope.GLOBAL and location == "project"
+            ):
                 continue
 
-            db_path = base_path / 'eyelet.db'
+            db_path = base_path / "eyelet.db"
             if db_path.exists():
                 try:
                     conn = ProcessLocalConnection(db_path)
@@ -276,7 +293,9 @@ def check_database_health(project_dir: Path, verbose: bool) -> tuple[list[str], 
                     if result[0] == "ok":
                         console.print(f"   ✅ {location.title()} DB integrity: OK")
                     else:
-                        issues.append(f"{location.title()} DB integrity check failed: {result[0]}")
+                        issues.append(
+                            f"{location.title()} DB integrity check failed: {result[0]}"
+                        )
 
                     # Check stats
                     stats = db.execute("SELECT COUNT(*) FROM hooks").fetchone()
@@ -285,19 +304,25 @@ def check_database_health(project_dir: Path, verbose: bool) -> tuple[list[str], 
                     # Check WAL mode
                     wal_mode = db.execute("PRAGMA journal_mode").fetchone()[0]
                     if wal_mode != "wal":
-                        warnings.append(f"{location.title()} DB not in WAL mode (currently: {wal_mode})")
+                        warnings.append(
+                            f"{location.title()} DB not in WAL mode (currently: {wal_mode})"
+                        )
 
                     if verbose:
                         # Check size
                         db_size = db_path.stat().st_size / (1024 * 1024)
-                        console.print(f"   📊 {location.title()} DB size: {db_size:.2f} MB")
+                        console.print(
+                            f"   📊 {location.title()} DB size: {db_size:.2f} MB"
+                        )
 
                         # Check WAL size
-                        wal_path = db_path.with_suffix('.db-wal')
+                        wal_path = db_path.with_suffix(".db-wal")
                         if wal_path.exists():
                             wal_size = wal_path.stat().st_size / (1024 * 1024)
                             if wal_size > 10:
-                                warnings.append(f"Large WAL file ({wal_size:.1f} MB) - consider checkpoint")
+                                warnings.append(
+                                    f"Large WAL file ({wal_size:.1f} MB) - consider checkpoint"
+                                )
 
                 except Exception as e:
                     issues.append(f"Database error ({location}): {e}")
@@ -318,11 +343,16 @@ def check_dependencies(verbose: bool) -> tuple[list[str], list[str]]:
 
     # Check Python version
     import sys
+
     py_version = sys.version_info
     if py_version >= (3, 11):
-        console.print(f"   ✅ Python {py_version.major}.{py_version.minor}.{py_version.micro}")
+        console.print(
+            f"   ✅ Python {py_version.major}.{py_version.minor}.{py_version.micro}"
+        )
     else:
-        issues.append(f"Python 3.11+ required (found {py_version.major}.{py_version.minor})")
+        issues.append(
+            f"Python 3.11+ required (found {py_version.major}.{py_version.minor})"
+        )
 
     # Check SQLite version
     try:
@@ -344,7 +374,8 @@ def check_dependencies(verbose: bool) -> tuple[list[str], list[str]]:
     # Check Git
     try:
         import subprocess
-        result = subprocess.run(['git', '--version'], capture_output=True, text=True)
+
+        result = subprocess.run(["git", "--version"], capture_output=True, text=True)
         if result.returncode == 0:
             console.print(f"   ✅ {result.stdout.strip()}")
         else:
@@ -375,9 +406,9 @@ def attempt_fixes(issues: list[str], warnings: list[str], project_dir: Path) -> 
     # Fix .gitignore
     for warning in warnings:
         if "not in .gitignore" in warning:
-            gitignore_path = project_dir / '.gitignore'
+            gitignore_path = project_dir / ".gitignore"
             if gitignore_path.exists():
-                with open(gitignore_path, 'a') as f:
+                with open(gitignore_path, "a") as f:
                     f.write("\n# Eyelet logging directories\n")
                     f.write(".eyelet-logs/\n")
                     f.write(".eyelet-logging/\n")
@@ -388,7 +419,9 @@ def attempt_fixes(issues: list[str], warnings: list[str], project_dir: Path) -> 
     # Fix missing Eyelet in hooks
     for warning in warnings:
         if "Eyelet not configured in any hooks" in warning:
-            console.print("   ℹ️  Run 'eyelet configure install-all' to add Eyelet to all hooks")
+            console.print(
+                "   ℹ️  Run 'eyelet configure install-all' to add Eyelet to all hooks"
+            )
 
     return fixed
 

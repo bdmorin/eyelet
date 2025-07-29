@@ -37,17 +37,17 @@ class ProcessLocalConnection:
             f"file:{self.db_path}?mode=rwc",  # Read-write-create
             uri=True,
             timeout=60.0,  # High timeout for busy environments
-            isolation_level=None  # Autocommit mode for logging
+            isolation_level=None,  # Autocommit mode for logging
         )
 
         # Enable optimizations
         optimizations = [
-            "PRAGMA journal_mode = WAL",         # Write-Ahead Logging
-            "PRAGMA synchronous = NORMAL",       # Balance safety/speed
-            "PRAGMA cache_size = -64000",        # 64MB cache
-            "PRAGMA temp_store = MEMORY",        # RAM for temp tables
-            "PRAGMA mmap_size = 268435456",      # 256MB memory-mapped I/O
-            "PRAGMA busy_timeout = 60000",       # 60s timeout
+            "PRAGMA journal_mode = WAL",  # Write-Ahead Logging
+            "PRAGMA synchronous = NORMAL",  # Balance safety/speed
+            "PRAGMA cache_size = -64000",  # 64MB cache
+            "PRAGMA temp_store = MEMORY",  # RAM for temp tables
+            "PRAGMA mmap_size = 268435456",  # 256MB memory-mapped I/O
+            "PRAGMA busy_timeout = 60000",  # 60s timeout
             "PRAGMA wal_autocheckpoint = 1000",  # Checkpoint every 1000 pages
         ]
 
@@ -91,7 +91,7 @@ def sqlite_retry(
     max_attempts: int = 10,
     base_delay: float = 0.05,
     max_delay: float = 10.0,
-    exceptions: tuple = (sqlite3.OperationalError,)
+    exceptions: tuple = (sqlite3.OperationalError,),
 ) -> Callable:
     """Decorator for SQLite operations with exponential backoff retry.
 
@@ -104,6 +104,7 @@ def sqlite_retry(
     Returns:
         Decorated function
     """
+
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
@@ -122,10 +123,10 @@ def sqlite_retry(
 
                     if attempt < max_attempts - 1:
                         # Calculate delay with exponential backoff
-                        delay = min(base_delay * (2 ** attempt), max_delay)
+                        delay = min(base_delay * (2**attempt), max_delay)
 
                         # Add jitter to prevent thundering herd
-                        delay *= (0.5 + random.random())
+                        delay *= 0.5 + random.random()
 
                         time.sleep(delay)
                     else:
@@ -136,6 +137,7 @@ def sqlite_retry(
             raise last_exception
 
         return wrapper
+
     return decorator
 
 
@@ -159,9 +161,7 @@ class ConnectionPool:
         """Initialize connection pool with read-only connections."""
         for _ in range(self.pool_size):
             conn = sqlite3.connect(
-                f"file:{self.db_path}?mode=ro",  # Read-only mode
-                uri=True,
-                timeout=10.0
+                f"file:{self.db_path}?mode=ro", uri=True, timeout=10.0  # Read-only mode
             )
             conn.row_factory = sqlite3.Row
             conn.execute("PRAGMA query_only = ON")

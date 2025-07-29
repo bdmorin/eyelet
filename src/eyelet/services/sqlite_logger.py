@@ -111,8 +111,8 @@ class SQLiteLogger:
         # Full data as JSON (with Path conversion)
         data_dict = hook_data.model_dump()
         # Convert Path objects to strings
-        if 'cwd' in data_dict and hasattr(data_dict['cwd'], '__fspath__'):
-            data_dict['cwd'] = str(data_dict['cwd'])
+        if "cwd" in data_dict and hasattr(data_dict["cwd"], "__fspath__"):
+            data_dict["cwd"] = str(data_dict["cwd"])
         data_json = json.dumps(data_dict, default=str)
 
         # SQL insert statement
@@ -124,8 +124,17 @@ class SQLiteLogger:
         """
 
         values = (
-            timestamp, timestamp_iso, session_id, hook_type, tool_name,
-            status, duration_ms, hostname, ip_address, project_dir, data_json
+            timestamp,
+            timestamp_iso,
+            session_id,
+            hook_type,
+            tool_name,
+            status,
+            duration_ms,
+            hostname,
+            ip_address,
+            project_dir,
+            data_json,
         )
 
         try:
@@ -142,7 +151,7 @@ class SQLiteLogger:
         tool_name: str | None = None,
         session_id: str | None = None,
         since: datetime | None = None,
-        limit: int = 100
+        limit: int = 100,
     ) -> list[dict[str, Any]]:
         """Query hooks from database.
 
@@ -221,7 +230,7 @@ class SQLiteLogger:
                 self._get_hostname(),
                 self._get_ip_address(),
                 str(hook_data.cwd),
-                json.dumps(hook_data.model_dump())
+                json.dumps(hook_data.model_dump()),
             )
             values_list.append(values)
 

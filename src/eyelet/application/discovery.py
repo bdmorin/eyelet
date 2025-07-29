@@ -81,30 +81,29 @@ class DiscoveryService:
 
         # Validate hook types
         hooks = self.get_static_hooks()
-        results['hook_types'] = {
-            'valid': len(hooks) == 7,
-            'count': len(hooks),
-            'message': f"Found {len(hooks)} hook types (expected 7)"
+        results["hook_types"] = {
+            "valid": len(hooks) == 7,
+            "count": len(hooks),
+            "message": f"Found {len(hooks)} hook types (expected 7)",
         }
 
         # Validate tool matchers
         tools = self.get_static_tools()
-        results['tools'] = {
-            'valid': len(tools) >= 10,
-            'count': len(tools),
-            'message': f"Found {len(tools)} tools"
+        results["tools"] = {
+            "valid": len(tools) >= 10,
+            "count": len(tools),
+            "message": f"Found {len(tools)} tools",
         }
 
         # Validate combinations
         matrix = self.generate_combination_matrix()
         total_combinations = sum(
-            len(matchers) if matchers else 1
-            for matchers in matrix.values()
+            len(matchers) if matchers else 1 for matchers in matrix.values()
         )
-        results['combinations'] = {
-            'valid': total_combinations > 20,
-            'count': total_combinations,
-            'message': f"Generated {total_combinations} combinations"
+        results["combinations"] = {
+            "valid": total_combinations > 20,
+            "count": total_combinations,
+            "message": f"Generated {total_combinations} combinations",
         }
 
         return results
@@ -118,9 +117,9 @@ class DiscoveryService:
     def export_discovery_data(self) -> dict[str, Any]:
         """Export all discovery data for caching/sharing"""
         return {
-            'version': '1.0.0',
-            'timestamp': datetime.now().isoformat(),
-            'hooks': [h.value for h in self.get_static_hooks()],
-            'tools': [t.value for t in self.get_static_tools()],
-            'matrix': self.generate_combination_matrix()
+            "version": "1.0.0",
+            "timestamp": datetime.now().isoformat(),
+            "hooks": [h.value for h in self.get_static_hooks()],
+            "tools": [t.value for t in self.get_static_tools()],
+            "matrix": self.generate_combination_matrix(),
         }

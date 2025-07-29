@@ -14,6 +14,7 @@ from eyelet.services.sqlite_connection import ProcessLocalConnection
 @dataclass
 class QueryFilter:
     """Filter criteria for querying logs."""
+
     hook_type: str | None = None
     tool_name: str | None = None
     session_id: str | None = None
@@ -63,27 +64,25 @@ class QueryService:
         if self.config.logging.scope in [LogScope.PROJECT, LogScope.BOTH]:
             if self.config.logging.format in [LogFormat.SQLITE, LogFormat.BOTH]:
                 project_results = self._query_sqlite(
-                    paths['project'] / "eyelet.db",
-                    filter
+                    paths["project"] / "eyelet.db", filter
                 )
                 results.extend(project_results)
 
         if self.config.logging.scope in [LogScope.GLOBAL, LogScope.BOTH]:
             if self.config.logging.format in [LogFormat.SQLITE, LogFormat.BOTH]:
                 global_results = self._query_sqlite(
-                    paths['global'] / "eyelet.db",
-                    filter
+                    paths["global"] / "eyelet.db", filter
                 )
                 results.extend(global_results)
 
         # Sort by timestamp descending
-        results.sort(key=lambda x: x.get('timestamp', 0), reverse=True)
+        results.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
 
         # Apply offset and limit
         if filter.offset > 0:
-            results = results[filter.offset:]
+            results = results[filter.offset :]
         if filter.limit > 0:
-            results = results[:filter.limit]
+            results = results[: filter.limit]
 
         return results
 
@@ -155,12 +154,12 @@ class QueryService:
 
         for row in cursor:
             # Parse JSON data
-            data = json.loads(row['data'])
+            data = json.loads(row["data"])
 
             # Add database fields
-            data['_id'] = row['id']
-            data['_source'] = 'sqlite'
-            data['_db_path'] = str(db_path)
+            data["_id"] = row["id"]
+            data["_source"] = "sqlite"
+            data["_db_path"] = str(db_path)
 
             results.append(data)
 
@@ -179,15 +178,15 @@ class QueryService:
             since = datetime.now() - timedelta(days=1)
 
         stats = {
-            'period_start': since.isoformat(),
-            'period_end': datetime.now().isoformat(),
-            'total_hooks': 0,
-            'by_type': {},
-            'by_tool': {},
-            'by_status': {},
-            'sessions': set(),
-            'errors': 0,
-            'avg_duration_ms': 0
+            "period_start": since.isoformat(),
+            "period_end": datetime.now().isoformat(),
+            "total_hooks": 0,
+            "by_type": {},
+            "by_tool": {},
+            "by_status": {},
+            "sessions": set(),
+            "errors": 0,
+            "avg_duration_ms": 0,
         }
 
         # Query all sources
@@ -198,43 +197,43 @@ class QueryService:
         duration_count = 0
 
         for result in results:
-            stats['total_hooks'] += 1
+            stats["total_hooks"] += 1
 
             # Count by type
-            hook_type = result.get('hook_type', 'unknown')
-            stats['by_type'][hook_type] = stats['by_type'].get(hook_type, 0) + 1
+            hook_type = result.get("hook_type", "unknown")
+            stats["by_type"][hook_type] = stats["by_type"].get(hook_type, 0) + 1
 
             # Count by tool
-            tool_name = result.get('tool_name')
+            tool_name = result.get("tool_name")
             if tool_name:
-                stats['by_tool'][tool_name] = stats['by_tool'].get(tool_name, 0) + 1
+                stats["by_tool"][tool_name] = stats["by_tool"].get(tool_name, 0) + 1
 
             # Count by status
-            execution = result.get('execution') or {}
-            status = execution.get('status', 'unknown') if execution else 'unknown'
-            stats['by_status'][status] = stats['by_status'].get(status, 0) + 1
+            execution = result.get("execution") or {}
+            status = execution.get("status", "unknown") if execution else "unknown"
+            stats["by_status"][status] = stats["by_status"].get(status, 0) + 1
 
             # Track sessions
-            session_id = result.get('session_id')
+            session_id = result.get("session_id")
             if session_id:
-                stats['sessions'].add(session_id)
+                stats["sessions"].add(session_id)
 
             # Count errors
-            if execution and execution.get('error_message'):
-                stats['errors'] += 1
+            if execution and execution.get("error_message"):
+                stats["errors"] += 1
 
             # Track duration
-            duration = execution.get('duration_ms') if execution else None
+            duration = execution.get("duration_ms") if execution else None
             if duration:
                 total_duration += duration
                 duration_count += 1
 
         # Calculate averages
-        stats['unique_sessions'] = len(stats['sessions'])
-        del stats['sessions']  # Remove set from JSON serializable output
+        stats["unique_sessions"] = len(stats["sessions"])
+        del stats["sessions"]  # Remove set from JSON serializable output
 
         if duration_count > 0:
-            stats['avg_duration_ms'] = round(total_duration / duration_count, 2)
+            stats["avg_duration_ms"] = round(total_duration / duration_count, 2)
 
         return stats
 
@@ -263,7 +262,7 @@ class QueryService:
         results = self.query(filter)
 
         # Sort by timestamp ascending for timeline
-        results.sort(key=lambda x: x.get('timestamp_unix', 0))
+        results.sort(key=lambda x: x.get("timestamp_unix", 0))
 
         return results
 

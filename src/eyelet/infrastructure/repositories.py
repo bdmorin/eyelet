@@ -70,10 +70,7 @@ class ExecutionRepository(ABC):
 
     @abstractmethod
     def get_recent(
-        self,
-        hook_type: HookType | None = None,
-        limit: int = 100,
-        offset: int = 0
+        self, hook_type: HookType | None = None, limit: int = 100, offset: int = 0
     ) -> list[HookExecution]:
         pass
 
@@ -102,21 +99,14 @@ class SQLiteExecutionRepository(ExecutionRepository):
         return None
 
     def get_recent(
-        self,
-        hook_type: HookType | None = None,
-        limit: int = 100,
-        offset: int = 0
+        self, hook_type: HookType | None = None, limit: int = 100, offset: int = 0
     ) -> list[HookExecution]:
         # Placeholder implementation
         return []
 
     def get_stats(self) -> dict[str, Any]:
         # Placeholder implementation
-        return {
-            "total_executions": 0,
-            "success_rate": 0.0,
-            "average_duration_ms": 0
-        }
+        return {"total_executions": 0, "success_rate": 0.0, "average_duration_ms": 0}
 
 
 class TemplateRepository(ABC):
@@ -165,7 +155,7 @@ class FileTemplateRepository(TemplateRepository):
 
     def save(self, template: Template) -> Template:
         template_file = self.template_dir / f"{template.id}.json"
-        with open(template_file, 'w') as f:
+        with open(template_file, "w") as f:
             json.dump(template.model_dump(), f, indent=2, default=str)
         return template
 
@@ -181,14 +171,11 @@ class FileTemplateRepository(TemplateRepository):
                     Hook(
                         type=HookType.PRE_TOOL_USE,
                         matcher="Bash",
-                        handler={
-                            "type": "workflow",
-                            "workflow": "bash-validation"
-                        },
-                        description="Validate bash commands for safety"
+                        handler={"type": "workflow", "workflow": "bash-validation"},
+                        description="Validate bash commands for safety",
                     )
                 ],
-                tags=["security", "validation", "bash"]
+                tags=["security", "validation", "bash"],
             ),
             Template(
                 id="observability",
@@ -201,22 +188,22 @@ class FileTemplateRepository(TemplateRepository):
                         matcher=".*",
                         handler={
                             "type": "command",
-                            "command": "eyelet execute --log-only"
+                            "command": "eyelet execute --log-only",
                         },
-                        description="Log all tool usage"
+                        description="Log all tool usage",
                     ),
                     Hook(
                         type=HookType.POST_TOOL_USE,
                         matcher=".*",
                         handler={
                             "type": "command",
-                            "command": "eyelet execute --log-result"
+                            "command": "eyelet execute --log-result",
                         },
-                        description="Log tool results"
-                    )
+                        description="Log tool results",
+                    ),
                 ],
-                tags=["monitoring", "logging", "observability"]
-            )
+                tags=["monitoring", "logging", "observability"],
+            ),
         ]
 
         for template in default_templates:

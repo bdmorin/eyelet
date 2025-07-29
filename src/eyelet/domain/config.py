@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 class LogFormat(str, Enum):
     """Supported logging formats."""
+
     JSON = "json"
     SQLITE = "sqlite"
     BOTH = "both"
@@ -15,6 +16,7 @@ class LogFormat(str, Enum):
 
 class LogScope(str, Enum):
     """Logging scope options."""
+
     PROJECT = "project"
     GLOBAL = "global"
     BOTH = "both"
@@ -22,6 +24,7 @@ class LogScope(str, Enum):
 
 class MetadataConfig(BaseModel):
     """Metadata configuration."""
+
     include_hostname: bool = True
     include_ip: bool = True
     custom_fields: dict[str, Any] = Field(default_factory=dict)
@@ -29,6 +32,7 @@ class MetadataConfig(BaseModel):
 
 class LoggingConfig(BaseModel):
     """Logging configuration."""
+
     format: LogFormat = LogFormat.JSON
     enabled: bool = True
     scope: LogScope = LogScope.PROJECT
@@ -40,6 +44,7 @@ class LoggingConfig(BaseModel):
 
 class EyeletConfig(BaseModel):
     """Main Eyelet configuration."""
+
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
     metadata: MetadataConfig = Field(default_factory=MetadataConfig)
 
@@ -58,7 +63,11 @@ class EyeletConfig(BaseModel):
         def deep_merge(base: dict, override: dict) -> dict:
             result = base.copy()
             for key, value in override.items():
-                if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+                if (
+                    key in result
+                    and isinstance(result[key], dict)
+                    and isinstance(value, dict)
+                ):
                     result[key] = deep_merge(result[key], value)
                 else:
                     result[key] = value

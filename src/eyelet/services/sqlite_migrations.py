@@ -6,11 +6,14 @@ from eyelet.services.sqlite_connection import ProcessLocalConnection, sqlite_ret
 
 # Migration format: (version, description, SQL)
 MIGRATIONS: list[tuple[int, str, str]] = [
-    (1, "Initial schema", """
+    (
+        1,
+        "Initial schema",
+        """
         -- Initial schema is handled by SQLiteLogger.SCHEMA
         -- This migration is a placeholder
-    """),
-
+    """,
+    ),
     # Future migrations will be added here
     # (2, "Add user_id column", """
     #     ALTER TABLE hooks ADD COLUMN user_id TEXT;
