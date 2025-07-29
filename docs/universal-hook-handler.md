@@ -132,8 +132,8 @@ import json
 from pathlib import Path
 
 # Read all PreToolUse Bash logs
-hms_dir = Path("./eyelet-hooks")
-bash_logs = hms_dir.glob("PreToolUse/Bash/**/*.json")
+hooks_dir = Path("./eyelet-hooks")
+bash_logs = hooks_dir.glob("PreToolUse/Bash/**/*.json")
 
 for log_file in bash_logs:
     with open(log_file) as f:
