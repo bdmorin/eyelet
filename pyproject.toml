@@ -1,12 +1,12 @@
 [project]
-name = "rigging-cli"
-version = "0.1.3"
-description = "Hook orchestration system for AI agents - All hands to the rigging!"
+name = "eyelet"
+version = "0.2.0"
+description = "Hook orchestration system for AI agents - Thread through the eyelet!"
 readme = "README.md"
 authors = [{name = "Brian Morin"}]
 license = {text = "MIT"}
 requires-python = ">=3.11"
-keywords = ["hooks", "ai", "automation", "orchestration", "claude-code"]
+keywords = ["hooks", "ai", "automation", "orchestration", "claude-code", "eyelet"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -33,28 +33,28 @@ completion = ["click-completion>=0.5.2", "psutil>=5.9.0"]
 dev = ["pytest>=7.4.0", "pytest-cov>=4.1.0", "black>=23.0.0", "ruff>=0.1.0", "mypy>=1.0.0"]
 
 [project.urls]
-Homepage = "https://github.com/bdmorin/rigging-cli"
-Documentation = "https://github.com/bdmorin/rigging-cli#readme"
-Repository = "https://github.com/bdmorin/rigging-cli"
-Issues = "https://github.com/bdmorin/rigging-cli/issues"
+Homepage = "https://github.com/bdmorin/eyelet"
+Documentation = "https://github.com/bdmorin/eyelet#readme"
+Repository = "https://github.com/bdmorin/eyelet"
+Issues = "https://github.com/bdmorin/eyelet/issues"
 
 [build-system]
 requires = ["setuptools>=65", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project.scripts]
-rigging-cli = "rigging.cli.main:cli"
+eyelet = "eyelet.cli.main:cli"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-rigging = ["schemas/*.json"]
+eyelet = ["schemas/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "--cov=rigging --cov-report=xml --cov-report=term-missing"
+addopts = "--cov=eyelet --cov-report=xml --cov-report=term-missing"
 
 [tool.black]
 line-length = 88
