@@ -95,7 +95,7 @@ The repository is in transition from Go concept to Python implementation. Histor
   - Package name (eyelet on PyPI)
   - Script entry points
   - Dependencies and dev dependencies
-  - Tool configurations (ruff, black, mypy, pytest)
+  - Tool configurations (ruff, mypy, pytest)
 - **src/eyelet/schemas/**: JSON schemas for validation
 - **schemas/**: Root-level schema files (should match src/eyelet/schemas/)
 

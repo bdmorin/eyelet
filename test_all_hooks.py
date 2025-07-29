@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Generate unique test identifier
-TEST_ID = f"zebra-{random.randint(1000,9999)}-flamingo-{random.randint(1000,9999)}"
+TEST_ID = f"zebra-{random.randint(1000, 9999)}-flamingo-{random.randint(1000, 9999)}"
 print(f"Test ID: {TEST_ID}")
 
 # Tools to test with their expected hook types
@@ -257,7 +257,7 @@ def verify_logs(test_id):
     print(f"Expected tool hooks: {expected_count}")
     print(f"Found tool hooks: {found_count}")
     print(
-        f"Coverage: {found_count}/{expected_count} ({found_count/expected_count*100:.1f}%)"
+        f"Coverage: {found_count}/{expected_count} ({found_count / expected_count * 100:.1f}%)"
     )
 
     # List any unexpected logs

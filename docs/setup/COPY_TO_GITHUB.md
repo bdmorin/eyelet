@@ -48,9 +48,9 @@ jobs:
         uv run ruff check .
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
     
-    - name: Format check with black
+    - name: Format check with ruff
       run: |
-        uv run black --check .
+        uv run ruff format --check .
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
     
     - name: Type check with mypy

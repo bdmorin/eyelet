@@ -161,7 +161,9 @@ class ConnectionPool:
         """Initialize connection pool with read-only connections."""
         for _ in range(self.pool_size):
             conn = sqlite3.connect(
-                f"file:{self.db_path}?mode=ro", uri=True, timeout=10.0  # Read-only mode
+                f"file:{self.db_path}?mode=ro",
+                uri=True,
+                timeout=10.0,  # Read-only mode
             )
             conn.row_factory = sqlite3.Row
             conn.execute("PRAGMA query_only = ON")

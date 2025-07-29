@@ -197,7 +197,9 @@ def errors(ctx, limit):
         execution = error.get("execution", {})
         error_msg = execution.get("error_message", "Unknown error")
 
-        console.print(f"[bold]{i+1}. {timestamp.strftime('%Y-%m-%d %H:%M:%S')}[/bold]")
+        console.print(
+            f"[bold]{i + 1}. {timestamp.strftime('%Y-%m-%d %H:%M:%S')}[/bold]"
+        )
         console.print(f"   Hook: {error['hook_type']}")
         if error.get("tool_name"):
             console.print(f"   Tool: {error['tool_name']}")

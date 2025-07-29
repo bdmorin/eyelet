@@ -11,7 +11,7 @@ I've set up 4 comprehensive GitHub Actions workflows:
 - **Features**:
   - Multi-platform testing (Ubuntu, macOS, Windows)
   - Python 3.11 & 3.12 support
-  - Linting with ruff and black
+  - Linting and formatting with ruff
   - Type checking with mypy
   - Test coverage with pytest
   - Package building and installation testing

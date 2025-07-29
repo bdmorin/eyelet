@@ -373,21 +373,21 @@ def validate_hooks(ctx):
             # Validate matcher
             if not hook.is_valid_matcher():
                 errors.append(
-                    f"Hook {i+1} ({hook.type}): Invalid matcher '{hook.matcher}'"
+                    f"Hook {i + 1} ({hook.type}): Invalid matcher '{hook.matcher}'"
                 )
 
             # Check handler
             if hook.handler.type == "command" and not hook.handler.command:
                 errors.append(
-                    f"Hook {i+1} ({hook.type}): Command handler missing command"
+                    f"Hook {i + 1} ({hook.type}): Command handler missing command"
                 )
             elif hook.handler.type == "workflow" and not hook.handler.workflow:
                 errors.append(
-                    f"Hook {i+1} ({hook.type}): Workflow handler missing workflow path"
+                    f"Hook {i + 1} ({hook.type}): Workflow handler missing workflow path"
                 )
             elif hook.handler.type == "script" and not hook.handler.script:
                 errors.append(
-                    f"Hook {i+1} ({hook.type}): Script handler missing script content"
+                    f"Hook {i + 1} ({hook.type}): Script handler missing script content"
                 )
 
             # Warnings
@@ -396,7 +396,7 @@ def validate_hooks(ctx):
             ):
                 if "execute" not in hook.handler.command:
                     warnings.append(
-                        f"Hook {i+1} ({hook.type}): Command should include 'execute' subcommand"
+                        f"Hook {i + 1} ({hook.type}): Command should include 'execute' subcommand"
                     )
 
         # Display results
