@@ -7,6 +7,9 @@ on:
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/eyelet/
     
     steps:
     - uses: actions/checkout@v4
@@ -31,4 +34,5 @@ jobs:
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-      run: twine upload dist/*
+        TWINE_NON_INTERACTIVE: 1
+      run: twine upload --verbose dist/*

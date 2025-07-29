@@ -135,5 +135,57 @@ run = "uv run eyelet"
 description = "Install development dependencies"
 run = "uv sync --all-extras"
 
+[tasks.build]
+description = "Build distribution packages"
+run = """
+echo "🔨 Building distribution packages..."
+rm -rf dist/ build/
+uv build
+echo "✅ Built packages in dist/"
+ls -la dist/
+"""
+
+[tasks.check-package]
+description = "Check package with twine"
+run = """
+echo "🔍 Checking package integrity..."
+pip install --quiet twine
+twine check dist/*
+"""
+
+[tasks.publish-test]
+description = "Publish to TestPyPI for testing"
+run = """
+echo "📤 Publishing to TestPyPI..."
+echo "   Make sure TWINE_TEST_PASSWORD is set"
+pip install --quiet twine
+TWINE_USERNAME=__token__ TWINE_PASSWORD=$TWINE_TEST_PASSWORD \
+  twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+"""
+
+[tasks.publish]
+description = "Publish to PyPI (use GitHub releases instead!)"
+run = """
+echo "⚠️  Warning: It's recommended to use GitHub releases for publishing"
+echo "   This will trigger the automated workflow"
+read -p "Continue with manual publish? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    ./scripts/publish_to_pypi.sh
+fi
+"""
+
+[tasks.release]
+description = "Prepare a new release"
+run = """
+echo "🚀 Preparing new release..."
+echo "1. Update version in pyproject.toml"
+echo "2. Update CHANGELOG.md"
+echo "3. Run: git add -A && git commit -m 'Release vX.Y.Z'"
+echo "4. Run: git tag -a vX.Y.Z -m 'Release vX.Y.Z'"
+echo "5. Run: git push origin main --tags"
+echo "6. Run: gh release create vX.Y.Z"
+"""
+
 [env]
 PYTHONPATH = "${PWD}/src"
