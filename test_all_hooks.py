@@ -143,8 +143,8 @@ def print_test_plan():
     print("\n=== INSTRUCTIONS ===")
     print("1. This script has created test files and printed test commands")
     print("2. Please execute each of the following tool calls:")
-    print("3. After execution, run this script again with --verify flag")
-    print(f"   python test_all_hooks.py --verify {TEST_ID}")
+    print("3. After execution, verify the results with:")
+    print(f"   mise run test-hooks-verify {TEST_ID}")
 
 def generate_test_commands():
     """Generate the commands for testing each tool."""
@@ -283,4 +283,4 @@ if __name__ == "__main__":
         print_test_plan()
         generate_test_commands()
         print(f"\n\nAfter executing all commands above, run:")
-        print(f"python test_all_hooks.py --verify {TEST_ID}")
+        print(f"mise run test-hooks-verify {TEST_ID}")

@@ -23,7 +23,7 @@ run = "uv run mypy src/"
 description = "Test Claude Code hook integration"
 run = """
 echo "🪝 Testing Claude Code hook integration..."
-python test_all_hooks.py
+uv run python test_all_hooks.py
 """
 
 [tasks.test-hooks-verify]
@@ -34,7 +34,7 @@ if [ -z "$1" ]; then
     echo "Example: mise run test-hooks-verify zebra-1234-flamingo-5678"
     exit 1
 fi
-python test_all_hooks.py --verify $1
+uv run python test_all_hooks.py --verify $1
 """
 
 [tasks.hook-coverage]
