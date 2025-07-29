@@ -5,30 +5,30 @@ import os
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any
 
 from eyelet.domain.config import LogFormat, LogScope
 from eyelet.domain.hooks import HookData
 from eyelet.services.config_service import ConfigService
-from eyelet.services.sqlite_logger import SQLiteLogger
 from eyelet.services.git_metadata import GitMetadata
+from eyelet.services.sqlite_logger import SQLiteLogger
 
 
 class HookLogger:
     """Unified logger that handles both JSON file and SQLite logging."""
-    
-    def __init__(self, config_service: ConfigService, project_dir: Optional[Path] = None):
+
+    def __init__(self, config_service: ConfigService, project_dir: Path | None = None):
         """Initialize hook logger.
-        
+
         Args:
             config_service: Configuration service instance
             project_dir: Project directory for context
         """
         self.config_service = config_service
         self.config = config_service.get_config()
-        self._sqlite_loggers: Dict[str, SQLiteLogger] = {}
+        self._sqlite_loggers: dict[str, SQLiteLogger] = {}
         self._git_metadata = GitMetadata(project_dir)
-    
+
     def _get_sqlite_logger(self, path: Path) -> SQLiteLogger:
         """Get or create SQLite logger for path."""
         path_str = str(path)
@@ -36,14 +36,14 @@ class HookLogger:
             db_path = path / "eyelet.db"
             self._sqlite_loggers[path_str] = SQLiteLogger(db_path)
         return self._sqlite_loggers[path_str]
-    
-    def _create_hook_data(self, input_data: Dict[str, Any], start_time: datetime) -> HookData:
+
+    def _create_hook_data(self, input_data: dict[str, Any], start_time: datetime) -> HookData:
         """Create HookData object from raw input."""
         # Extract core fields
         hook_type = input_data.get('hook_event_name', 'unknown')
         tool_name = input_data.get('tool_name', '')
         session_id = input_data.get('session_id', 'unknown')
-        
+
         # Build HookData
         hook_data = HookData(
             timestamp=start_time.isoformat(),
@@ -65,7 +65,7 @@ class HookLogger:
             input_data=input_data,
             metadata={}
         )
-        
+
         # Add Git metadata if enabled
         if self.config.metadata.include_hostname or self.config.metadata.include_ip:
             # Add system metadata
@@ -73,34 +73,34 @@ class HookLogger:
             if self.config.metadata.include_hostname:
                 try:
                     hook_data.metadata['hostname'] = socket.gethostname()
-                except:
+                except Exception:
                     pass
-            
+
             if self.config.metadata.include_ip:
                 try:
                     hostname = socket.gethostname()
                     hook_data.metadata['ip_address'] = socket.gethostbyname(hostname)
-                except:
+                except Exception:
                     pass
-        
+
         # Add Git metadata
         git_info = self._git_metadata.get_metadata()
         if git_info:
             hook_data.metadata['git'] = git_info
-        
+
         # Add custom fields from config
         if self.config.metadata.custom_fields:
             hook_data.metadata.update(self.config.metadata.custom_fields)
-        
+
         return hook_data
-    
+
     def _log_to_json_file(self, hook_data: HookData, log_dir: Path) -> Path:
         """Log hook data to JSON file.
-        
+
         Args:
             hook_data: Hook data to log
             log_dir: Directory to log to
-            
+
         Returns:
             Path to created log file
         """
@@ -112,65 +112,65 @@ class HookLogger:
             dir_path = log_dir / hook_data.hook_type / compact_type / datetime.now().strftime("%Y-%m-%d")
         else:
             dir_path = log_dir / hook_data.hook_type / datetime.now().strftime("%Y-%m-%d")
-        
+
         # Create directory
         dir_path.mkdir(parents=True, exist_ok=True)
-        
+
         # Create filename
         timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         if hook_data.tool_name:
             filename = f"{timestamp_str}_{hook_data.hook_type}_{hook_data.tool_name}.json"
         else:
             filename = f"{timestamp_str}_{hook_data.hook_type}.json"
-        
+
         log_file = dir_path / filename
-        
+
         # Add file metadata
         hook_data.metadata.update({
             "log_file": str(log_file),
             "log_dir": str(dir_path),
             "project_dir": str(hook_data.cwd)
         })
-        
+
         # Write log file
         with open(log_file, 'w') as f:
             json.dump(hook_data.model_dump(), f, indent=2, default=str)
-        
+
         return log_file
-    
-    def log_hook(self, input_data: Dict[str, Any], start_time: Optional[datetime] = None) -> Dict[str, Any]:
+
+    def log_hook(self, input_data: dict[str, Any], start_time: datetime | None = None) -> dict[str, Any]:
         """Log hook data according to configuration.
-        
+
         Args:
             input_data: Raw hook input data
             start_time: Start time (defaults to now)
-            
+
         Returns:
             Dictionary with logging results
         """
         if not self.config.logging.enabled:
             return {"status": "disabled"}
-        
+
         if start_time is None:
             start_time = datetime.now()
-        
+
         # Create hook data
         hook_data = self._create_hook_data(input_data, start_time)
-        
+
         # Store for potential updates
         self._last_hook_data = hook_data
-        
+
         # Get logging paths
         paths = self.config_service.get_effective_logging_paths()
         results = {"status": "success", "logs": []}
-        
+
         # Determine where to log based on scope
         log_locations = []
         if self.config.logging.scope in [LogScope.PROJECT, LogScope.BOTH]:
             log_locations.append(("project", paths['project']))
         if self.config.logging.scope in [LogScope.GLOBAL, LogScope.BOTH]:
             log_locations.append(("global", paths['global']))
-        
+
         # Log to each location
         for location_type, path in log_locations:
             if self.config.logging.format in [LogFormat.JSON, LogFormat.BOTH]:
@@ -182,7 +182,7 @@ class HookLogger:
                     "location": location_type,
                     "path": str(log_file)
                 })
-            
+
             if self.config.logging.format in [LogFormat.SQLITE, LogFormat.BOTH]:
                 # SQLite logging
                 sqlite_logger = self._get_sqlite_logger(path)
@@ -193,19 +193,19 @@ class HookLogger:
                     "path": str(path / "eyelet.db"),
                     "success": success
                 })
-        
+
         return results
-    
+
     def update_hook_result(
         self,
         hook_data: HookData,
         status: str,
         duration_ms: int,
-        output_data: Optional[Dict[str, Any]] = None,
-        error_message: Optional[str] = None
+        output_data: dict[str, Any] | None = None,
+        error_message: str | None = None
     ) -> None:
         """Update hook with execution results.
-        
+
         This is called after hook execution completes to add results.
         For JSON files, we re-read and update. For SQLite, this would
         be handled differently in a future implementation.
@@ -219,7 +219,7 @@ class HookLogger:
             error_message=error_message
         )
         hook_data.completed_at = datetime.now().isoformat()
-        
+
         # If we logged to JSON files, update them
         if "log_file" in hook_data.metadata:
             try:

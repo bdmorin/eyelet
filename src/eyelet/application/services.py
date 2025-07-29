@@ -148,7 +148,7 @@ class ConfigurationService:
                 hook_type = hook.type
                 if hook_type not in hooks_data:
                     hooks_data[hook_type] = []
-                
+
                 hook_entry = {
                     "hooks": [
                         {
@@ -157,11 +157,11 @@ class ConfigurationService:
                         }
                     ]
                 }
-                
+
                 # Add matcher if present
                 if hook.matcher:
                     hook_entry["matcher"] = hook.matcher
-                    
+
                 hooks_data[hook_type].append(hook_entry)
 
         settings["hooks"] = hooks_data

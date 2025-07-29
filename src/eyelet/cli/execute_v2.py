@@ -1,7 +1,6 @@
 """Hook execution command with unified logging - the main runtime endpoint"""
 
 import json
-import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -11,7 +10,6 @@ from rich.console import Console
 
 from eyelet.services.config_service import ConfigService
 from eyelet.services.hook_logger import HookLogger
-from eyelet.domain.hooks import ExecutionResult
 
 console = Console()
 
@@ -32,11 +30,11 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging):
     """
     start_time = datetime.now()
     project_dir = ctx.obj.get('config_dir', Path.cwd()) if ctx.obj else Path.cwd()
-    
+
     # Initialize services
     config_service = ConfigService(project_dir)
     hook_logger = HookLogger(config_service, project_dir)
-    
+
     # Read input from stdin
     try:
         if sys.stdin.isatty():
@@ -64,11 +62,11 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging):
             "hook_event_name": "read_error",
             "error": str(e)
         }
-    
+
     # Extract hook information
-    hook_type = input_data.get('hook_event_name', 'unknown')
-    tool_name = input_data.get('tool_name', None)
-    
+    # hook_type = input_data.get('hook_event_name', 'unknown')
+    # tool_name = input_data.get('tool_name', None)
+
     # Log the hook (unless disabled)
     log_results = None
     if not no_logging:
@@ -80,45 +78,45 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging):
             if debug:
                 console.print(f"[yellow]Logging failed: {e}[/yellow]", file=sys.stderr)
             # Continue execution even if logging fails
-    
+
     # Process based on options
     status = "success"
     output_data = {}
     error_message = None
-    
+
     try:
         if log_only:
             # Just log and exit successfully
             output_data = {"action": "logged"}
-            
+
         elif log_result:
             # Log the result of a previous execution
             output_data = {"action": "result_logged"}
-            
+
         elif workflow:
             # Execute specified workflow
             # TODO: Integrate WorkflowService when available
             output_data = {"action": "workflow_executed", "workflow": workflow}
-            
+
         else:
             # Default processing
             output_data = {"action": "processed"}
-        
+
         # Check for blocking directives in hook data
         if input_data.get("block", False):
             if debug:
                 console.print("[yellow]Blocking action requested[/yellow]", file=sys.stderr)
             sys.exit(2)  # Exit code 2 indicates blocked action
-            
+
     except Exception as e:
         status = "error"
         error_message = str(e)
         if debug:
             console.print(f"[red]Execution error: {e}[/red]", file=sys.stderr)
-    
+
     # Calculate duration
     duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)
-    
+
     # Update hook with results (if we logged)
     if log_results and hasattr(hook_logger, '_last_hook_data'):
         try:
@@ -132,13 +130,13 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging):
         except Exception as e:
             if debug:
                 console.print(f"[yellow]Failed to update hook result: {e}[/yellow]", file=sys.stderr)
-    
+
     # Output any required response
     if output_data and not log_only:
         # Check for response data to output
         if "response" in output_data:
             print(json.dumps(output_data["response"]))
-    
+
     # Exit based on status
     if status == "error" and error_message:
         # Exit with success to not disrupt Claude Code

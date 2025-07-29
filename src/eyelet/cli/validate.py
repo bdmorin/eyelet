@@ -20,9 +20,24 @@ def get_embedded_schema():
         "type": "object",
         "properties": {
             "hooks": {
-                "type": "array",
-                "description": "Array of hook configurations",
-                "items": {"$ref": "#/definitions/hook"}
+                "oneOf": [
+                    {
+                        "type": "array",
+                        "description": "Array of hook configurations (legacy format)",
+                        "items": {"$ref": "#/definitions/hook"}
+                    },
+                    {
+                        "type": "object",
+                        "description": "Object of hook configurations (new format)",
+                        "patternProperties": {
+                            "^(PreToolUse|PostToolUse|UserPromptSubmit|Notification|Stop|SubagentStop|PreCompact)$": {
+                                "type": "array",
+                                "items": {"$ref": "#/definitions/hook_entry"}
+                            }
+                        },
+                        "additionalProperties": False
+                    }
+                ]
             }
         },
         "additionalProperties": True,
@@ -102,6 +117,17 @@ def get_embedded_schema():
                         "additionalProperties": False
                     }
                 ]
+            },
+            "hook_entry": {
+                "type": "object",
+                "required": ["handler"],
+                "properties": {
+                    "handler": {"$ref": "#/definitions/handler"},
+                    "matcher": {
+                        "type": "string",
+                        "description": "Regex pattern for tool matching or 'manual'/'auto' for PreCompact"
+                    }
+                }
             }
         }
     }
@@ -144,7 +170,7 @@ def validate_settings(ctx, settings_file, schema):
             schema_path = Path(pkg_resources.resource_filename('eyelet', 'schemas/claude-settings.schema.json'))
             if not schema_path.exists():
                 raise FileNotFoundError()
-        except:
+        except Exception:
             # Fall back to embedded schema
             try:
                 import importlib.resources as resources
@@ -153,7 +179,7 @@ def validate_settings(ctx, settings_file, schema):
                 schema_data = json.loads(schema_content)
                 # Skip file loading since we have the data
                 skip_schema_load = True
-            except:
+            except Exception:
                 # Last resort - embed the schema directly
                 schema_data = get_embedded_schema()
                 skip_schema_load = True
@@ -184,7 +210,7 @@ def validate_settings(ctx, settings_file, schema):
         # Show summary
         if 'hooks' in settings_data:
             hooks_data = settings_data['hooks']
-            
+
             # Count hooks based on format
             if isinstance(hooks_data, list):
                 # Old format
@@ -205,7 +231,7 @@ def validate_settings(ctx, settings_file, schema):
             else:
                 hook_count = 0
                 hook_types = {}
-                
+
             console.print(f"\n[bold]Summary:[/bold] {hook_count} hooks configured")
 
             # Display table
@@ -223,7 +249,7 @@ def validate_settings(ctx, settings_file, schema):
                     matchers = [entry.get('matcher', '-') for entry in hooks]
                 else:
                     matchers = ['-']
-                    
+
                 unique_matchers = list(set(matchers))
                 table.add_row(
                     hook_type,

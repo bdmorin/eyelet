@@ -8,10 +8,10 @@ from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
 from eyelet.application.services import ConfigurationService, HookService
+from eyelet.domain.config import LogFormat, LogScope
 from eyelet.domain.models import Handler, HandlerType, Hook, HookType, ToolMatcher
 from eyelet.infrastructure.repositories import InMemoryHookRepository
 from eyelet.services.config_service import ConfigService
-from eyelet.domain.config import LogFormat, LogScope
 
 console = Console()
 
@@ -404,7 +404,7 @@ def install_all(ctx, scope, force, dev):
 
 
 @configure.command()
-@click.option('--format', 
+@click.option('--format',
               help='Logging format(s) - comma-separated list (e.g., "json", "sqlite", "json,sqlite")')
 @click.option('--scope', type=click.Choice(['global', 'project', 'both']),
               help='Logging scope (global ~/.claude, project local, or both)')
@@ -416,27 +416,27 @@ def install_all(ctx, scope, force, dev):
 def logging(ctx, format, scope, enabled, is_global):
     """
     Configure logging settings - Chart the course!
-    
+
     Configure how Eyelet logs hook executions. You can choose:
     - Format: JSON files, SQLite database, or multiple formats
     - Scope: Global (~/.claude), project-local, or both
     - Enable/disable logging entirely
-    
+
     Examples:
         # Enable SQLite logging for current project
         eyelet configure logging --format sqlite
-        
+
         # Use both JSON and SQLite globally
         eyelet configure logging --format json,sqlite --scope global --global
-        
+
         # Disable logging temporarily
         eyelet configure logging --disabled
-        
+
         # Show current settings
         eyelet configure logging
     """
     config_service = ConfigService()
-    
+
     # If no options provided, show current settings
     if format is None and scope is None and enabled is None:
         config = config_service.get_config()
@@ -444,7 +444,7 @@ def logging(ctx, format, scope, enabled, is_global):
         console.print(f"Format: [cyan]{config.logging.format.value}[/cyan]")
         console.print(f"Scope: [cyan]{config.logging.scope.value}[/cyan]")
         console.print(f"Enabled: [cyan]{'Yes' if config.logging.enabled else 'No'}[/cyan]")
-        
+
         if is_global:
             console.print("\n[dim]Showing global configuration[/dim]")
         else:
@@ -455,20 +455,20 @@ def logging(ctx, format, scope, enabled, is_global):
             else:
                 console.print("\n[dim]Using global configuration (no project override)[/dim]")
         return
-    
+
     # Load appropriate config
     if is_global:
         config = config_service.load_global_config()
     else:
         config = config_service.load_project_config() or config_service.get_config()
-    
+
     # Update settings
     changed = False
-    
+
     if format is not None:
         # Parse comma-separated formats
         formats = [f.strip().lower() for f in format.split(',')]
-        
+
         # Validate formats
         valid_formats = ['json', 'sqlite']
         for fmt in formats:
@@ -476,7 +476,7 @@ def logging(ctx, format, scope, enabled, is_global):
                 console.print(f"[red]Invalid format: {fmt}[/red]")
                 console.print(f"Valid formats: {', '.join(valid_formats)}")
                 return
-        
+
         # Determine the LogFormat enum value
         if len(formats) == 1:
             config.logging.format = LogFormat(formats[0])
@@ -486,33 +486,33 @@ def logging(ctx, format, scope, enabled, is_global):
             # For future expansion when we have more formats
             console.print("[yellow]Warning: Multiple format support currently limited to json,sqlite[/yellow]")
             config.logging.format = LogFormat.BOTH
-            
+
         changed = True
-        
+
     if scope is not None:
         config.logging.scope = LogScope(scope)
         changed = True
-        
+
     if enabled is not None:
         config.logging.enabled = enabled
         changed = True
-    
+
     if changed:
         # Save the configuration
         if is_global:
             config_service.save_global_config(config)
         else:
             config_service.save_project_config(config)
-        
-        console.print(f"\n[green]✓ Logging configuration updated![/green]")
+
+        console.print("\n[green]✓ Logging configuration updated![/green]")
         console.print(f"Format: [cyan]{config.logging.format.value}[/cyan]")
         console.print(f"Scope: [cyan]{config.logging.scope.value}[/cyan]")
         console.print(f"Enabled: [cyan]{'Yes' if config.logging.enabled else 'No'}[/cyan]")
-        
+
         # Show where config was saved
         saved_path = config_service.global_config_path if is_global else config_service.project_config_path
         console.print(f"\n[dim]Configuration saved to: {saved_path}[/dim]")
-        
+
         # Special message for SQLite
         if config.logging.format in [LogFormat.SQLITE, LogFormat.BOTH]:
             console.print("\n[bold cyan]SQLite logging enabled![/bold cyan]")

@@ -2,7 +2,7 @@
 
 __all__ = [
     'completion',
-    'configure', 
+    'configure',
     'discover',
     'doctor',
     'execute',

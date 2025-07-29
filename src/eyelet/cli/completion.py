@@ -256,7 +256,7 @@ def _detect_shell():
         for shell in SHELLS:
             if shell in parent_name:
                 return shell
-    except:
+    except Exception:
         pass
 
     return None

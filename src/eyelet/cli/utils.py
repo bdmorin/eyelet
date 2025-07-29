@@ -139,7 +139,7 @@ def get_version():
     try:
         from eyelet import __version__
         return __version__
-    except:
+    except Exception:
         return "unknown"
 
 

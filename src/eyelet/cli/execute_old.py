@@ -251,7 +251,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
 
         try:
             execution_service.record_execution(execution)
-        except:
+        except Exception:
             pass  # Don't fail on logging errors
 
         # Update Eyelet log with error if enabled
@@ -270,7 +270,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
 
                 with open(log_file, 'w') as f:
                     json.dump(final_log_data, f, indent=2, default=str)
-            except:
+            except Exception:
                 pass
 
         if debug:

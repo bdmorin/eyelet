@@ -38,6 +38,36 @@ def test_validate_valid_settings():
         Path(temp_path).unlink()
 
 
+def test_validate_new_format_settings():
+    """Test validation of settings with new object format"""
+    runner = CliRunner()
+
+    new_format_settings = {
+        "hooks": {
+            "PreToolUse": [
+                {
+                    "handler": {
+                        "type": "command",
+                        "command": "echo test"
+                    },
+                    "matcher": ".*"
+                }
+            ]
+        }
+    }
+
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump(new_format_settings, f)
+        temp_path = f.name
+
+    try:
+        result = runner.invoke(cli, ['validate', 'settings', temp_path])
+        assert result.exit_code == 0
+        assert "is valid!" in result.output
+    finally:
+        Path(temp_path).unlink()
+
+
 def test_validate_invalid_settings():
     """Test validation of an invalid settings file"""
     runner = CliRunner()

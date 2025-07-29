@@ -1,8 +1,8 @@
 """Configuration domain models for Eyelet."""
 
 from enum import Enum
-from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 
@@ -24,7 +24,7 @@ class MetadataConfig(BaseModel):
     """Metadata configuration."""
     include_hostname: bool = True
     include_ip: bool = True
-    custom_fields: Dict[str, Any] = Field(default_factory=dict)
+    custom_fields: dict[str, Any] = Field(default_factory=dict)
 
 
 class LoggingConfig(BaseModel):
@@ -34,7 +34,7 @@ class LoggingConfig(BaseModel):
     scope: LogScope = LogScope.PROJECT
     global_path: str = "~/.claude/eyelet-logging"
     project_path: str = ".eyelet-logging"
-    path: Optional[str] = None  # Override for project-specific path
+    path: str | None = None  # Override for project-specific path
     add_to_gitignore: bool = True
 
 
@@ -42,18 +42,18 @@ class EyeletConfig(BaseModel):
     """Main Eyelet configuration."""
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
     metadata: MetadataConfig = Field(default_factory=MetadataConfig)
-    
+
     @classmethod
     def default(cls) -> "EyeletConfig":
         """Create default configuration."""
         return cls()
-    
+
     def merge_with(self, other: "EyeletConfig") -> "EyeletConfig":
         """Merge this config with another, with other taking precedence."""
         # Deep merge logic
         merged_dict = self.model_dump()
         other_dict = other.model_dump()
-        
+
         # Recursive merge helper
         def deep_merge(base: dict, override: dict) -> dict:
             result = base.copy()
@@ -63,6 +63,6 @@ class EyeletConfig(BaseModel):
                 else:
                     result[key] = value
             return result
-        
+
         merged = deep_merge(merged_dict, other_dict)
         return EyeletConfig(**merged)

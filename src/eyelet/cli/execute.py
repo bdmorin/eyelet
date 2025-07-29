@@ -134,7 +134,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
 
     # Initialize configuration and logging
     project_dir = ctx.obj.get('config_dir', Path.cwd()) if ctx.obj else Path.cwd()
-    
+
     # Log using new unified system (unless disabled)
     hook_logger = None
     hook_data = None
@@ -142,11 +142,11 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
         try:
             config_service = ConfigService(project_dir)
             hook_logger = HookLogger(config_service, project_dir)
-            
+
             # Create hook data and log it
             hook_data = hook_logger._create_hook_data(input_data, start_time)
             log_results = hook_logger.log_hook(input_data, start_time)
-            
+
             if debug:
                 console.print(f"[dim]Logged to: {log_results}[/dim]")
         except Exception as e:
@@ -156,7 +156,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
                 console.stderr = False
             # Fall back to legacy logging if requested
             legacy_log = True
-    
+
     # Legacy JSON file logging (if enabled or as fallback)
     log_file = None
     if not no_logging and legacy_log:
@@ -186,7 +186,6 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
         SQLiteExecutionRepository(get_db_path())
     )
 
-    output_data = {}
 
     try:
         # Record execution start
@@ -214,7 +213,6 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
                 result = workflow_service.execute_workflow(workflow, input_data)
                 execution.status = "success"
                 execution.output_data = result
-                output_data = result
             except Exception as e:
                 execution.status = "error"
                 execution.error_message = str(e)
@@ -245,7 +243,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
             except Exception as e:
                 if debug:
                     console.print(f"[yellow]Failed to update hook result: {e}[/yellow]")
-        
+
         # Update legacy log if used
         if log_file:
             try:
@@ -293,7 +291,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
 
         try:
             execution_service.record_execution(execution)
-        except:
+        except Exception:
             pass  # Don't fail on logging errors
 
         # Update logs with error
@@ -306,9 +304,9 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
                     output_data={},
                     error_message=str(e)
                 )
-            except:
+            except Exception:
                 pass
-        
+
         # Update legacy log with error if used
         if log_file:
             try:
@@ -325,7 +323,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
 
                 with open(log_file, 'w') as f:
                     json.dump(final_log_data, f, indent=2, default=str)
-            except:
+            except Exception:
                 pass
 
         if debug:

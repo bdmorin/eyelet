@@ -2,15 +2,14 @@
 
 import json
 from datetime import datetime, timedelta
-from pathlib import Path
 
 import click
 from rich.console import Console
-from rich.table import Table
 from rich.syntax import Syntax
+from rich.table import Table
 
 from eyelet.services.config_service import ConfigService
-from eyelet.services.query_service import QueryService, QueryFilter
+from eyelet.services.query_service import QueryFilter, QueryService
 
 console = Console()
 
@@ -37,7 +36,7 @@ def search(ctx, hook_type, tool, session, since, status, branch, errors_only, li
     """Search hook logs with filters."""
     config_service = ConfigService()
     query_service = QueryService(config_service)
-    
+
     # Parse since parameter
     since_dt = None
     if since:
@@ -50,10 +49,10 @@ def search(ctx, hook_type, tool, session, since, status, branch, errors_only, li
         else:
             try:
                 since_dt = datetime.fromisoformat(since)
-            except:
+            except Exception:
                 console.print(f"[red]Invalid since format: {since}[/red]")
                 return
-    
+
     # Build filter
     filter = QueryFilter(
         hook_type=hook_type,
@@ -65,14 +64,14 @@ def search(ctx, hook_type, tool, session, since, status, branch, errors_only, li
         has_error=errors_only,
         limit=limit
     )
-    
+
     # Execute query
     results = query_service.query(filter)
-    
+
     if not results:
         console.print("[yellow]No matching logs found[/yellow]")
         return
-    
+
     # Display results
     if format == 'json':
         console.print(json.dumps(results, indent=2, default=str))
@@ -87,22 +86,22 @@ def search(ctx, hook_type, tool, session, since, status, branch, errors_only, li
         table.add_column("Status", style="yellow")
         table.add_column("Duration", style="magenta")
         table.add_column("Session", style="dim")
-        
+
         for result in results:
             timestamp = datetime.fromisoformat(result['timestamp'])
             time_str = timestamp.strftime("%H:%M:%S")
-            
+
             execution = result.get('execution') or {}
             status = execution.get('status', 'unknown') if execution else 'unknown'
             if status == 'error':
                 status = f"[red]{status}[/red]"
             elif status == 'success':
                 status = f"[green]{status}[/green]"
-            
+
             duration = execution.get('duration_ms', '') if execution else ''
             if duration:
                 duration = f"{duration}ms"
-            
+
             table.add_row(
                 time_str,
                 result.get('hook_type', ''),
@@ -111,7 +110,7 @@ def search(ctx, hook_type, tool, session, since, status, branch, errors_only, li
                 duration,
                 result.get('session_id', '')[:8] + "..."
             )
-        
+
         console.print(table)
 
 
@@ -122,7 +121,7 @@ def summary(ctx, since):
     """Show summary statistics of hook activity."""
     config_service = ConfigService()
     query_service = QueryService(config_service)
-    
+
     # Parse since parameter
     if since.endswith('h'):
         hours = int(since[:-1])
@@ -132,10 +131,10 @@ def summary(ctx, since):
         since_dt = datetime.now() - timedelta(days=days)
     else:
         since_dt = datetime.now() - timedelta(days=1)
-    
+
     # Get summary
     stats = query_service.get_summary(since_dt)
-    
+
     # Display summary
     console.print(f"\n[bold]Hook Activity Summary[/bold] (last {since})")
     console.print(f"Period: {stats['period_start']} to {stats['period_end']}")
@@ -143,19 +142,19 @@ def summary(ctx, since):
     console.print(f"Unique sessions: [cyan]{stats['unique_sessions']}[/cyan]")
     console.print(f"Errors: [red]{stats['errors']}[/red]")
     console.print(f"Avg duration: [magenta]{stats['avg_duration_ms']}ms[/magenta]")
-    
+
     # Hook type breakdown
     if stats['by_type']:
         console.print("\n[bold]By Hook Type:[/bold]")
         for hook_type, count in sorted(stats['by_type'].items(), key=lambda x: x[1], reverse=True):
             console.print(f"  {hook_type}: {count}")
-    
+
     # Tool breakdown
     if stats['by_tool']:
         console.print("\n[bold]By Tool:[/bold]")
         for tool, count in sorted(stats['by_tool'].items(), key=lambda x: x[1], reverse=True):
             console.print(f"  {tool}: {count}")
-    
+
     # Status breakdown
     if stats['by_status']:
         console.print("\n[bold]By Status:[/bold]")
@@ -175,21 +174,21 @@ def errors(ctx, limit):
     """Show recent errors."""
     config_service = ConfigService()
     query_service = QueryService(config_service)
-    
+
     # Get recent errors
     errors = query_service.get_recent_errors(limit)
-    
+
     if not errors:
         console.print("[green]No recent errors found![/green]")
         return
-    
+
     console.print(f"\n[bold red]Recent Errors ({len(errors)})[/bold red]\n")
-    
+
     for i, error in enumerate(errors):
         timestamp = datetime.fromisoformat(error['timestamp'])
         execution = error.get('execution', {})
         error_msg = execution.get('error_message', 'Unknown error')
-        
+
         console.print(f"[bold]{i+1}. {timestamp.strftime('%Y-%m-%d %H:%M:%S')}[/bold]")
         console.print(f"   Hook: {error['hook_type']}")
         if error.get('tool_name'):
@@ -206,29 +205,29 @@ def session(ctx, session_id):
     """Show timeline for a specific session."""
     config_service = ConfigService()
     query_service = QueryService(config_service)
-    
+
     # Get session timeline
     timeline = query_service.get_session_timeline(session_id)
-    
+
     if not timeline:
         console.print(f"[yellow]No logs found for session {session_id}[/yellow]")
         return
-    
+
     console.print(f"\n[bold]Session Timeline[/bold] ({session_id})")
     console.print(f"Total events: {len(timeline)}\n")
-    
+
     for event in timeline:
         timestamp = datetime.fromisoformat(event['timestamp'])
         time_str = timestamp.strftime("%H:%M:%S.%f")[:-3]
-        
+
         hook_type = event['hook_type']
         tool_name = event.get('tool_name', '')
-        
+
         if tool_name:
             console.print(f"[cyan]{time_str}[/cyan] {hook_type} - {tool_name}")
         else:
             console.print(f"[cyan]{time_str}[/cyan] {hook_type}")
-        
+
         # Show additional details for certain events
         if hook_type == 'UserPromptSubmit':
             prompt = event.get('input_data', {}).get('prompt', '')
@@ -248,20 +247,20 @@ def grep(ctx, search_term, limit):
     """Search for a term in all log data."""
     config_service = ConfigService()
     query_service = QueryService(config_service)
-    
+
     # Search logs
     results = query_service.search_logs(search_term, limit)
-    
+
     if not results:
         console.print(f"[yellow]No logs containing '{search_term}' found[/yellow]")
         return
-    
+
     console.print(f"\n[bold]Search Results[/bold] for '{search_term}' ({len(results)} matches)\n")
-    
+
     for result in results:
         timestamp = datetime.fromisoformat(result['timestamp'])
         console.print(f"[cyan]{timestamp.strftime('%Y-%m-%d %H:%M:%S')}[/cyan] - {result['hook_type']}")
-        
+
         # Show context where term was found
         # This is a simple implementation - could be enhanced
         data_str = json.dumps(result, indent=2)
@@ -274,5 +273,5 @@ def grep(ctx, search_term, limit):
                 syntax = Syntax(context, "json", theme="monokai", line_numbers=False)
                 console.print(syntax)
                 break
-        
+
         console.print()
