@@ -71,3 +71,5 @@ workflows/user/*
 hms-hooks/
 test-*.json
 tmp-test/claude-code/
+claude-code/
+eyelet-hooks/

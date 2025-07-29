@@ -1,0 +1,139 @@
+# mise configuration for claude-hooks (eyelet)
+
+[tools]
+python = "3.11"
+
+[tasks.test]
+description = "Run all tests"
+run = "uv run pytest -v"
+
+[tasks.lint]
+description = "Run linting"
+run = "uv run ruff check ."
+
+[tasks.format]
+description = "Format code"
+run = "uv run ruff format ."
+
+[tasks.typecheck]
+description = "Run type checking"
+run = "uv run mypy src/"
+
+[tasks.test-hooks]
+description = "Test Claude Code hook integration"
+run = """
+echo "🪝 Testing Claude Code hook integration..."
+python test_all_hooks.py
+"""
+
+[tasks.test-hooks-verify]
+description = "Verify hook test results"
+run = """
+if [ -z "$1" ]; then
+    echo "Usage: mise run test-hooks-verify <test-id>"
+    echo "Example: mise run test-hooks-verify zebra-1234-flamingo-5678"
+    exit 1
+fi
+python test_all_hooks.py --verify $1
+"""
+
+[tasks.hook-coverage]
+description = "Generate hook coverage report"
+run = """
+echo "📊 Generating hook coverage report..."
+TEST_ID=$(python -c "import random; print(f'coverage-{random.randint(1000,9999)}-test-{random.randint(1000,9999)}')")
+echo "Test ID: $TEST_ID"
+
+# Create test files
+echo "Creating test files..."
+echo "Test content $TEST_ID" > /tmp/hook_coverage_test.txt
+
+# Execute tools with coverage ID
+echo "Testing Bash tool..."
+echo "Coverage test $TEST_ID" > /dev/null
+
+echo "Testing Read tool..."
+cat /tmp/hook_coverage_test.txt > /dev/null
+
+echo "Testing Write tool..."
+echo "Coverage $TEST_ID" > /tmp/hook_coverage_write.txt
+
+# Wait a moment for hooks to complete
+sleep 2
+
+# Count hooks
+echo ""
+echo "Hook Coverage Summary:"
+echo "====================="
+HOOK_COUNT=$(find eyelet-hooks -name "*.json" -mmin -2 | wc -l)
+echo "Hooks triggered in last 2 minutes: $HOOK_COUNT"
+
+# Clean up
+rm -f /tmp/hook_coverage_*.txt
+"""
+
+[tasks.hook-stats]
+description = "Show hook statistics"
+run = """
+echo "📈 Hook Statistics"
+echo "=================="
+echo ""
+echo "Hooks by Type:"
+for hook_type in PreToolUse PostToolUse UserPromptSubmit Notification Stop SubagentStop PreCompact; do
+    count=$(find eyelet-hooks -path "*/$hook_type/*" -name "*.json" 2>/dev/null | wc -l)
+    printf "%-20s %s\n" "$hook_type:" "$count"
+done
+
+echo ""
+echo "Hooks by Tool (Top 10):"
+find eyelet-hooks -name "*.json" -print0 | xargs -0 grep '"tool_name"' 2>/dev/null | \\
+    awk -F'"' '{print $4}' | grep -v '^$' | sort | uniq -c | sort -rn | head -10
+
+echo ""
+echo "Recent Activity (Last 24 hours):"
+recent=$(find eyelet-hooks -name "*.json" -mtime -1 | wc -l)
+echo "Hooks logged: $recent"
+"""
+
+[tasks.hook-clean]
+description = "Clean old hook logs (older than 7 days)"
+run = """
+echo "🧹 Cleaning old hook logs..."
+OLD_COUNT=$(find eyelet-hooks -name "*.json" -mtime +7 | wc -l)
+if [ $OLD_COUNT -gt 0 ]; then
+    echo "Found $OLD_COUNT logs older than 7 days"
+    read -p "Delete them? (y/N) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        find eyelet-hooks -name "*.json" -mtime +7 -delete
+        echo "Deleted $OLD_COUNT old log files"
+    else
+        echo "Cancelled"
+    fi
+else
+    echo "No logs older than 7 days found"
+fi
+"""
+
+[tasks.validate]
+description = "Validate Claude settings.json"
+run = "uv run eyelet validate"
+
+[tasks.configure]
+description = "Configure eyelet hooks"
+run = "uv run eyelet configure"
+
+[tasks.ci]
+description = "Run all CI checks"
+depends = ["lint", "typecheck", "test", "validate"]
+
+[tasks.dev]
+description = "Run development server"
+run = "uv run eyelet"
+
+[tasks.install-dev]
+description = "Install development dependencies"
+run = "uv sync --all-extras"
+
+[env]
+PYTHONPATH = "${PWD}/src"

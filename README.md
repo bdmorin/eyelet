@@ -140,6 +140,54 @@ Eyelet embraces hardware connection terminology for reliable, secure attachment:
 - **"Scan for connection points"** - Discover new hooks
 - **"Hold fast!"** - Maintain current configuration
 
+## 🧪 Testing
+
+Eyelet includes comprehensive testing tools to ensure your hooks are working correctly:
+
+### Testing Hook Integration
+
+```bash
+# Run the interactive hook test
+mise run test-hooks
+
+# This will generate a unique test ID and guide you through testing all tools
+# After running the test commands, verify with:
+mise run test-hooks-verify zebra-1234-flamingo-5678
+
+# View hook statistics
+mise run hook-stats
+
+# Generate a coverage report
+mise run hook-coverage
+
+# Clean old logs (older than 7 days)
+mise run hook-clean
+```
+
+### Development Testing
+
+```bash
+# Run all tests
+mise run test
+
+# Run linting
+mise run lint
+
+# Run type checking
+mise run typecheck
+
+# Run all CI checks
+mise run ci
+```
+
+### Manual Hook Testing
+
+The `test_all_hooks.py` script provides comprehensive hook testing:
+- Generates unique test identifiers for tracking
+- Tests all Claude Code tools (Bash, Read, Write, Edit, etc.)
+- Verifies hook logs contain expected data
+- Provides coverage reports
+
 ## 🤝 Contributing
 
 We welcome contributions! Please open issues and pull requests on GitHub.
