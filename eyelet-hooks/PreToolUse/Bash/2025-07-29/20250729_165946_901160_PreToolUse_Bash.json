@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-07-29T16:59:46.901160",
+  "timestamp_unix": 1753826386.90116,
+  "hook_type": "PreToolUse",
+  "tool_name": "Bash",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git remote -v",
+      "description": "Check remote configuration"
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PreToolUse/Bash/2025-07-29/20250729_165946_901160_PreToolUse_Bash.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PreToolUse/Bash/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 5,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:59:46.906314"
+}

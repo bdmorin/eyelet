@@ -1,0 +1,52 @@
+{
+  "timestamp": "2025-07-29T16:59:52.931136",
+  "timestamp_unix": 1753826392.931136,
+  "hook_type": "PostToolUse",
+  "tool_name": "Grep",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Grep",
+    "tool_input": {
+      "pattern": "rigging",
+      "glob": ".github/workflows/*.yml",
+      "output_mode": "content"
+    },
+    "tool_response": {
+      "mode": "content",
+      "numFiles": 0,
+      "filenames": [],
+      "content": "",
+      "numLines": 0
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Grep/2025-07-29/20250729_165952_931136_PostToolUse_Grep.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Grep/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 5,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:59:52.936800"
+}

@@ -1,0 +1,73 @@
+{
+  "timestamp": "2025-07-29T16:21:57.329336",
+  "timestamp_unix": 1753824117.329336,
+  "hook_type": "PostToolUse",
+  "tool_name": "Edit",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/src/eyelet/cli/execute_v2.py",
+      "old_string": "    # Extract hook information\n    hook_type = input_data.get('hook_event_name', 'unknown')\n    tool_name = input_data.get('tool_name', None)",
+      "new_string": "    # Extract hook information\n    # hook_type = input_data.get('hook_event_name', 'unknown')\n    # tool_name = input_data.get('tool_name', None)"
+    },
+    "tool_response": {
+      "filePath": "/Users/bdmorin/src/claude-hooks/src/eyelet/cli/execute_v2.py",
+      "oldString": "    # Extract hook information\n    hook_type = input_data.get('hook_event_name', 'unknown')\n    tool_name = input_data.get('tool_name', None)",
+      "newString": "    # Extract hook information\n    # hook_type = input_data.get('hook_event_name', 'unknown')\n    # tool_name = input_data.get('tool_name', None)",
+      "originalFile": "\"\"\"Hook execution command with unified logging - the main runtime endpoint\"\"\"\n\nimport json\nimport sys\nfrom datetime import datetime\nfrom pathlib import Path\n\nimport click\nfrom rich.console import Console\n\nfrom eyelet.services.config_service import ConfigService\nfrom eyelet.services.hook_logger import HookLogger\n\nconsole = Console()\n\n\n@click.command()\n@click.option('--workflow', help='Workflow to execute')\n@click.option('--log-only', is_flag=True, help='Only log, no processing')\n@click.option('--log-result', is_flag=True, help='Log result after execution')\n@click.option('--debug', is_flag=True, help='Enable debug output')\n@click.option('--no-logging', is_flag=True, help='Disable all logging')\n@click.pass_context\ndef execute(ctx, workflow, log_only, log_result, debug, no_logging):\n    \"\"\"\n    Execute as a hook endpoint - Thread through the eyelet!\n\n    This command is called by Claude Code when hooks are triggered.\n    It reads JSON from stdin and processes according to configuration.\n    \"\"\"\n    start_time = datetime.now()\n    project_dir = ctx.obj.get('config_dir', Path.cwd()) if ctx.obj else Path.cwd()\n\n    # Initialize services\n    config_service = ConfigService(project_dir)\n    hook_logger = HookLogger(config_service, project_dir)\n\n    # Read input from stdin\n    try:\n        if sys.stdin.isatty():\n            # For testing: if no stdin, create sample data\n            input_data = {\n                \"hook_event_name\": \"test\",\n                \"test_mode\": True,\n                \"timestamp\": start_time.isoformat()\n            }\n        else:\n            input_data = json.load(sys.stdin)\n    except json.JSONDecodeError as e:\n        if debug:\n            console.print(f\"[red]Failed to parse JSON input: {e}[/red]\", file=sys.stderr)\n        # Still log what we received\n        input_data = {\n            \"hook_event_name\": \"parse_error\",\n            \"error\": str(e),\n            \"raw_input\": sys.stdin.read() if not sys.stdin.isatty() else \"no input\"\n        }\n    except Exception as e:\n        if debug:\n            console.print(f\"[red]Failed to read input: {e}[/red]\", file=sys.stderr)\n        input_data = {\n            \"hook_event_name\": \"read_error\",\n            \"error\": str(e)\n        }\n\n    # Extract hook information\n    hook_type = input_data.get('hook_event_name', 'unknown')\n    tool_name = input_data.get('tool_name', None)\n\n    # Log the hook (unless disabled)\n    log_results = None\n    if not no_logging:\n        try:\n            log_results = hook_logger.log_hook(input_data, start_time)\n            if debug:\n                console.print(f\"[dim]Logged to: {log_results}[/dim]\", file=sys.stderr)\n        except Exception as e:\n            if debug:\n                console.print(f\"[yellow]Logging failed: {e}[/yellow]\", file=sys.stderr)\n            # Continue execution even if logging fails\n\n    # Process based on options\n    status = \"success\"\n    output_data = {}\n    error_message = None\n\n    try:\n        if log_only:\n            # Just log and exit successfully\n            output_data = {\"action\": \"logged\"}\n\n        elif log_result:\n            # Log the result of a previous execution\n            output_data = {\"action\": \"result_logged\"}\n\n        elif workflow:\n            # Execute specified workflow\n            # TODO: Integrate WorkflowService when available\n            output_data = {\"action\": \"workflow_executed\", \"workflow\": workflow}\n\n        else:\n            # Default processing\n            output_data = {\"action\": \"processed\"}\n\n        # Check for blocking directives in hook data\n        if input_data.get(\"block\", False):\n            if debug:\n                console.print(\"[yellow]Blocking action requested[/yellow]\", file=sys.stderr)\n            sys.exit(2)  # Exit code 2 indicates blocked action\n\n    except Exception as e:\n        status = \"error\"\n        error_message = str(e)\n        if debug:\n            console.print(f\"[red]Execution error: {e}[/red]\", file=sys.stderr)\n\n    # Calculate duration\n    duration_ms = int((datetime.now() - start_time).total_seconds() * 1000)\n\n    # Update hook with results (if we logged)\n    if log_results and hasattr(hook_logger, '_last_hook_data'):\n        try:\n            hook_logger.update_hook_result(\n                hook_logger._last_hook_data,\n                status=status,\n                duration_ms=duration_ms,\n                output_data=output_data,\n                error_message=error_message\n            )\n        except Exception as e:\n            if debug:\n                console.print(f\"[yellow]Failed to update hook result: {e}[/yellow]\", file=sys.stderr)\n\n    # Output any required response\n    if output_data and not log_only:\n        # Check for response data to output\n        if \"response\" in output_data:\n            print(json.dumps(output_data[\"response\"]))\n\n    # Exit based on status\n    if status == \"error\" and error_message:\n        # Exit with success to not disrupt Claude Code\n        # The error is logged for later analysis\n        sys.exit(0)\n    else:\n        sys.exit(0)\n",
+      "structuredPatch": [
+        {
+          "oldStart": 64,
+          "oldLines": 8,
+          "newStart": 64,
+          "newLines": 8,
+          "lines": [
+            "         }",
+            " ",
+            "     # Extract hook information",
+            "-    hook_type = input_data.get('hook_event_name', 'unknown')",
+            "-    tool_name = input_data.get('tool_name', None)",
+            "+    # hook_type = input_data.get('hook_event_name', 'unknown')",
+            "+    # tool_name = input_data.get('tool_name', None)",
+            " ",
+            "     # Log the hook (unless disabled)",
+            "     log_results = None"
+          ]
+        }
+      ],
+      "userModified": false,
+      "replaceAll": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Edit/2025-07-29/20250729_162157_329336_PostToolUse_Edit.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Edit/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:21:57.333756"
+}

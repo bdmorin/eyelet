@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-07-29T13:22:59.728881",
+  "timestamp_unix": 1753813379.728881,
+  "hook_type": "PreToolUse",
+  "tool_name": "Bash",
+  "session_id": "test-123",
+  "transcript_path": "",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.11.13 (main, Jun  3 2025, 18:38:25) [Clang 17.0.0 (clang-1700.0.13.3)]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDECODE": "1",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1",
+      "CLAUDE_CODE_ENTRYPOINT": "cli"
+    }
+  },
+  "input_data": {
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "session_id": "test-123",
+    "tool_input": {
+      "command": "echo test"
+    }
+  },
+  "metadata": {
+    "hostname": "p0x.local",
+    "ip_address": "127.0.0.1",
+    "git": {
+      "is_git_repo": true,
+      "branch": "main",
+      "commit": "35db390",
+      "dirty": true,
+      "repo_name": "eyelet",
+      "remote_url": "https://github.com/bdmorin/eyelet.git",
+      "user_name": "Brian Morin",
+      "last_commit_message": "chore: Remove archive directory"
+    },
+    "project_name": "claude-hooks",
+    "environment": "development",
+    "log_file": "/Users/bdmorin/src/claude-hooks/.eyelet-logs/PreToolUse/Bash/2025-07-29/20250729_132259_879058_PreToolUse_Bash.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/.eyelet-logs/PreToolUse/Bash/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": null,
+  "completed_at": null
+}

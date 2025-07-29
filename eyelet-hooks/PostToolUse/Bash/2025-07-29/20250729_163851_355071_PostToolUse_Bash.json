@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-07-29T16:38:51.355071",
+  "timestamp_unix": 1753825131.355071,
+  "hook_type": "PostToolUse",
+  "tool_name": "Bash",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "sleep 5 && gh run list --limit 3",
+      "description": "Check recent CI runs"
+    },
+    "tool_response": {
+      "stdout": "in_progress\t\trefactor: Remove black in favor of ruff format\tCI\tmain\tpush\t16608032751\t9s\t2025-07-29T21:38:41Z\ncompleted\tfailure\tfix: Resolve all linting issues\tCI\tmain\tpush\t16607924397\t42s\t2025-07-29T21:32:33Z\ncompleted\tfailure\tfix: Fix linting issues in doctor.py\tCI\tmain\tpush\t16607594442\t1m0s\t2025-07-29T21:13:55Z",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29/20250729_163851_355071_PostToolUse_Bash.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:38:51.359531"
+}

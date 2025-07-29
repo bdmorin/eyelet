@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-07-29T16:33:56.211764",
+  "timestamp_unix": 1753824836.211764,
+  "hook_type": "PostToolUse",
+  "tool_name": "Bash",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "uv run black .",
+      "description": "Format code with black"
+    },
+    "tool_response": {
+      "stdout": "reformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/__init__.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/application/discovery.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/completion.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/execute_v2.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/application/services.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/main.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/logs.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/domain/config.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/domain/exceptions.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/discover.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/execute_old.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/domain/hooks.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/execute.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/presentation/tui.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/infrastructure/database.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/utils.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/template.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/domain/models.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/infrastructure/repositories.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/templates/__init__.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/query.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/services/config_service.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/services/git_metadata.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/services/sqlite_migrations.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/doctor.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/services/sqlite_connection.py\nreformatted /Users/bdmorin/src/claude-hooks/tests/test_validate.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/configure.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/services/sqlite_logger.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/cli/validate.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/services/query_service.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/services/hook_logger.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/templates/generators.py\nreformatted /Users/bdmorin/src/claude-hooks/src/eyelet/services/sqlite_monitor.py\nreformatted /Users/bdmorin/src/claude-hooks/test_all_hooks.py\n\nAll done! \u2728 \ud83c\udf70 \u2728\n35 files reformatted, 7 files left unchanged.",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29/20250729_163356_211764_PostToolUse_Bash.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:33:56.216415"
+}

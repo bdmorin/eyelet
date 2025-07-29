@@ -1,0 +1,116 @@
+{
+  "timestamp": "2025-07-29T16:26:36.462103",
+  "timestamp_unix": 1753824396.462103,
+  "hook_type": "PostToolUse",
+  "tool_name": "MultiEdit",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "MultiEdit",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/src/eyelet/services/git_metadata.py",
+      "edits": [
+        {
+          "old_string": "    @lru_cache(maxsize=1)\n    def get_current_branch(self) -> str | None:",
+          "new_string": "    def get_current_branch(self) -> str | None:"
+        },
+        {
+          "old_string": "    @lru_cache(maxsize=1)\n    def get_current_commit(self) -> str | None:",
+          "new_string": "    def get_current_commit(self) -> str | None:"
+        },
+        {
+          "old_string": "    @lru_cache(maxsize=1)\n    def get_remote_url(self) -> str | None:",
+          "new_string": "    def get_remote_url(self) -> str | None:"
+        }
+      ]
+    },
+    "tool_response": {
+      "filePath": "/Users/bdmorin/src/claude-hooks/src/eyelet/services/git_metadata.py",
+      "edits": [
+        {
+          "old_string": "    @lru_cache(maxsize=1)\n    def get_current_branch(self) -> str | None:",
+          "new_string": "    def get_current_branch(self) -> str | None:",
+          "replace_all": false
+        },
+        {
+          "old_string": "    @lru_cache(maxsize=1)\n    def get_current_commit(self) -> str | None:",
+          "new_string": "    def get_current_commit(self) -> str | None:",
+          "replace_all": false
+        },
+        {
+          "old_string": "    @lru_cache(maxsize=1)\n    def get_remote_url(self) -> str | None:",
+          "new_string": "    def get_remote_url(self) -> str | None:",
+          "replace_all": false
+        }
+      ],
+      "originalFileContents": "\"\"\"Git repository metadata collection for enriching logs.\"\"\"\n\nimport subprocess\nfrom functools import lru_cache\nfrom pathlib import Path\nfrom typing import Any\n\n\nclass GitMetadata:\n    \"\"\"Collect Git repository information for log enrichment.\"\"\"\n\n    def __init__(self, working_dir: Path | None = None):\n        \"\"\"Initialize Git metadata collector.\n\n        Args:\n            working_dir: Working directory to check for Git repo\n        \"\"\"\n        self.working_dir = working_dir or Path.cwd()\n        self._is_git_repo = self._check_git_repo()\n\n    def _check_git_repo(self) -> bool:\n        \"\"\"Check if working directory is in a Git repository.\"\"\"\n        try:\n            result = subprocess.run(\n                [\"git\", \"rev-parse\", \"--git-dir\"],\n                cwd=self.working_dir,\n                capture_output=True,\n                text=True,\n                timeout=1\n            )\n            return result.returncode == 0\n        except (subprocess.SubprocessError, FileNotFoundError):\n            return False\n\n    def _run_git_command(self, args: list[str]) -> str | None:\n        \"\"\"Run a Git command and return output.\"\"\"\n        if not self._is_git_repo:\n            return None\n\n        try:\n            result = subprocess.run(\n                [\"git\"] + args,\n                cwd=self.working_dir,\n                capture_output=True,\n                text=True,\n                timeout=2\n            )\n            if result.returncode == 0:\n                return result.stdout.strip()\n        except (subprocess.SubprocessError, FileNotFoundError):\n            pass\n\n        return None\n\n    @lru_cache(maxsize=1)\n    def get_current_branch(self) -> str | None:\n        \"\"\"Get current Git branch name.\"\"\"\n        branch = self._run_git_command([\"branch\", \"--show-current\"])\n        if not branch:\n            # Try alternative method for detached HEAD\n            branch = self._run_git_command([\"rev-parse\", \"--abbrev-ref\", \"HEAD\"])\n        return branch\n\n    @lru_cache(maxsize=1)\n    def get_current_commit(self) -> str | None:\n        \"\"\"Get current commit hash (short form).\"\"\"\n        return self._run_git_command([\"rev-parse\", \"--short\", \"HEAD\"])\n\n    @lru_cache(maxsize=1)\n    def get_remote_url(self) -> str | None:\n        \"\"\"Get remote repository URL.\"\"\"\n        url = self._run_git_command([\"remote\", \"get-url\", \"origin\"])\n        if url:\n            # Clean up URL for privacy (remove credentials)\n            if \"@\" in url and \":\" in url:\n                # Handle git@github.com:user/repo.git format\n                parts = url.split(\":\")\n                if len(parts) == 2 and parts[0].endswith(\"github.com\"):\n                    return f\"https://github.com/{parts[1]}\"\n            elif \"https://\" in url and \"@\" in url:\n                # Handle https://user:token@github.com/user/repo.git format\n                parts = url.split(\"@\")\n                if len(parts) == 2:\n                    return f\"https://{parts[1]}\"\n        return url\n\n    def is_dirty(self) -> bool:\n        \"\"\"Check if working directory has uncommitted changes.\"\"\"\n        if not self._is_git_repo:\n            return False\n\n        status = self._run_git_command([\"status\", \"--porcelain\"])\n        return bool(status)\n\n    def get_repo_name(self) -> str | None:\n        \"\"\"Get repository name from remote URL.\"\"\"\n        url = self.get_remote_url()\n        if url:\n            # Extract repo name from URL\n            if url.endswith(\".git\"):\n                url = url[:-4]\n\n            parts = url.split(\"/\")\n            if len(parts) >= 2:\n                return parts[-1]\n\n        # Fallback to directory name\n        return self.working_dir.name\n\n    def get_metadata(self) -> dict[str, Any]:\n        \"\"\"Get all Git metadata as a dictionary.\n\n        Returns:\n            Dictionary with Git information, empty if not a Git repo\n        \"\"\"\n        if not self._is_git_repo:\n            return {}\n\n        metadata = {\n            \"is_git_repo\": True,\n            \"branch\": self.get_current_branch(),\n            \"commit\": self.get_current_commit(),\n            \"dirty\": self.is_dirty(),\n            \"repo_name\": self.get_repo_name(),\n        }\n\n        # Only include remote URL if it's cleaned\n        remote_url = self.get_remote_url()\n        if remote_url and not any(sensitive in remote_url for sensitive in [\"@\", \"token\", \"password\"]):\n            metadata[\"remote_url\"] = remote_url\n\n        # Add user info if available\n        user_name = self._run_git_command([\"config\", \"user.name\"])\n        if user_name:\n            metadata[\"user_name\"] = user_name\n\n        # Add last commit info\n        last_commit_msg = self._run_git_command([\"log\", \"-1\", \"--pretty=%s\"])\n        if last_commit_msg:\n            metadata[\"last_commit_message\"] = last_commit_msg[:100]  # Truncate long messages\n\n        # Filter out None values\n        return {k: v for k, v in metadata.items() if v is not None}\n\n    def clear_cache(self):\n        \"\"\"Clear cached Git information.\"\"\"\n        self.get_current_branch.cache_clear()\n        self.get_current_commit.cache_clear()\n        self.get_remote_url.cache_clear()\n",
+      "structuredPatch": [
+        {
+          "oldStart": 52,
+          "oldLines": 7,
+          "newStart": 52,
+          "newLines": 6,
+          "lines": [
+            " ",
+            "         return None",
+            " ",
+            "-    @lru_cache(maxsize=1)",
+            "     def get_current_branch(self) -> str | None:",
+            "         \"\"\"Get current Git branch name.\"\"\"",
+            "         branch = self._run_git_command([\"branch\", \"--show-current\"])"
+          ]
+        },
+        {
+          "oldStart": 61,
+          "oldLines": 12,
+          "newStart": 60,
+          "newLines": 10,
+          "lines": [
+            "             branch = self._run_git_command([\"rev-parse\", \"--abbrev-ref\", \"HEAD\"])",
+            "         return branch",
+            " ",
+            "-    @lru_cache(maxsize=1)",
+            "     def get_current_commit(self) -> str | None:",
+            "         \"\"\"Get current commit hash (short form).\"\"\"",
+            "         return self._run_git_command([\"rev-parse\", \"--short\", \"HEAD\"])",
+            " ",
+            "-    @lru_cache(maxsize=1)",
+            "     def get_remote_url(self) -> str | None:",
+            "         \"\"\"Get remote repository URL.\"\"\"",
+            "         url = self._run_git_command([\"remote\", \"get-url\", \"origin\"])"
+          ]
+        }
+      ],
+      "userModified": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/MultiEdit/2025-07-29/20250729_162636_462103_PostToolUse_MultiEdit.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/MultiEdit/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:26:36.466618"
+}

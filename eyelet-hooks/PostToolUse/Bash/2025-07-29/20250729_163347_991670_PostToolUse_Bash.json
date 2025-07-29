@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-07-29T16:33:47.991670",
+  "timestamp_unix": 1753824827.99167,
+  "hook_type": "PostToolUse",
+  "tool_name": "Bash",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "gh run view 16607924397 --log-failed | grep -A5 -B5 \"Format check with black\"",
+      "description": "Check black formatting errors"
+    },
+    "tool_response": {
+      "stdout": "test (macos-latest, 3.12)\tTest installation\t2025-07-29T21:32:51.6251600Z Installed 1 package in 2ms\ntest (macos-latest, 3.12)\tTest installation\t2025-07-29T21:32:51.6251910Z  - eyelet==0.3.0 (from file:///Users/runner/work/eyelet/eyelet)\ntest (macos-latest, 3.12)\tTest installation\t2025-07-29T21:32:51.6252320Z  + eyelet==0.3.0 (from file:///Users/runner/work/eyelet/eyelet/dist/eyelet-0.3.0-py3-none-any.whl)\ntest (macos-latest, 3.12)\tTest installation\t2025-07-29T21:32:51.6283210Z /Users/runner/work/_temp/dff6cac5-1f54-4465-8f03-d91389b4866a.sh: line 2: eyelet: command not found\ntest (macos-latest, 3.12)\tTest installation\t2025-07-29T21:32:51.6297660Z ##[error]Process completed with exit code 127.\ntest (ubuntu-latest, 3.11)\tFormat check with black\t\ufeff2025-07-29T21:32:44.3651282Z ##[group]Run uv run black --check .\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:44.3651629Z \u001b[36;1muv run black --check .\u001b[0m\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:44.3679101Z shell: /usr/bin/bash -e {0}\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:44.3679828Z env:\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:44.3680084Z   UV_CACHE_DIR: /home/runner/work/_temp/setup-uv-cache\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:44.3680380Z ##[endgroup]\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:44.6880997Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/__init__.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:44.7792024Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/application/discovery.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:44.8203291Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/completion.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:44.8792976Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/application/services.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.0195961Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/discover.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.0444670Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/configure.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.1037555Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/doctor.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.1185835Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/execute.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.1269946Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/execute_v2.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.1905758Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/execute_old.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.2294154Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/main.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.2436742Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/logs.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.3469890Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/utils.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.3703343Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/template.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.3781626Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/domain/exceptions.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.4039431Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/query.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.4449574Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/domain/config.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.4491061Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/domain/hooks.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.4954607Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/infrastructure/database.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.5014198Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/domain/models.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.5520607Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/presentation/tui.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.5677450Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/infrastructure/repositories.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.5794296Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/cli/validate.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.5799745Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/services/config_service.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.6423413Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/services/git_metadata.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.6695852Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/services/sqlite_connection.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.7143524Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/services/hook_logger.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.7242718Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/services/sqlite_migrations.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.7316931Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/services/query_service.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.7364957Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/services/sqlite_logger.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.7369934Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/templates/__init__.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.7818048Z would reformat /home/runner/work/eyelet/eyelet/tests/test_validate.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.8497795Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/templates/generators.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.8578982Z would reformat /home/runner/work/eyelet/eyelet/src/eyelet/services/sqlite_monitor.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.9060845Z would reformat /home/runner/work/eyelet/eyelet/test_all_hooks.py\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.9133216Z \ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.9134308Z Oh no! \ud83d\udca5 \ud83d\udc94 \ud83d\udca5\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.9134681Z 35 files would be reformatted, 7 files would be left unchanged.\ntest (ubuntu-latest, 3.11)\tFormat check with black\t2025-07-29T21:32:45.9402140Z ##[error]Process completed with exit code 1.\ntest (ubuntu-latest, 3.12)\tTest installation\t\ufeff2025-07-29T21:32:53.0765909Z ##[group]Run uv pip install dist/*.whl\ntest (ubuntu-latest, 3.12)\tTest installation\t2025-07-29T21:32:53.0766215Z \u001b[36;1muv pip install dist/*.whl\u001b[0m\ntest (ubuntu-latest, 3.12)\tTest installation\t2025-07-29T21:32:53.0766453Z \u001b[36;1meyelet --version\u001b[0m\ntest (ubuntu-latest, 3.12)\tTest installation\t2025-07-29T21:32:53.0766672Z \u001b[36;1meyelet validate settings --help\u001b[0m\ntest (ubuntu-latest, 3.12)\tTest installation\t2025-07-29T21:32:53.0794253Z shell: /usr/bin/bash -e {0}",
+      "stderr": "",
+      "interrupted": false,
+      "isImage": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29/20250729_163347_991670_PostToolUse_Bash.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Bash/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:33:47.996414"
+}

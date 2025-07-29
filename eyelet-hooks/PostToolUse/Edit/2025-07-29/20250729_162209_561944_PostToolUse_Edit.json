@@ -1,0 +1,71 @@
+{
+  "timestamp": "2025-07-29T16:22:09.561944",
+  "timestamp_unix": 1753824129.561944,
+  "hook_type": "PostToolUse",
+  "tool_name": "Edit",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/src/eyelet/cli/query.py",
+      "old_string": "            except:\n                console.print(f\"[red]Invalid since format: {since}[/red]\")\n                return",
+      "new_string": "            except Exception:\n                console.print(f\"[red]Invalid since format: {since}[/red]\")\n                return"
+    },
+    "tool_response": {
+      "filePath": "/Users/bdmorin/src/claude-hooks/src/eyelet/cli/query.py",
+      "oldString": "            except:\n                console.print(f\"[red]Invalid since format: {since}[/red]\")\n                return",
+      "newString": "            except Exception:\n                console.print(f\"[red]Invalid since format: {since}[/red]\")\n                return",
+      "originalFile": "\"\"\"Query command for searching and analyzing hook logs.\"\"\"\n\nimport json\nfrom datetime import datetime, timedelta\n\nimport click\nfrom rich.console import Console\nfrom rich.syntax import Syntax\nfrom rich.table import Table\n\nfrom eyelet.services.config_service import ConfigService\nfrom eyelet.services.query_service import QueryFilter, QueryService\n\nconsole = Console()\n\n\n@click.group()\n@click.pass_context\ndef query(ctx):\n    \"\"\"Query and analyze hook logs - Search the archives!\"\"\"\n    pass\n\n\n@query.command()\n@click.option('--hook-type', help='Filter by hook type (e.g., PreToolUse)')\n@click.option('--tool', help='Filter by tool name (e.g., Bash)')\n@click.option('--session', help='Filter by session ID')\n@click.option('--since', help='Start time (e.g., \"1h\", \"24h\", \"2024-01-01\")')\n@click.option('--status', help='Filter by status (success, error)')\n@click.option('--branch', help='Filter by git branch')\n@click.option('--errors-only', is_flag=True, help='Show only errors')\n@click.option('--limit', default=20, help='Maximum results')\n@click.option('--format', type=click.Choice(['table', 'json', 'raw']), default='table')\n@click.pass_context\ndef search(ctx, hook_type, tool, session, since, status, branch, errors_only, limit, format):\n    \"\"\"Search hook logs with filters.\"\"\"\n    config_service = ConfigService()\n    query_service = QueryService(config_service)\n\n    # Parse since parameter\n    since_dt = None\n    if since:\n        if since.endswith('h'):\n            hours = int(since[:-1])\n            since_dt = datetime.now() - timedelta(hours=hours)\n        elif since.endswith('d'):\n            days = int(since[:-1])\n            since_dt = datetime.now() - timedelta(days=days)\n        else:\n            try:\n                since_dt = datetime.fromisoformat(since)\n            except:\n                console.print(f\"[red]Invalid since format: {since}[/red]\")\n                return\n\n    # Build filter\n    filter = QueryFilter(\n        hook_type=hook_type,\n        tool_name=tool,\n        session_id=session,\n        since=since_dt,\n        status=status,\n        git_branch=branch,\n        has_error=errors_only,\n        limit=limit\n    )\n\n    # Execute query\n    results = query_service.query(filter)\n\n    if not results:\n        console.print(\"[yellow]No matching logs found[/yellow]\")\n        return\n\n    # Display results\n    if format == 'json':\n        console.print(json.dumps(results, indent=2, default=str))\n    elif format == 'raw':\n        for result in results:\n            console.print(result)\n    else:  # table\n        table = Table(title=f\"Hook Logs ({len(results)} results)\")\n        table.add_column(\"Time\", style=\"cyan\")\n        table.add_column(\"Type\", style=\"green\")\n        table.add_column(\"Tool\", style=\"blue\")\n        table.add_column(\"Status\", style=\"yellow\")\n        table.add_column(\"Duration\", style=\"magenta\")\n        table.add_column(\"Session\", style=\"dim\")\n\n        for result in results:\n            timestamp = datetime.fromisoformat(result['timestamp'])\n            time_str = timestamp.strftime(\"%H:%M:%S\")\n\n            execution = result.get('execution') or {}\n            status = execution.get('status', 'unknown') if execution else 'unknown'\n            if status == 'error':\n                status = f\"[red]{status}[/red]\"\n            elif status == 'success':\n                status = f\"[green]{status}[/green]\"\n\n            duration = execution.get('duration_ms', '') if execution else ''\n            if duration:\n                duration = f\"{duration}ms\"\n\n            table.add_row(\n                time_str,\n                result.get('hook_type', ''),\n                result.get('tool_name', ''),\n                status,\n                duration,\n                result.get('session_id', '')[:8] + \"...\"\n            )\n\n        console.print(table)\n\n\n@query.command()\n@click.option('--since', default='24h', help='Time period (e.g., \"1h\", \"24h\")')\n@click.pass_context\ndef summary(ctx, since):\n    \"\"\"Show summary statistics of hook activity.\"\"\"\n    config_service = ConfigService()\n    query_service = QueryService(config_service)\n\n    # Parse since parameter\n    if since.endswith('h'):\n        hours = int(since[:-1])\n        since_dt = datetime.now() - timedelta(hours=hours)\n    elif since.endswith('d'):\n        days = int(since[:-1])\n        since_dt = datetime.now() - timedelta(days=days)\n    else:\n        since_dt = datetime.now() - timedelta(days=1)\n\n    # Get summary\n    stats = query_service.get_summary(since_dt)\n\n    # Display summary\n    console.print(f\"\\n[bold]Hook Activity Summary[/bold] (last {since})\")\n    console.print(f\"Period: {stats['period_start']} to {stats['period_end']}\")\n    console.print(f\"Total hooks: [cyan]{stats['total_hooks']}[/cyan]\")\n    console.print(f\"Unique sessions: [cyan]{stats['unique_sessions']}[/cyan]\")\n    console.print(f\"Errors: [red]{stats['errors']}[/red]\")\n    console.print(f\"Avg duration: [magenta]{stats['avg_duration_ms']}ms[/magenta]\")\n\n    # Hook type breakdown\n    if stats['by_type']:\n        console.print(\"\\n[bold]By Hook Type:[/bold]\")\n        for hook_type, count in sorted(stats['by_type'].items(), key=lambda x: x[1], reverse=True):\n            console.print(f\"  {hook_type}: {count}\")\n\n    # Tool breakdown\n    if stats['by_tool']:\n        console.print(\"\\n[bold]By Tool:[/bold]\")\n        for tool, count in sorted(stats['by_tool'].items(), key=lambda x: x[1], reverse=True):\n            console.print(f\"  {tool}: {count}\")\n\n    # Status breakdown\n    if stats['by_status']:\n        console.print(\"\\n[bold]By Status:[/bold]\")\n        for status, count in sorted(stats['by_status'].items(), key=lambda x: x[1], reverse=True):\n            if status == 'error':\n                console.print(f\"  [red]{status}: {count}[/red]\")\n            elif status == 'success':\n                console.print(f\"  [green]{status}: {count}[/green]\")\n            else:\n                console.print(f\"  {status}: {count}\")\n\n\n@query.command()\n@click.option('--limit', default=10, help='Number of errors to show')\n@click.pass_context\ndef errors(ctx, limit):\n    \"\"\"Show recent errors.\"\"\"\n    config_service = ConfigService()\n    query_service = QueryService(config_service)\n\n    # Get recent errors\n    errors = query_service.get_recent_errors(limit)\n\n    if not errors:\n        console.print(\"[green]No recent errors found![/green]\")\n        return\n\n    console.print(f\"\\n[bold red]Recent Errors ({len(errors)})[/bold red]\\n\")\n\n    for i, error in enumerate(errors):\n        timestamp = datetime.fromisoformat(error['timestamp'])\n        execution = error.get('execution', {})\n        error_msg = execution.get('error_message', 'Unknown error')\n\n        console.print(f\"[bold]{i+1}. {timestamp.strftime('%Y-%m-%d %H:%M:%S')}[/bold]\")\n        console.print(f\"   Hook: {error['hook_type']}\")\n        if error.get('tool_name'):\n            console.print(f\"   Tool: {error['tool_name']}\")\n        console.print(f\"   Error: [red]{error_msg}[/red]\")\n        console.print(f\"   Session: {error['session_id'][:16]}...\")\n        console.print()\n\n\n@query.command()\n@click.argument('session_id')\n@click.pass_context\ndef session(ctx, session_id):\n    \"\"\"Show timeline for a specific session.\"\"\"\n    config_service = ConfigService()\n    query_service = QueryService(config_service)\n\n    # Get session timeline\n    timeline = query_service.get_session_timeline(session_id)\n\n    if not timeline:\n        console.print(f\"[yellow]No logs found for session {session_id}[/yellow]\")\n        return\n\n    console.print(f\"\\n[bold]Session Timeline[/bold] ({session_id})\")\n    console.print(f\"Total events: {len(timeline)}\\n\")\n\n    for event in timeline:\n        timestamp = datetime.fromisoformat(event['timestamp'])\n        time_str = timestamp.strftime(\"%H:%M:%S.%f\")[:-3]\n\n        hook_type = event['hook_type']\n        tool_name = event.get('tool_name', '')\n\n        if tool_name:\n            console.print(f\"[cyan]{time_str}[/cyan] {hook_type} - {tool_name}\")\n        else:\n            console.print(f\"[cyan]{time_str}[/cyan] {hook_type}\")\n\n        # Show additional details for certain events\n        if hook_type == 'UserPromptSubmit':\n            prompt = event.get('input_data', {}).get('prompt', '')\n            if prompt:\n                console.print(f\"  [dim]Prompt: {prompt[:80]}...[/dim]\")\n        elif hook_type in ['PreToolUse', 'PostToolUse'] and tool_name == 'Bash':\n            command = event.get('input_data', {}).get('tool_input', {}).get('command', '')\n            if command:\n                console.print(f\"  [dim]Command: {command[:80]}...[/dim]\")\n\n\n@query.command()\n@click.argument('search_term')\n@click.option('--limit', default=20, help='Maximum results')\n@click.pass_context\ndef grep(ctx, search_term, limit):\n    \"\"\"Search for a term in all log data.\"\"\"\n    config_service = ConfigService()\n    query_service = QueryService(config_service)\n\n    # Search logs\n    results = query_service.search_logs(search_term, limit)\n\n    if not results:\n        console.print(f\"[yellow]No logs containing '{search_term}' found[/yellow]\")\n        return\n\n    console.print(f\"\\n[bold]Search Results[/bold] for '{search_term}' ({len(results)} matches)\\n\")\n\n    for result in results:\n        timestamp = datetime.fromisoformat(result['timestamp'])\n        console.print(f\"[cyan]{timestamp.strftime('%Y-%m-%d %H:%M:%S')}[/cyan] - {result['hook_type']}\")\n\n        # Show context where term was found\n        # This is a simple implementation - could be enhanced\n        data_str = json.dumps(result, indent=2)\n        lines = data_str.split('\\n')\n        for i, line in enumerate(lines):\n            if search_term.lower() in line.lower():\n                start = max(0, i - 1)\n                end = min(len(lines), i + 2)\n                context = '\\n'.join(lines[start:end])\n                syntax = Syntax(context, \"json\", theme=\"monokai\", line_numbers=False)\n                console.print(syntax)\n                break\n\n        console.print()\n",
+      "structuredPatch": [
+        {
+          "oldStart": 49,
+          "oldLines": 7,
+          "newStart": 49,
+          "newLines": 7,
+          "lines": [
+            "         else:",
+            "             try:",
+            "                 since_dt = datetime.fromisoformat(since)",
+            "-            except:",
+            "+            except Exception:",
+            "                 console.print(f\"[red]Invalid since format: {since}[/red]\")",
+            "                 return",
+            " "
+          ]
+        }
+      ],
+      "userModified": false,
+      "replaceAll": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Edit/2025-07-29/20250729_162209_561944_PostToolUse_Edit.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Edit/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:22:09.566855"
+}

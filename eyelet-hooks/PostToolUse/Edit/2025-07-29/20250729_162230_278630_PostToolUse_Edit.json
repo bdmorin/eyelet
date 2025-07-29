@@ -1,0 +1,71 @@
+{
+  "timestamp": "2025-07-29T16:22:30.278630",
+  "timestamp_unix": 1753824150.27863,
+  "hook_type": "PostToolUse",
+  "tool_name": "Edit",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Edit",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/src/eyelet/cli/utils.py",
+      "old_string": "    except:\n        return \"unknown\"",
+      "new_string": "    except Exception:\n        return \"unknown\""
+    },
+    "tool_response": {
+      "filePath": "/Users/bdmorin/src/claude-hooks/src/eyelet/cli/utils.py",
+      "oldString": "    except:\n        return \"unknown\"",
+      "newString": "    except Exception:\n        return \"unknown\"",
+      "originalFile": "\"\"\"CLI utilities and helpers\"\"\"\n\nimport sys\nfrom functools import wraps\n\nimport click\nfrom rich.console import Console\nfrom rich.panel import Panel\nfrom rich.text import Text\n\nfrom eyelet.domain.exceptions import (\n    DiscoveryError,\n    HookConfigurationError,\n    TemplateError,\n    WorkflowError,\n)\n\nconsole = Console()\n\n\ndef handle_errors(func):\n    \"\"\"Decorator to handle common errors with helpful messages\"\"\"\n    @wraps(func)\n    def wrapper(*args, **kwargs):\n        try:\n            return func(*args, **kwargs)\n        except HookConfigurationError as e:\n            console.print(Panel(\n                Text.from_markup(\n                    f\"[red]Hook Configuration Error[/red]\\n\\n\"\n                    f\"{str(e)}\\n\\n\"\n                    f\"[dim]Try:[/dim]\\n\"\n                    f\"\u2022 Check your hook type and matcher combination\\n\"\n                    f\"\u2022 Run 'eyelet discover matrix' to see valid combinations\\n\"\n                    f\"\u2022 Ensure your .claude/settings.json is valid JSON\"\n                ),\n                title=\"\u26a0\ufe0f  Configuration Issue\",\n                border_style=\"red\"\n            ))\n            sys.exit(1)\n        except TemplateError as e:\n            console.print(Panel(\n                Text.from_markup(\n                    f\"[red]Template Error[/red]\\n\\n\"\n                    f\"{str(e)}\\n\\n\"\n                    f\"[dim]Try:[/dim]\\n\"\n                    f\"\u2022 Run 'eyelet template list' to see available templates\\n\"\n                    f\"\u2022 Check template variables with 'eyelet template show'\\n\"\n                    f\"\u2022 Verify the template file is valid JSON\"\n                ),\n                title=\"\u26a0\ufe0f  Template Issue\",\n                border_style=\"red\"\n            ))\n            sys.exit(1)\n        except WorkflowError as e:\n            console.print(Panel(\n                Text.from_markup(\n                    f\"[red]Workflow Error[/red]\\n\\n\"\n                    f\"{str(e)}\\n\\n\"\n                    f\"[dim]Try:[/dim]\\n\"\n                    f\"\u2022 Check your workflow definition file\\n\"\n                    f\"\u2022 Ensure all workflow steps are valid\\n\"\n                    f\"\u2022 Review workflow logs for details\"\n                ),\n                title=\"\u26a0\ufe0f  Workflow Issue\",\n                border_style=\"red\"\n            ))\n            sys.exit(1)\n        except DiscoveryError as e:\n            console.print(Panel(\n                Text.from_markup(\n                    f\"[red]Discovery Error[/red]\\n\\n\"\n                    f\"{str(e)}\\n\\n\"\n                    f\"[dim]Try:[/dim]\\n\"\n                    f\"\u2022 Use '--source static' for offline discovery\\n\"\n                    f\"\u2022 Check your internet connection\\n\"\n                    f\"\u2022 Update Eyelet to the latest version\"\n                ),\n                title=\"\u26a0\ufe0f  Discovery Issue\",\n                border_style=\"red\"\n            ))\n            sys.exit(1)\n        except FileNotFoundError as e:\n            console.print(Panel(\n                Text.from_markup(\n                    f\"[red]File Not Found[/red]\\n\\n\"\n                    f\"{str(e)}\\n\\n\"\n                    f\"[dim]Try:[/dim]\\n\"\n                    f\"\u2022 Check the file path is correct\\n\"\n                    f\"\u2022 Ensure you have read permissions\\n\"\n                    f\"\u2022 Use absolute paths when unsure\"\n                ),\n                title=\"\u26a0\ufe0f  File Issue\",\n                border_style=\"red\"\n            ))\n            sys.exit(1)\n        except PermissionError as e:\n            console.print(Panel(\n                Text.from_markup(\n                    f\"[red]Permission Denied[/red]\\n\\n\"\n                    f\"{str(e)}\\n\\n\"\n                    f\"[dim]Try:[/dim]\\n\"\n                    f\"\u2022 Check file/directory permissions\\n\"\n                    f\"\u2022 Run with appropriate user privileges\\n\"\n                    f\"\u2022 Ensure the directory is writable\"\n                ),\n                title=\"\u26a0\ufe0f  Permission Issue\",\n                border_style=\"red\"\n            ))\n            sys.exit(1)\n        except KeyboardInterrupt:\n            console.print(\"\\n[yellow]Operation cancelled by user[/yellow]\")\n            sys.exit(130)\n        except Exception as e:\n            console.print(Panel(\n                Text.from_markup(\n                    f\"[red]Unexpected Error[/red]\\n\\n\"\n                    f\"{type(e).__name__}: {str(e)}\\n\\n\"\n                    f\"[dim]This might be a bug. Please report it at:[/dim]\\n\"\n                    f\"https://github.com/bdmorin/eyelet/issues\\n\\n\"\n                    f\"[dim]Include:[/dim]\\n\"\n                    f\"\u2022 The command you ran\\n\"\n                    f\"\u2022 This error message\\n\"\n                    f\"\u2022 Your Eyelet version ({get_version()})\"\n                ),\n                title=\"\u26a0\ufe0f  Unexpected Error\",\n                border_style=\"red\"\n            ))\n            if click.get_current_context().obj.get('debug'):\n                console.print(\"\\n[dim]Debug trace:[/dim]\")\n                import traceback\n                traceback.print_exc()\n            sys.exit(1)\n    return wrapper\n\n\ndef get_version():\n    \"\"\"Get the current Eyelet version\"\"\"\n    try:\n        from eyelet import __version__\n        return __version__\n    except:\n        return \"unknown\"\n\n\ndef confirm_action(message, default=False):\n    \"\"\"Show a confirmation prompt with rich formatting\"\"\"\n    return click.confirm(\n        console.print(f\"[yellow]\u26a0\ufe0f  {message}[/yellow]\", markup=True),\n        default=default\n    )\n\n\ndef success_message(message):\n    \"\"\"Display a success message\"\"\"\n    console.print(f\"[green]\u2713[/green] {message}\")\n\n\ndef warning_message(message):\n    \"\"\"Display a warning message\"\"\"\n    console.print(f\"[yellow]\u26a0\ufe0f  {message}[/yellow]\")\n\n\ndef error_message(message):\n    \"\"\"Display an error message\"\"\"\n    console.print(f\"[red]\u2717[/red] {message}\")\n\n\ndef info_message(message):\n    \"\"\"Display an info message\"\"\"\n    console.print(f\"[blue]\u2139[/blue] {message}\")\n\n\nclass EyeletCommand(click.Command):\n    \"\"\"Enhanced command class with better help formatting\"\"\"\n\n    def format_help(self, ctx, formatter):\n        \"\"\"Format help with naval theme and examples\"\"\"\n        # Command name and description\n        console.print(f\"\\n[bold cyan]{self.name}[/bold cyan] - {self.short_help}\")\n\n        if self.help:\n            console.print(f\"\\n{self.help}\")\n\n        # Usage\n        pieces = self.collect_usage_pieces(ctx)\n        if pieces:\n            console.print(f\"\\n[bold]Usage:[/bold] {ctx.command_path} {' '.join(pieces)}\")\n\n        # Options\n        opts = []\n        for param in self.get_params(ctx):\n            rv = param.get_help_record(ctx)\n            if rv is not None:\n                opts.append(rv)\n\n        if opts:\n            console.print(\"\\n[bold]Options:[/bold]\")\n            for opt in opts:\n                console.print(f\"  {opt[0]:30} {opt[1]}\")\n\n        # Epilog\n        if self.epilog:\n            console.print(f\"\\n{self.epilog}\")\n\n\ndef create_command(name, **attrs):\n    \"\"\"Create a command with enhanced help\"\"\"\n    attrs.setdefault('cls', EyeletCommand)\n    attrs.setdefault('context_settings', {'help_option_names': ['-h', '--help']})\n    return click.command(name, **attrs)\n",
+      "structuredPatch": [
+        {
+          "oldStart": 139,
+          "oldLines": 7,
+          "newStart": 139,
+          "newLines": 7,
+          "lines": [
+            "     try:",
+            "         from eyelet import __version__",
+            "         return __version__",
+            "-    except:",
+            "+    except Exception:",
+            "         return \"unknown\"",
+            " ",
+            " "
+          ]
+        }
+      ],
+      "userModified": false,
+      "replaceAll": false
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Edit/2025-07-29/20250729_162230_278630_PostToolUse_Edit.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Edit/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:22:30.282944"
+}

@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-07-29T16:11:49.565399",
+  "timestamp_unix": 1753823509.565399,
+  "hook_type": "UserPromptSubmit",
+  "tool_name": "",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "UserPromptSubmit",
+    "prompt": "I'm still seeing all the actions are broken. `gh workflow list`\n\u279c gh workflow view 177618759\nPublish to PyPI - publish.yml\nID: 177618759\n\nTotal runs 4\nRecent runs\n   TITLE                    WORKFLOW         BRANCH  EVENT    ID\nX  v0.2.0 - Eyelet Rebrand  Publish to PyPI  v0.2.0  release  16586952390\nX  Publish to PyPI          Publish to PyPI  v0.2.0  release  16586931748\nX  Publish to PyPI          Publish to PyPI  v0.2.0  release  16586912235\nX  Publish to PyPI          Publish to PyPI  v0.2.0  release  16586875924\n\nTo see more runs for this workflow, try: gh run list --workflow publish.yml\nTo see the YAML for this workflow, try: gh workflow view publish.yml --yaml"
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/UserPromptSubmit/2025-07-29/20250729_161149_565399_UserPromptSubmit.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/UserPromptSubmit/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 8,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:11:49.574368"
+}

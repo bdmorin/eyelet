@@ -1,0 +1,57 @@
+{
+  "timestamp": "2025-07-29T16:35:11.606873",
+  "timestamp_unix": 1753824911.606873,
+  "hook_type": "PreToolUse",
+  "tool_name": "MultiEdit",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "MultiEdit",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/pyproject.toml",
+      "edits": [
+        {
+          "old_string": "[tool.black]\nline-length = 88\ntarget-version = ['py311']\ninclude = '\\.pyi?$'\nextend-exclude = '''\n/(\n  __pycache__\n  | \\.pytest_cache\n  | \\.git\n  | \\.mypy_cache\n  | \\.tox\n  | \\.venv\n  | _build\n  | buck-out\n  | build\n  | dist\n)/\n'''\n\n[tool.ruff]",
+          "new_string": "[tool.ruff]"
+        },
+        {
+          "old_string": "ignore = [\n    \"E501\",  # line too long, handled by black\n    \"B008\",  # do not perform function calls in argument defaults\n    \"C901\",  # too complex\n]",
+          "new_string": "ignore = [\n    \"E501\",  # line too long, handled by ruff format\n    \"B008\",  # do not perform function calls in argument defaults\n    \"C901\",  # too complex\n]"
+        },
+        {
+          "old_string": "[tool.ruff]\ntarget-version = \"py311\"\nline-length = 88\n\n[tool.ruff.lint]",
+          "new_string": "[tool.ruff]\ntarget-version = \"py311\"\nline-length = 88\n\n[tool.ruff.format]\n# Use the same settings as Black\nquote-style = \"double\"\nindent-style = \"space\"\nskip-magic-trailing-comma = false\nline-ending = \"auto\"\n\n[tool.ruff.lint]"
+        }
+      ]
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PreToolUse/MultiEdit/2025-07-29/20250729_163511_606873_PreToolUse_MultiEdit.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PreToolUse/MultiEdit/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 6,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:35:11.613594"
+}

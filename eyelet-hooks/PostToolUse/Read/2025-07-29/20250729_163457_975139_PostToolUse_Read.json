@@ -1,0 +1,55 @@
+{
+  "timestamp": "2025-07-29T16:34:57.975139",
+  "timestamp_unix": 1753824897.975139,
+  "hook_type": "PostToolUse",
+  "tool_name": "Read",
+  "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+  "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+  "cwd": "/Users/bdmorin/src/claude-hooks",
+  "environment": {
+    "python_version": "3.12.10 (main, Apr  9 2025, 03:49:38) [Clang 20.1.0 ]",
+    "platform": "darwin",
+    "eyelet_version": "0.2.0",
+    "env_vars": {
+      "CLAUDE_CODE_ENTRYPOINT": "cli",
+      "CLAUDE_PROJECT_DIR": "/Users/bdmorin/src/claude-hooks",
+      "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
+    }
+  },
+  "input_data": {
+    "session_id": "54fdad9f-00f2-4c7a-8f11-7da7b149c513",
+    "transcript_path": "/Users/bdmorin/.claude/projects/-Users-bdmorin-src-claude-hooks/54fdad9f-00f2-4c7a-8f11-7da7b149c513.jsonl",
+    "cwd": "/Users/bdmorin/src/claude-hooks",
+    "hook_event_name": "PostToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/bdmorin/src/claude-hooks/pyproject.toml",
+      "offset": 60,
+      "limit": 40
+    },
+    "tool_response": {
+      "type": "text",
+      "file": {
+        "filePath": "/Users/bdmorin/src/claude-hooks/pyproject.toml",
+        "content": "[tool.black]\nline-length = 88\ntarget-version = ['py311']\ninclude = '\\.pyi?$'\nextend-exclude = '''\n/(\n  __pycache__\n  | \\.pytest_cache\n  | \\.git\n  | \\.mypy_cache\n  | \\.tox\n  | \\.venv\n  | _build\n  | buck-out\n  | build\n  | dist\n)/\n'''\n\n[tool.ruff]\ntarget-version = \"py311\"\nline-length = 88\n\n[tool.ruff.lint]\nselect = [\n    \"E\",  # pycodestyle errors\n    \"W\",  # pycodestyle warnings\n    \"F\",  # pyflakes\n    \"I\",  # isort\n    \"B\",  # flake8-bugbear\n    \"C4\", # flake8-comprehensions\n    \"UP\", # pyupgrade\n]\nignore = [\n    \"E501\",  # line too long, handled by black\n    \"B008\",  # do not perform function calls in argument defaults\n    \"C901\",  # too complex\n]\n\n[tool.mypy]",
+        "numLines": 40,
+        "startLine": 60,
+        "totalLines": 108
+      }
+    }
+  },
+  "metadata": {
+    "log_file": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Read/2025-07-29/20250729_163457_975139_PostToolUse_Read.json",
+    "log_dir": "/Users/bdmorin/src/claude-hooks/eyelet-hooks/PostToolUse/Read/2025-07-29",
+    "project_dir": "/Users/bdmorin/src/claude-hooks"
+  },
+  "execution": {
+    "status": "success",
+    "duration_ms": 4,
+    "output_data": {
+      "action": "logged"
+    },
+    "error_message": null
+  },
+  "completed_at": "2025-07-29T16:34:57.980027"
+}
