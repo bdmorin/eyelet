@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Rigging needs to dynamically discover and generate all possible hook combinations to ensure comprehensive coverage as Claude Code evolves. This document outlines our approach to creating a maintainable, extensible system.
+The Eyelet needs to dynamically discover and generate all possible hook combinations to ensure comprehensive coverage as Claude Code evolves. This document outlines our approach to creating a maintainable, extensible system.
 
 ## Hook Taxonomy
 
@@ -139,7 +139,7 @@ class SchemaInferrer:
     
     def __init__(self, log_path: Path, db_path: Optional[Path] = None):
         self.log_path = log_path
-        self.db_path = db_path or Path("rigging.db")
+        self.db_path = db_path or Path("eyelet.db")
         self.connection = sqlite3.connect(self.db_path)
     
     def infer_input_schema(self, hook_type: str, tool: str) -> Dict[str, Any]:
@@ -291,7 +291,7 @@ class DiffAnalyzer:
   "matcher": "Bash",
   "handler": {
     "type": "command",
-    "command": "rigging execute --workflow bash-validation"
+    "command": "eyelet execute --workflow bash-validation"
   },
   "metadata": {
     "description": "Validate bash commands before execution",
@@ -351,25 +351,25 @@ CREATE TABLE hook_schemas (
 
 ```bash
 # Discover all available hooks
-rigging discover hooks
+eyelet discover hooks
 
 # Discover all available tools
-rigging discover tools
+eyelet discover tools
 
 # Generate combination matrix
-rigging generate matrix
+eyelet generate matrix
 
 # Check for updates
-rigging update check
+eyelet update check
 
 # Apply updates
-rigging update apply
+eyelet update apply
 
 # Export current registry
-rigging export registry
+eyelet export registry
 
 # Validate hook configurations
-rigging validate
+eyelet validate
 ```
 
 ## Example Usage
@@ -397,7 +397,7 @@ for combo in combinations:
     builder = HookConfigBuilder(
         hook_type=combo.hook_type,
         matcher=combo.matcher,
-        handler=f"rigging execute --workflow {combo.hook_type}-{combo.matcher}"
+        handler=f"eyelet execute --workflow {combo.hook_type}-{combo.matcher}"
     )
     config = builder.build()
     

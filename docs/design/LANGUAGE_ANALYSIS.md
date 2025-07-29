@@ -1,4 +1,4 @@
-# Language Choice Analysis for Rigging
+# Language Choice Analysis for Eyelet
 
 ## Critical Factor: Claude Code SDK Availability
 
@@ -78,9 +78,9 @@
 **Distribution:**
 ```bash
 # Users can install with:
-uvx rigging
+uvx eyelet
 # or
-pipx install rigging
+pipx install eyelet
 ```
 
 **Cross-Platform:**

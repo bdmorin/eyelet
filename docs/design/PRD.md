@@ -1,8 +1,8 @@
-# Product Requirements Document: Rigging - Hook Orchestration System
+# Product Requirements Document: Eyelet - Hook Orchestration System
 
 ## Product Overview
 
-Rigging is a sophisticated Python-based CLI tool distributed via uvx that provides comprehensive management, templating, and execution handling for AI agent hooks. It abstracts hook actions into a powerful workflow system with robust logging, templating, and a beautiful TUI interface. Like a ship's rigging that controls the sails, Rigging controls and orchestrates your AI agent's behavior.
+Eyelet is a sophisticated Python-based CLI tool distributed via uvx that provides comprehensive management, templating, and execution handling for AI agent hooks. It abstracts hook actions into a powerful workflow system with robust logging, templating, and a beautiful TUI interface. Like a ship's eyelet that controls the sails, Eyelet controls and orchestrates your AI agent's behavior.
 
 ## Vision Statement
 
@@ -87,9 +87,9 @@ To create a unified, extensible hook management system that empowers developers 
 
 #### 1. CLI Structure
 ```
-rigging/
+eyelet/
 ├── src/
-│   └── rigging/
+│   └── eyelet/
 │       ├── __init__.py
 │       ├── __main__.py    # Entry point for uvx
 │       ├── cli/
@@ -178,42 +178,42 @@ CREATE TABLE templates (
 ### Installation
 ```bash
 # Install with uvx (recommended)
-uvx rigging
+uvx eyelet
 
 # Or install with pipx
-pipx install rigging
+pipx install eyelet
 
 # Or install from source
-git clone https://github.com/bdmorin/rigging
-cd rigging
+git clone https://github.com/bdmorin/eyelet
+cd eyelet
 uv pip install -e .
 ```
 
 ### Basic Usage
 ```bash
-# Launch TUI - "All hands to the rigging!"
-rigging
+# Launch TUI - "All hands to the eyelet!"
+eyelet
 
 # Configure hooks for current project
-rigging configure --scope project
+eyelet configure --scope project
 
 # Install a template - "Run out the guns!"
-rigging template install observability
+eyelet template install observability
 
 # View logs - "Check the ship's log"
-rigging logs --tail 50
+eyelet logs --tail 50
 
 # Execute as hook endpoint
-rigging execute
+eyelet execute
 
 # Discover available hooks - "Scan the horizon"
-rigging discover hooks
+eyelet discover hooks
 
 # Generate all hook combinations
-rigging generate matrix
+eyelet generate matrix
 
 # Update hook registry - "Check the charts"
-rigging update check
+eyelet update check
 ```
 
 ### TUI Workflows

@@ -1,7 +1,7 @@
-# Rigging Project Status
+# Eyelet Project Status
 
 ## 🎯 Project Overview
-Building **Rigging** - a hook orchestration system for AI agents with comprehensive management, templating, and execution handling for Claude Code hooks.
+Building **Eyelet** - a hook orchestration system for AI agents with comprehensive management, templating, and execution handling for Claude Code hooks.
 
 ## ✅ Completed Components
 
@@ -21,7 +21,7 @@ Building **Rigging** - a hook orchestration system for AI agents with comprehens
 - ✓ Basic CLI structure with Click
 
 ### Universal Hook Handler ⭐ NEW!
-- ✓ HMS (Hook Management System) logging to `./hms-hooks/`
+- ✓ Eyelet (Hook Management System) logging to `./eyelet-hooks/`
 - ✓ Comprehensive JSON logging of ALL hook data
 - ✓ Logical directory structure by hook type, tool, and date
 - ✓ `configure install-all` command for one-click setup
@@ -123,10 +123,10 @@ Legend: ✅ Complete | ⚠️ Partial | ❌ Not implemented
 
 ## 🎯 Definition of Done
 
-For Rigging to be considered functional:
+For Eyelet to be considered functional:
 1. Can configure hooks and save to .claude/settings.json
 2. Can execute as a hook endpoint and log to SQLite
 3. Can install and use templates
 4. Can view execution logs
 5. Has working shell completion
-6. Can be installed via `uvx rigging`
+6. Can be installed via `uvx eyelet`

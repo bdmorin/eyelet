@@ -2,8 +2,8 @@
 
 ## Nautical/Pirate Theme (Playing off "Hook")
 - **Grapple** - Clean, action-oriented, implies hooking/grabbing
-- **Rigging** - Naval term for ship's ropes and hooks
-- **Bosun** (Boatswain) - Ship officer who manages rigging
+- **Eyelet** - Naval term for ship's ropes and hooks
+- **Bosun** (Boatswain) - Ship officer who manages eyelet
 - **Anchor** - Hooks and holds
 - **Tether** - Connection/binding theme
 
@@ -40,11 +40,11 @@
 - Works as both noun and verb
 - No trademark conflicts likely
 
-### 2. **Rigging** ⭐
+### 2. **Eyelet** ⭐
 - Perfect metaphor for hook infrastructure
-- `uvx rigging` feels professional
+- `uvx eyelet` feels professional
 - Naval theme without being cheesy
-- "Let me check the rigging" sounds natural
+- "Let me check the eyelet" sounds natural
 
 ### 3. **Tackle** ⭐
 - Fishing tackle = hook equipment
@@ -66,7 +66,7 @@
 
 ## GitHub URLs
 - github.com/bdmorin/grapple
-- github.com/bdmorin/rigging
+- github.com/bdmorin/eyelet
 - github.com/bdmorin/tackle
 - github.com/bdmorin/hookwright
 - github.com/bdmorin/snag
@@ -78,10 +78,10 @@ uvx grapple configure
 uvx grapple template install monitoring
 uvx grapple logs --tail
 
-# Rigging
-uvx rigging setup
-uvx rigging deploy observability
-uvx rigging inspect
+# Eyelet
+uvx eyelet setup
+uvx eyelet deploy observability
+uvx eyelet inspect
 
 # Tackle
 uvx tackle hooks add pre-tool-use
@@ -95,4 +95,4 @@ uvx snag watch
 ```
 
 ## Final Thoughts
-I lean toward **Grapple** or **Rigging** - they're professional, memorable, and the maritime theme fits perfectly with "hooks" without being too cute. Both would look great on a README and are easy to say in conversation: "Just install grapple to manage your hooks" or "Set up rigging for your workflow automation."
+I lean toward **Grapple** or **Eyelet** - they're professional, memorable, and the maritime theme fits perfectly with "hooks" without being too cute. Both would look great on a README and are easy to say in conversation: "Just install grapple to manage your hooks" or "Set up eyelet for your workflow automation."

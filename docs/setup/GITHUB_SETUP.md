@@ -1,6 +1,6 @@
 # GitHub Repository Setup Complete! 🎉
 
-The repository is now live at: https://github.com/bdmorin/rigging-cli
+The repository is now live at: https://github.com/bdmorin/eyelet
 
 ## What's Been Done
 
@@ -15,7 +15,7 @@ The repository is now live at: https://github.com/bdmorin/rigging-cli
 
 Since we couldn't push workflows directly, add them via GitHub:
 
-1. Go to https://github.com/bdmorin/rigging-cli
+1. Go to https://github.com/bdmorin/eyelet
 2. Click "Create new file"
 3. Name it `.github/workflows/ci.yml`
 4. Copy content from local `.github/workflows/ci.yml`
@@ -25,7 +25,7 @@ Since we couldn't push workflows directly, add them via GitHub:
 ### 2. Configure Repository Settings
 
 1. **Add Description**: 
-   "Hook orchestration system for AI agents - All hands to the rigging!"
+   "Hook orchestration system for AI agents - All hands to the eyelet!"
 
 2. **Add Topics** (Settings → Topics):
    - claude-code
@@ -66,12 +66,12 @@ Then on GitHub:
 3. Title: "v0.1.1 - Initial Release"
 4. Description:
    ```
-   ## 🎉 Initial Release of Rigging!
+   ## 🎉 Initial Release of Eyelet!
    
-   Hook orchestration system for AI agents - All hands to the rigging!
+   Hook orchestration system for AI agents - All hands to the eyelet!
    
    ### Features
-   - 🪝 Universal hook handler with HMS logging
+   - 🪝 Universal hook handler with Eyelet logging
    - ✅ JSON schema validation for Claude settings
    - 🚀 One-command setup with `configure install-all`
    - 📦 uvx distribution for zero-install usage
@@ -80,9 +80,9 @@ Then on GitHub:
    ### Installation
    ```bash
    # After PyPI publishes:
-   uvx --from rigging-cli rigging
-   uvx --from rigging-cli rigging configure install-all
-   uvx --from rigging-cli rigging validate settings
+   uvx --from eyelet eyelet
+   uvx --from eyelet eyelet configure install-all
+   uvx --from eyelet eyelet validate settings
    ```
    ```
 5. Click "Publish release"
@@ -117,7 +117,7 @@ Consider creating milestones for:
 ## Success Metrics
 
 Once published to PyPI:
-- `uvx --from rigging-cli rigging` works globally
+- `uvx --from eyelet eyelet` works globally
 - Users can validate Claude settings anywhere
 - Zero-install hook management
 - Community contributions start

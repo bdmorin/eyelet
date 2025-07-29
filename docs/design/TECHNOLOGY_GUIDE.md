@@ -1,4 +1,4 @@
-# Technology Guide for Rigging Development
+# Technology Guide for Eyelet Development
 
 ## Core Philosophy: Retreat Only With Human Approval
 
@@ -240,4 +240,4 @@ This guide represents our commitment to solving problems rather than avoiding th
 5. **Document findings** - Record both successes and approved retreats
 6. **Contribute upstream** - Improve tools for everyone
 
-Remember: We're building a robust tool that handles the complexity of hook orchestration. Challenges are opportunities to make Rigging better and more resilient. We retreat only when the human agrees it's the right strategic move.
+Remember: We're building a robust tool that handles the complexity of hook orchestration. Challenges are opportunities to make Eyelet better and more resilient. We retreat only when the human agrees it's the right strategic move.

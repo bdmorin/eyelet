@@ -4,7 +4,7 @@ This guide helps you configure VS Code to provide validation and IntelliSense fo
 
 ## Project-Level Configuration (Already Done)
 
-If you're working within the Rigging project, VS Code is already configured to validate Claude settings files. The `.vscode/settings.json` file in this project maps the schema automatically.
+If you're working within the Eyelet project, VS Code is already configured to validate Claude settings files. The `.vscode/settings.json` file in this project maps the schema automatically.
 
 ## Global VS Code Configuration
 
@@ -25,7 +25,7 @@ To enable validation for Claude settings files in ALL your projects:
         "**/claude/settings.json",
         "**/.claude/settings.json"
       ],
-      "url": "https://raw.githubusercontent.com/bdmorin/rigging-cli/main/schemas/claude-settings.schema.json"
+      "url": "https://raw.githubusercontent.com/bdmorin/eyelet/main/schemas/claude-settings.schema.json"
     }
   ]
 }
@@ -33,19 +33,19 @@ To enable validation for Claude settings files in ALL your projects:
 
 Note: Replace the URL with the actual location once the schema is published.
 
-## Using the Rigging Validate Command
+## Using the Eyelet Validate Command
 
-You can also validate Claude settings files using Rigging:
+You can also validate Claude settings files using Eyelet:
 
 ```bash
 # Validate current directory's .claude/settings.json
-uvx --from rigging-cli rigging validate settings
+uvx --from eyelet eyelet validate settings
 
 # Validate a specific file
-uvx --from rigging-cli rigging validate settings ~/.claude/settings.json
+uvx --from eyelet eyelet validate settings ~/.claude/settings.json
 
 # Validate with a custom schema
-uvx --from rigging-cli rigging validate settings --schema /path/to/schema.json settings.json
+uvx --from eyelet eyelet validate settings --schema /path/to/schema.json settings.json
 ```
 
 ## Benefits
@@ -74,7 +74,7 @@ The Claude settings schema validates:
       "type": "PreToolUse",
       "handler": {
         "type": "command",
-        "command": "uvx --from rigging-cli rigging execute --log-only"
+        "command": "uvx --from eyelet eyelet execute --log-only"
       },
       "matcher": ".*"
     },

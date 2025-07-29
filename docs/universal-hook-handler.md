@@ -1,10 +1,10 @@
 # Universal Hook Handler Guide
 
-The Universal Hook Handler is Rigging's comprehensive logging system that captures EVERY hook event from Claude Code, providing complete visibility into AI agent behavior.
+The Universal Hook Handler is Eyelet's comprehensive logging system that captures EVERY hook event from Claude Code, providing complete visibility into AI agent behavior.
 
 ## Overview
 
-The handler logs all hook events to a structured directory system (`./hms-hooks/`), creating a complete audit trail of AI agent actions. This is invaluable for:
+The handler logs all hook events to a structured directory system (`./eyelet-hooks/`), creating a complete audit trail of AI agent actions. This is invaluable for:
 
 - Debugging agent behavior
 - Understanding tool usage patterns
@@ -16,20 +16,20 @@ The handler logs all hook events to a structured directory system (`./hms-hooks/
 
 ```bash
 # Install universal logging for ALL hooks
-uvx --from rigging-cli rigging configure install-all
+uvx --from eyelet eyelet configure install-all
 
 # Or install for user-level (all projects)
-uvx --from rigging-cli rigging configure install-all --scope user
+uvx --from eyelet eyelet configure install-all --scope user
 ```
 
-This single command configures Claude Code to send every hook event to Rigging's universal handler.
+This single command configures Claude Code to send every hook event to Eyelet's universal handler.
 
 ## Directory Structure
 
 Logs are organized in a logical hierarchy:
 
 ```
-./hms-hooks/
+./eyelet-hooks/
 ├── PreToolUse/           # Before tool execution
 │   ├── Bash/            # Organized by tool
 │   │   └── 2025-07-28/  # Daily directories
@@ -66,7 +66,7 @@ Each log file contains comprehensive data:
   "environment": {
     "python_version": "3.11.5",
     "platform": "darwin",
-    "rigging_version": "0.1.0",
+    "eyelet_version": "0.1.0",
     "env_vars": {
       "CLAUDE_CODE_SSE_PORT": "62007",
       "CLAUDE_CODE_ENTRYPOINT": "cli"
@@ -108,22 +108,22 @@ Supported tools:
 ### Basic Installation
 ```bash
 # Install for current project
-uvx --from rigging-cli rigging configure install-all
+uvx --from eyelet eyelet configure install-all
 
 # Force reinstall (overwrites existing hooks)
-uvx --from rigging-cli rigging configure install-all --force
+uvx --from eyelet eyelet configure install-all --force
 ```
 
 ### Viewing Logs
 ```bash
 # Browse log directory
-ls -la ./hms-hooks/
+ls -la ./eyelet-hooks/
 
 # Find recent Bash commands
-find ./hms-hooks/PreToolUse/Bash -name "*.json" -mtime -1
+find ./eyelet-hooks/PreToolUse/Bash -name "*.json" -mtime -1
 
 # Search for specific content
-grep -r "rm -rf" ./hms-hooks/PreToolUse/Bash/
+grep -r "rm -rf" ./eyelet-hooks/PreToolUse/Bash/
 ```
 
 ### Analyzing Logs
@@ -132,7 +132,7 @@ import json
 from pathlib import Path
 
 # Read all PreToolUse Bash logs
-hms_dir = Path("./hms-hooks")
+hms_dir = Path("./eyelet-hooks")
 bash_logs = hms_dir.glob("PreToolUse/Bash/**/*.json")
 
 for log_file in bash_logs:
@@ -145,7 +145,7 @@ for log_file in bash_logs:
 ## Configuration Details
 
 The `install-all` command creates hooks with:
-- **Handler**: `uvx --from rigging-cli rigging execute --log-only`
+- **Handler**: `uvx --from eyelet eyelet execute --log-only`
 - **Matchers**: 
   - PreToolUse/PostToolUse: `.*` (wildcard - all tools)
   - PreCompact: `manual` and `auto`
@@ -162,28 +162,28 @@ The `install-all` command creates hooks with:
 
 - **Local only**: All logs stay on your machine
 - **No network calls**: Pure filesystem logging
-- **Gitignored**: `hms-hooks/` is in .gitignore by default
+- **Gitignored**: `eyelet-hooks/` is in .gitignore by default
 - **Sensitive data**: Be aware that logs may contain sensitive information
 
 ## Troubleshooting
 
 ### Logs not appearing
-1. Check hooks are installed: `uvx --from rigging-cli rigging configure list`
-2. Verify rigging is in PATH: `which uvx`
-3. Check permissions: `ls -la ./hms-hooks/`
+1. Check hooks are installed: `uvx --from eyelet eyelet configure list`
+2. Verify eyelet is in PATH: `which uvx`
+3. Check permissions: `ls -la ./eyelet-hooks/`
 
 ### Large log directories
 ```bash
 # Find and remove logs older than 7 days
-find ./hms-hooks -name "*.json" -mtime +7 -delete
+find ./eyelet-hooks -name "*.json" -mtime +7 -delete
 
 # Check disk usage
-du -sh ./hms-hooks/
+du -sh ./eyelet-hooks/
 ```
 
 ### Parsing errors
 If Claude Code sends malformed JSON, check:
-- `./hms-hooks/parse_error/` directory
+- `./eyelet-hooks/parse_error/` directory
 - Look for `error` field in log files
 
 ## Advanced Usage
@@ -191,23 +191,23 @@ If Claude Code sends malformed JSON, check:
 ### Custom Workflows
 After logging, you can trigger workflows:
 ```bash
-uvx --from rigging-cli rigging configure add --workflow my-validator
+uvx --from eyelet eyelet configure add --workflow my-validator
 ```
 
 ### Real-time Monitoring
 ```bash
 # Watch for new logs
-watch -n 1 'find ./hms-hooks -name "*.json" -mmin -5 | tail -20'
+watch -n 1 'find ./eyelet-hooks -name "*.json" -mmin -5 | tail -20'
 ```
 
 ### Integration with Analysis Tools
 Export to various formats:
 ```bash
 # Convert to CSV for spreadsheet analysis
-uvx --from rigging-cli rigging logs export --format csv --output hooks.csv
+uvx --from eyelet eyelet logs export --format csv --output hooks.csv
 
 # Stream to monitoring systems
-tail -f ./hms-hooks/**/*.json | jq '.hook_type'
+tail -f ./eyelet-hooks/**/*.json | jq '.hook_type'
 ```
 
 ## Best Practices

@@ -123,7 +123,7 @@ def generate_safety_hook(
 
 
 def generate_logging_hook(
-    log_location: str = "hms-hooks",
+    log_location: str = "eyelet-hooks",
     include_outputs: bool = True,
     hook_types: List[str] = None
 ) -> str:
@@ -456,7 +456,7 @@ class WorkflowState:
     
     def __init__(self, storage_type: str = "{state_storage}"):
         self.storage_type = storage_type
-        self.state_file = Path("hms-hooks/workflow-state.json")
+        self.state_file = Path("eyelet-hooks/workflow-state.json")
     
     def load_state(self) -> Dict[str, Any]:
         """Load current workflow state."""

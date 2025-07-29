@@ -49,7 +49,7 @@ Since the OAuth app lacks workflow permissions, you need to:
 # A) Push without workflows first, then add via GitHub UI
 git reset --soft HEAD~1  # Undo last commit
 git reset HEAD .github/  # Unstage workflows
-git commit -m "Update documentation and package name to rigging-cli"
+git commit -m "Update documentation and package name to eyelet"
 git push origin main
 
 # Then add workflows via GitHub web interface
@@ -91,7 +91,7 @@ Once set up, the complete automation flow will be:
 1. **Add workflows to GitHub** (manually via web interface)
 2. **Add PYPI_API_TOKEN secret**
 3. **Test with a version tag**
-4. **Update repository name** to `rigging-cli` when ready
+4. **Update repository name** to `eyelet` when ready
 
 The automation is ready to go! Every release will now automatically:
 - ✅ Run full test suite

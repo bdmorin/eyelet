@@ -1,18 +1,18 @@
-# Shell Completion Guide for Rigging
+# Shell Completion Guide for Eyelet
 
-Shell completion enables tab-completion for Rigging commands, options, and arguments in your terminal. This greatly improves the command-line experience by reducing typing and helping discover available options.
+Shell completion enables tab-completion for Eyelet commands, options, and arguments in your terminal. This greatly improves the command-line experience by reducing typing and helping discover available options.
 
 ## Quick Start
 
 ```bash
 # Auto-detect and install for your current shell
-uvx --from rigging-cli rigging completion install
+uvx --from eyelet eyelet completion install
 
 # Or install for a specific shell
-uvx --from rigging-cli rigging completion install bash
-uvx --from rigging-cli rigging completion install zsh
-uvx --from rigging-cli rigging completion install fish
-uvx --from rigging-cli rigging completion install powershell
+uvx --from eyelet eyelet completion install bash
+uvx --from eyelet eyelet completion install zsh
+uvx --from eyelet eyelet completion install fish
+uvx --from eyelet eyelet completion install powershell
 ```
 
 ## Supported Shells
@@ -20,31 +20,31 @@ uvx --from rigging-cli rigging completion install powershell
 ### Bash
 
 For Bash, completion is installed to one of these locations:
-- `~/.bash_completion.d/rigging`
-- `/etc/bash_completion.d/rigging`
-- `~/.rigging-completion.bash` (fallback)
+- `~/.bash_completion.d/eyelet`
+- `/etc/bash_completion.d/eyelet`
+- `~/.eyelet-completion.bash` (fallback)
 
 After installation, add this to your `~/.bashrc`:
 ```bash
-source ~/.bash_completion.d/rigging  # Or wherever it was installed
+source ~/.bash_completion.d/eyelet  # Or wherever it was installed
 ```
 
 ### Zsh
 
 For Zsh, completion is installed to:
-- `~/.zsh/completions/_rigging`
-- `~/.config/zsh/completions/_rigging`
-- `~/.rigging-completion.zsh` (fallback)
+- `~/.zsh/completions/_eyelet`
+- `~/.config/zsh/completions/_eyelet`
+- `~/.eyelet-completion.zsh` (fallback)
 
 Add to your `~/.zshrc`:
 ```bash
-source ~/.zsh/completions/_rigging  # Or wherever it was installed
+source ~/.zsh/completions/_eyelet  # Or wherever it was installed
 ```
 
 ### Fish
 
 For Fish, completion is automatically loaded from:
-- `~/.config/fish/completions/rigging.fish`
+- `~/.config/fish/completions/eyelet.fish`
 
 No additional configuration needed!
 
@@ -52,44 +52,44 @@ No additional configuration needed!
 
 For PowerShell, add to your profile:
 ```powershell
-. ~/.rigging-completion.ps1
+. ~/.eyelet-completion.ps1
 ```
 
 ## Features
 
 ### Command Completion
 ```bash
-uvx --from rigging-cli rigging <TAB>
+uvx --from eyelet eyelet <TAB>
 # Shows: configure, template, logs, execute, discover, completion, help, tui
 ```
 
 ### Subcommand Completion
 ```bash
-uvx --from rigging-cli rigging configure <TAB>
+uvx --from eyelet eyelet configure <TAB>
 # Shows: list, add, remove, enable, disable, clear
 ```
 
 ### Option Completion
 ```bash
-uvx --from rigging-cli rigging logs --<TAB>
+uvx --from eyelet eyelet logs --<TAB>
 # Shows: --tail, --hook-type, --tool, --status, --json, --details, --follow
 ```
 
 ### Dynamic Value Completion
 ```bash
-uvx --from rigging-cli rigging logs --hook-type <TAB>
+uvx --from eyelet eyelet logs --hook-type <TAB>
 # Shows: PreToolUse, PostToolUse, Notification, UserPromptSubmit, Stop, SubagentStop, PreCompact
 
-uvx --from rigging-cli rigging logs --tool <TAB>
+uvx --from eyelet eyelet logs --tool <TAB>
 # Shows: Bash, Glob, Grep, Read, Edit, Write, WebFetch, WebSearch, Task
 ```
 
 ### File/Directory Completion
 ```bash
-uvx --from rigging-cli rigging template import <TAB>
+uvx --from eyelet eyelet template import <TAB>
 # Shows: Files in current directory
 
-rigging --config-dir <TAB>
+eyelet --config-dir <TAB>
 # Shows: Directories only
 ```
 
@@ -97,18 +97,18 @@ rigging --config-dir <TAB>
 
 ### Check Installation Status
 ```bash
-uvx --from rigging-cli rigging completion status
+uvx --from eyelet eyelet completion status
 ```
 
 ### View Completion Script
 ```bash
-uvx --from rigging-cli rigging completion show bash
-uvx --from rigging-cli rigging completion show zsh
+uvx --from eyelet eyelet completion show bash
+uvx --from eyelet eyelet completion show zsh
 ```
 
 ### Custom Installation Path
 ```bash
-uvx --from rigging-cli rigging completion install --path /custom/path/completions/
+uvx --from eyelet eyelet completion install --path /custom/path/completions/
 ```
 
 ## Troubleshooting
@@ -124,15 +124,15 @@ uvx --from rigging-cli rigging completion install --path /custom/path/completion
 2. **Check if completion is loaded:**
    ```bash
    # Bash
-   complete -p | grep rigging
+   complete -p | grep eyelet
    
    # Zsh
-   print -l ${(ok)_comps} | grep rigging
+   print -l ${(ok)_comps} | grep eyelet
    ```
 
 3. **Verify installation:**
    ```bash
-   uvx --from rigging-cli rigging completion status
+   uvx --from eyelet eyelet completion status
    ```
 
 ### Permission Issues
@@ -140,56 +140,56 @@ uvx --from rigging-cli rigging completion install --path /custom/path/completion
 If you get permission errors during installation:
 ```bash
 # Install to user directory
-uvx --from rigging-cli rigging completion install --path ~/.local/share/bash-completion/completions/
+uvx --from eyelet eyelet completion install --path ~/.local/share/bash-completion/completions/
 ```
 
 ### Updating Completion
 
-When Rigging is updated, reinstall completion to get new commands:
+When Eyelet is updated, reinstall completion to get new commands:
 ```bash
-uvx --from rigging-cli rigging completion install --force
+uvx --from eyelet eyelet completion install --force
 ```
 
 ## Advanced Usage
 
 ### Custom Completion Functions
 
-You can extend Rigging's completion by adding custom functions:
+You can extend Eyelet's completion by adding custom functions:
 
 ```bash
 # Bash example
-_rigging_custom() {
+_eyelet_custom() {
     # Your custom completion logic
     COMPREPLY+=("custom-option")
 }
 
-# Hook into Rigging's completion
-complete -F _rigging_completion -o nosort rigging
+# Hook into Eyelet's completion
+complete -F _eyelet_completion -o nosort eyelet
 ```
 
 ### Completion for Aliases
 
-If you create aliases for Rigging:
+If you create aliases for Eyelet:
 ```bash
-alias rig='rigging'
+alias rig='eyelet'
 
 # Bash
-complete -F _rigging_completion -o nosort rig
+complete -F _eyelet_completion -o nosort rig
 
 # Zsh
-compdef _rigging_completion rig
+compdef _eyelet_completion rig
 ```
 
 ## Environment Variables
 
-Rigging's completion respects these environment variables:
+Eyelet's completion respects these environment variables:
 - `RIGGING_COMPLETE_DEBUG` - Enable debug output
 - `RIGGING_COMPLETE_CACHE` - Cache completion results (faster but may be stale)
 
 ## Contributing
 
 To improve shell completion:
-1. Edit completion scripts in `src/rigging/cli/completion.py`
+1. Edit completion scripts in `src/eyelet/cli/completion.py`
 2. Test with all supported shells
 3. Update this documentation
 4. Submit a pull request

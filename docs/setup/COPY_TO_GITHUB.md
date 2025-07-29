@@ -4,7 +4,7 @@ Since the OAuth app can't create workflows, copy these manually:
 
 ## 1. Create .github/workflows/ci.yml
 
-Go to https://github.com/bdmorin/rigging → Add file → Create new file
+Go to https://github.com/bdmorin/eyelet → Add file → Create new file
 Name: `.github/workflows/ci.yml`
 
 Copy this content:
@@ -55,13 +55,13 @@ jobs:
     
     - name: Type check with mypy
       run: |
-        uv run mypy src/rigging
+        uv run mypy src/eyelet
       if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.11'
       continue-on-error: true
     
     - name: Test with pytest
       run: |
-        uv run pytest tests/ -v --cov=rigging --cov-report=xml
+        uv run pytest tests/ -v --cov=eyelet --cov-report=xml
       continue-on-error: true
     
     - name: Upload coverage reports to Codecov
@@ -80,8 +80,8 @@ jobs:
     - name: Test installation
       run: |
         uv pip install dist/*.whl
-        rigging --version
-        rigging validate settings --help
+        eyelet --version
+        eyelet validate settings --help
 ```
 
 ## 2. Create .github/workflows/publish.yml

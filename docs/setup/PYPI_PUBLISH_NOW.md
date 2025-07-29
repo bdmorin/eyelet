@@ -2,7 +2,7 @@
 
 ## Option 1: Manual Publishing (Fastest)
 
-Since you need to test `uvx --from rigging-cli rigging` immediately, let's publish manually:
+Since you need to test `uvx --from eyelet eyelet` immediately, let's publish manually:
 
 ### 1. Install twine
 ```bash
@@ -17,7 +17,7 @@ pip install twine
 
 ### 3. Create API Token
 - Go to https://pypi.org/manage/account/token/
-- Token name: "rigging-initial"
+- Token name: "eyelet-initial"
 - Scope: "Entire account" (for first upload)
 - Copy the token (starts with `pypi-`)
 
@@ -38,8 +38,8 @@ twine upload dist/*
 ### 6. Test immediately
 ```bash
 # Wait 1-2 minutes for PyPI to update
-uvx --from rigging-cli rigging --version
-uvx --from rigging-cli rigging validate settings
+uvx --from eyelet eyelet --version
+uvx --from eyelet eyelet validate settings
 ```
 
 ## Option 2: Test on TestPyPI First (Safer)
@@ -49,7 +49,7 @@ If you want to test first:
 1. Create account at https://test.pypi.org
 2. Get token from https://test.pypi.org/manage/account/token/
 3. Upload: `twine upload --repository testpypi dist/*`
-4. Test: `pip install --index-url https://test.pypi.org/simple/ rigging`
+4. Test: `pip install --index-url https://test.pypi.org/simple/ eyelet`
 
 ## Option 3: GitHub Release (Automated)
 
@@ -63,9 +63,9 @@ If you want to test first:
 Once published:
 ```bash
 # Should work globally now!
-uvx --from rigging-cli rigging validate settings
-uvx --from rigging-cli rigging configure install-all
-uvx --from rigging-cli rigging --help
+uvx --from eyelet eyelet validate settings
+uvx --from eyelet eyelet configure install-all
+uvx --from eyelet eyelet --help
 ```
 
-The 'rigging' name is available on PyPI, so you're good to go!
+The 'eyelet' name is available on PyPI, so you're good to go!

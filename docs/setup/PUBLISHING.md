@@ -1,6 +1,6 @@
-# Publishing Rigging to PyPI
+# Publishing Eyelet to PyPI
 
-This guide walks through the steps to publish Rigging to PyPI so it can be used with `uvx rigging`.
+This guide walks through the steps to publish Eyelet to PyPI so it can be used with `uvx eyelet`.
 
 ## Prerequisites
 
@@ -14,8 +14,8 @@ This guide walks through the steps to publish Rigging to PyPI so it can be used 
 ### 1. Verify Package Name Availability
 
 ```bash
-# Check if 'rigging' is available (we already verified it is!)
-pip search rigging
+# Check if 'eyelet' is available (we already verified it is!)
+pip search eyelet
 ```
 
 ### 2. Configure GitHub Secrets
@@ -51,7 +51,7 @@ uv build
 twine upload --repository testpypi dist/*
 
 # Test installation from Test PyPI
-pip install --index-url https://test.pypi.org/simple/ rigging
+pip install --index-url https://test.pypi.org/simple/ eyelet
 
 # Upload to PyPI
 twine upload dist/*
@@ -74,9 +74,9 @@ twine upload dist/*
 
 ```bash
 # Wait a few minutes for PyPI to update, then test:
-uvx rigging --version
-uvx rigging validate settings
-uvx rigging configure install-all --help
+uvx eyelet --version
+uvx eyelet validate settings
+uvx eyelet configure install-all --help
 ```
 
 ## Version Management
@@ -88,10 +88,10 @@ uvx rigging configure install-all --help
 ## Troubleshooting
 
 ### Package Name Conflicts
-If 'rigging' becomes unavailable, alternative names:
-- `rigging-ai`
-- `claude-rigging`
-- `hook-rigging`
+If 'eyelet' becomes unavailable, alternative names:
+- `eyelet-ai`
+- `claude-eyelet`
+- `hook-eyelet`
 
 ### Build Issues
 ```bash

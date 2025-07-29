@@ -1,4 +1,4 @@
-# Rigging Hook Combination Matrix
+# Eyelet Hook Combination Matrix
 
 ## Current Hook/Tool Combinations
 
@@ -91,11 +91,11 @@ Based on Claude Code documentation and runtime analysis, here are all possible h
 
 ### 2. Runtime Probing
 ```bash
-# List available tools (using Rigging discovery)
-rigging discover tools
+# List available tools (using Eyelet discovery)
+eyelet discover tools
 
 # Test hook compatibility
-rigging validate --hook-type PreToolUse --matcher NewTool
+eyelet validate --hook-type PreToolUse --matcher NewTool
 ```
 
 ### 3. Log Analysis

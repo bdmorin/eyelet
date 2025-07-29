@@ -4,12 +4,12 @@
 
 1. **Create the repository on GitHub**:
    ```bash
-   gh repo create rigging --public --description "Hook orchestration system for AI agents - All hands to the rigging!"
+   gh repo create eyelet --public --description "Hook orchestration system for AI agents - All hands to the eyelet!"
    ```
    
    Or manually at: https://github.com/new
-   - Repository name: `rigging`
-   - Description: "Hook orchestration system for AI agents - All hands to the rigging!"
+   - Repository name: `eyelet`
+   - Description: "Hook orchestration system for AI agents - All hands to the eyelet!"
    - Public repository
    - Don't initialize with README (we have one)
 
@@ -17,9 +17,9 @@
    ```bash
    git init
    git add .
-   git commit -m "Initial commit: Rigging - Hook orchestration for Claude Code"
+   git commit -m "Initial commit: Eyelet - Hook orchestration for Claude Code"
    git branch -M main
-   git remote add origin https://github.com/bdmorin/rigging.git
+   git remote add origin https://github.com/bdmorin/eyelet.git
    git push -u origin main
    ```
 
@@ -54,7 +54,7 @@
 1. Push to GitHub
 2. Create first release (v0.1.0)
 3. This will trigger PyPI publication
-4. Then `uvx rigging` will work globally!
+4. Then `uvx eyelet` will work globally!
 
 ## Manual PyPI Publishing (if needed)
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Rigging is a sophisticated Python-based hook orchestration system for Claude Code. Built with a naval theme, it provides comprehensive management, templating, and execution handling for AI agent hooks. Like a ship's rigging that controls the sails, Rigging controls and orchestrates your AI agent's behavior.
+Eyelet is a sophisticated Python-based hook orchestration system for Claude Code. It provides comprehensive management, templating, and execution handling for AI agent hooks. Like an eyelet that connects and secures, Eyelet connects and orchestrates your AI agent's behavior through hooks.
 
 ## Repository Structure
 
@@ -18,7 +18,7 @@ Clean, organized structure to avoid technical debt:
 ├── pyproject.toml        # Python project configuration
 ├── uv.lock              # Dependency lockfile
 ├── MANIFEST.in          # Package manifest
-├── src/rigging/         # Main Python package
+├── src/eyelet/          # Main Python package
 ├── tests/               # Test suite
 ├── schemas/             # JSON schemas
 ├── docs/                # Documentation
@@ -30,7 +30,7 @@ Clean, organized structure to avoid technical debt:
 ## Technology Stack
 
 - **Language**: Python 3.11+
-- **Distribution**: uvx/pipx (PyPI package: rigging-cli)
+- **Distribution**: uvx/pipx (PyPI package: eyelet)
 - **TUI**: Textual (not Bubbletea)
 - **CLI**: Click
 - **Architecture**: Vertical slice with separation of concerns
@@ -40,7 +40,7 @@ Clean, organized structure to avoid technical debt:
 
 ### Hook System Implementation
 
-Rigging will support all seven Claude Code hook types:
+Eyelet will support all seven Claude Code hook types:
 - PreToolUse/PostToolUse: Tool execution monitoring and control
 - Notification: User interaction tracking
 - UserPromptSubmit: Prompt validation and context injection
@@ -50,7 +50,7 @@ Rigging will support all seven Claude Code hook types:
 ### Naval Theming
 
 The project embraces naval terminology:
-- "All hands to the rigging!" - Launch the TUI
+- "Thread through the eyelet!" - Launch the TUI
 - "Run out the guns!" - Deploy templates
 - "Check the ship's log" - View logs
 - "Scan the horizon" - Discover new hooks
@@ -63,7 +63,7 @@ The repository is in transition from Go concept to Python implementation. Histor
 ## Responsibilities
 
 - You are 100% responsible for this directory, its management, and how it's implemented. The user will guide you, however it's your responsibility to maintain it to the high standards you would expect.
-- When implementing Rigging, follow the TECHNOLOGY_GUIDE.md philosophy: troubleshoot and solve problems rather than abandoning approaches.
+- When implementing Eyelet, follow the TECHNOLOGY_GUIDE.md philosophy: troubleshoot and solve problems rather than abandoning approaches.
 - Maintain consistency with the naval theme and Python technology choices outlined in our documentation.
 
 ## Documentation Guidelines
@@ -82,7 +82,7 @@ The repository is in transition from Go concept to Python implementation. Histor
 - **pyproject.toml**: Version number, dependencies, package metadata
 - **CHANGELOG.md**: MUST be updated before every release with user-facing changes
 - **README.md**: Badge URLs, installation commands, examples must stay current
-- **src/rigging/__init__.py**: Version string must match pyproject.toml
+- **src/eyelet/__init__.py**: Version string must match pyproject.toml
 
 #### 2. Documentation Synchronization
 - **README.md** ↔ **docs/QUICKSTART.md**: Examples and commands must match
@@ -92,12 +92,12 @@ The repository is in transition from Go concept to Python implementation. Histor
 
 #### 3. Configuration & Settings
 - **pyproject.toml**: 
-  - Package name (rigging-cli on PyPI)
+  - Package name (eyelet on PyPI)
   - Script entry points
   - Dependencies and dev dependencies
   - Tool configurations (ruff, black, mypy, pytest)
-- **src/rigging/schemas/**: JSON schemas for validation
-- **schemas/**: Root-level schema files (should match src/rigging/schemas/)
+- **src/eyelet/schemas/**: JSON schemas for validation
+- **schemas/**: Root-level schema files (should match src/eyelet/schemas/)
 
 #### 4. GitHub Actions & CI/CD
 - **.github/workflows/**: All workflow files
@@ -105,20 +105,20 @@ The repository is in transition from Go concept to Python implementation. Histor
 - **PyPI package name** consistency across workflows and documentation
 
 #### 5. Import and Module Structure
-- **src/rigging/__init__.py**: Public API exports
-- **src/rigging/__main__.py**: CLI entry point
+- **src/eyelet/__init__.py**: Public API exports
+- **src/eyelet/__main__.py**: CLI entry point
 - **Import paths**: When refactoring, check all internal imports
 
 ### Maintenance Checklists
 
 #### Before Every Release
 1. [ ] Update version in pyproject.toml
-2. [ ] Update version in src/rigging/__init__.py  
+2. [ ] Update version in src/eyelet/__init__.py  
 3. [ ] Update CHANGELOG.md with new features/fixes
 4. [ ] Verify all README examples work with current version
 5. [ ] Run full test suite: `uv run pytest`
 6. [ ] Check linting: `uv run ruff check .`
-7. [ ] Test PyPI installation: `uvx --from rigging-cli rigging --version`
+7. [ ] Test PyPI installation: `uvx eyelet --version`
 8. [ ] Verify GitHub Actions are passing
 
 #### Monthly Maintenance

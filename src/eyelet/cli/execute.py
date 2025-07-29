@@ -17,8 +17,8 @@ from eyelet.infrastructure.repositories import SQLiteExecutionRepository
 console = Console()
 
 
-def create_hms_log_entry(input_data, start_time, project_dir=None):
-    """Create a comprehensive log entry in the hms-hooks directory"""
+def create_eyelet_log_entry(input_data, start_time, project_dir=None):
+    """Create a comprehensive log entry in the eyelet-hooks directory"""
     if project_dir is None:
         project_dir = Path.cwd()
 
@@ -27,17 +27,17 @@ def create_hms_log_entry(input_data, start_time, project_dir=None):
     tool_name = input_data.get('tool_name', '')
 
     # Build directory structure
-    # Format: ./hms-hooks/{hook_type}/{tool_name}/{date}/
-    hms_dir = project_dir / "hms-hooks"
+    # Format: ./eyelet-hooks/{hook_type}/{tool_name}/{date}/
+    eyelet_dir = project_dir / "eyelet-hooks"
 
     if hook_type in ['PreToolUse', 'PostToolUse'] and tool_name:
-        log_dir = hms_dir / hook_type / tool_name / start_time.strftime("%Y-%m-%d")
+        log_dir = eyelet_dir / hook_type / tool_name / start_time.strftime("%Y-%m-%d")
     elif hook_type == 'PreCompact':
         compact_type = input_data.get('compact_type', 'unknown')
-        log_dir = hms_dir / hook_type / compact_type / start_time.strftime("%Y-%m-%d")
+        log_dir = eyelet_dir / hook_type / compact_type / start_time.strftime("%Y-%m-%d")
     else:
         # For hooks without tools (Notification, UserPromptSubmit, Stop, etc.)
-        log_dir = hms_dir / hook_type / start_time.strftime("%Y-%m-%d")
+        log_dir = eyelet_dir / hook_type / start_time.strftime("%Y-%m-%d")
 
     # Create directory structure
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -90,9 +90,9 @@ def create_hms_log_entry(input_data, start_time, project_dir=None):
 @click.option('--log-only', is_flag=True, help='Only log, no processing')
 @click.option('--log-result', is_flag=True, help='Log result after execution')
 @click.option('--debug', is_flag=True, help='Enable debug output')
-@click.option('--no-hms-log', is_flag=True, help='Disable HMS logging to files')
+@click.option('--no-eyelet-log', is_flag=True, help='Disable Eyelet logging to files')
 @click.pass_context
-def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
+def execute(ctx, workflow, log_only, log_result, debug, no_eyelet_log):
     """
     Execute as a hook endpoint - Man the guns!
 
@@ -129,15 +129,15 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
             "error": str(e)
         }
 
-    # Create HMS log entry FIRST - always log everything
-    if not no_hms_log:
+    # Create Eyelet log entry FIRST - always log everything
+    if not no_eyelet_log:
         try:
-            log_file, log_data = create_hms_log_entry(input_data, start_time, ctx.obj.get('config_dir'))
+            log_file, log_data = create_eyelet_log_entry(input_data, start_time, ctx.obj.get('config_dir'))
             if debug:
-                console.print(f"[dim]HMS log created: {log_file}[/dim]", file=sys.stderr)
+                console.print(f"[dim]Eyelet log created: {log_file}[/dim]", file=sys.stderr)
         except Exception as e:
             if debug:
-                console.print(f"[yellow]HMS logging failed: {e}[/yellow]", file=sys.stderr)
+                console.print(f"[yellow]Eyelet logging failed: {e}[/yellow]", file=sys.stderr)
             # Continue execution even if logging fails
 
     # Extract hook information
@@ -204,8 +204,8 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
         # Update execution record
         execution_service.record_execution(execution)
 
-        # Update HMS log with results if enabled
-        if not no_hms_log and 'log_file' in locals():
+        # Update Eyelet log with results if enabled
+        if not no_eyelet_log and 'log_file' in locals():
             try:
                 # Read existing log
                 with open(log_file) as f:
@@ -225,7 +225,7 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
                     json.dump(final_log_data, f, indent=2, default=str)
             except Exception as e:
                 if debug:
-                    console.print(f"[yellow]Failed to update HMS log: {e}[/yellow]", file=sys.stderr)
+                    console.print(f"[yellow]Failed to update Eyelet log: {e}[/yellow]", file=sys.stderr)
 
         # Output any required response
         if execution.output_data and not log_only:
@@ -254,8 +254,8 @@ def execute(ctx, workflow, log_only, log_result, debug, no_hms_log):
         except:
             pass  # Don't fail on logging errors
 
-        # Update HMS log with error if enabled
-        if not no_hms_log and 'log_file' in locals():
+        # Update Eyelet log with error if enabled
+        if not no_eyelet_log and 'log_file' in locals():
             try:
                 with open(log_file) as f:
                     final_log_data = json.load(f)

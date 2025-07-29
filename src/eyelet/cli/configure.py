@@ -274,7 +274,7 @@ def install_all(ctx, scope, force, dev):
     Install universal logging for ALL hooks - Full broadside!
 
     This command installs a comprehensive hook configuration that logs
-    every single Claude Code hook to the ./hms-hooks directory.
+    every single Claude Code hook to the ./eyelet-hooks directory.
 
     Hooks installed:
     - PreToolUse: All tools (Bash, Read, Write, etc.)
@@ -285,7 +285,7 @@ def install_all(ctx, scope, force, dev):
     - SubagentStop
     - PreCompact (manual and auto)
 
-    All hooks will log to: ./hms-hooks/{hook_type}/{tool}/{date}/
+    All hooks will log to: ./eyelet-hooks/{hook_type}/{tool}/{date}/
     """
     # Handle case where ctx.obj is not initialized (e.g., when run via uvx)
     if ctx.obj is None:
@@ -337,7 +337,7 @@ def install_all(ctx, scope, force, dev):
                     type=HandlerType.COMMAND,
                     command=eyelet_cmd
                 ),
-                description=f"Universal HMS logging for all {hook_type.value} events"
+                description=f"Universal Eyelet logging for all {hook_type.value} events"
             )
             all_hooks.append(hook)
 
@@ -350,7 +350,7 @@ def install_all(ctx, scope, force, dev):
                     type=HandlerType.COMMAND,
                     command=eyelet_cmd
                 ),
-                description=f"Universal HMS logging for {hook_type.value}"
+                description=f"Universal Eyelet logging for {hook_type.value}"
             )
             all_hooks.append(hook)
 
@@ -363,7 +363,7 @@ def install_all(ctx, scope, force, dev):
                     type=HandlerType.COMMAND,
                     command=eyelet_cmd
                 ),
-                description=f"Universal HMS logging for PreCompact ({matcher})"
+                description=f"Universal Eyelet logging for PreCompact ({matcher})"
             )
             all_hooks.append(hook)
 
@@ -392,7 +392,7 @@ def install_all(ctx, scope, force, dev):
             )
 
         console.print(table)
-        console.print("\n[dim]All hooks will log to: ./hms-hooks/[/dim]")
+        console.print("\n[dim]All hooks will log to: ./eyelet-hooks/[/dim]")
         console.print("[dim]Run 'eyelet logs' to view execution history[/dim]")
 
     except Exception as e:

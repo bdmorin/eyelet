@@ -1,0 +1,14 @@
+# Global Eyelet Configuration
+# Location: ~/.claude/eyelet.yaml
+
+logging:
+  format: json          # Options: json, sqlite, both
+  enabled: true
+  scope: project        # Options: project, global, both
+  global_path: ~/.claude/eyelet-logging
+  project_path: .eyelet-logging
+  add_to_gitignore: true
+
+metadata:
+  include_hostname: true
+  include_ip: true
