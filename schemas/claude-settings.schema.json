@@ -1,145 +1,137 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Claude Code Settings",
-  "description": "Schema for Claude Code settings.json configuration files",
+  "description": "Schema for Claude Code settings.json configuration files (new nested object format)",
   "type": "object",
   "properties": {
     "hooks": {
-      "type": "array",
-      "description": "Array of hook configurations",
-      "items": {
-        "$ref": "#/definitions/hook"
-      }
+      "type": "object",
+      "description": "Hook configurations organized by hook type",
+      "properties": {
+        "PreToolUse": {
+          "type": "array",
+          "description": "Pre-tool-use hooks",
+          "items": {
+            "$ref": "#/definitions/toolHookEntry"
+          }
+        },
+        "PostToolUse": {
+          "type": "array", 
+          "description": "Post-tool-use hooks",
+          "items": {
+            "$ref": "#/definitions/toolHookEntry"
+          }
+        },
+        "UserPromptSubmit": {
+          "type": "array",
+          "description": "User prompt submit hooks",
+          "items": {
+            "$ref": "#/definitions/basicHookEntry"
+          }
+        },
+        "Notification": {
+          "type": "array",
+          "description": "Notification hooks", 
+          "items": {
+            "$ref": "#/definitions/basicHookEntry"
+          }
+        },
+        "Stop": {
+          "type": "array",
+          "description": "Stop hooks",
+          "items": {
+            "$ref": "#/definitions/basicHookEntry"
+          }
+        },
+        "SubagentStop": {
+          "type": "array",
+          "description": "Subagent stop hooks",
+          "items": {
+            "$ref": "#/definitions/basicHookEntry"
+          }
+        },
+        "PreCompact": {
+          "type": "array",
+          "description": "Pre-compact hooks",
+          "items": {
+            "$ref": "#/definitions/compactHookEntry"
+          }
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": true,
   "definitions": {
-    "hook": {
+    "hookCommand": {
       "type": "object",
-      "required": ["type", "handler"],
+      "required": ["type", "command"],
       "properties": {
         "type": {
           "type": "string",
-          "description": "The type of hook event",
-          "enum": [
-            "PreToolUse",
-            "PostToolUse",
-            "UserPromptSubmit",
-            "Notification",
-            "Stop",
-            "SubagentStop",
-            "PreCompact"
-          ]
+          "const": "command",
+          "description": "Type of hook handler"
         },
-        "handler": {
-          "$ref": "#/definitions/handler"
-        },
+        "command": {
+          "type": "string",
+          "description": "Command to execute"
+        }
+      },
+      "additionalProperties": false
+    },
+    "basicHookEntry": {
+      "type": "object",
+      "required": ["hooks"],
+      "properties": {
+        "hooks": {
+          "type": "array",
+          "description": "Array of hook commands",
+          "items": {
+            "$ref": "#/definitions/hookCommand"
+          },
+          "minItems": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "toolHookEntry": {
+      "type": "object",
+      "required": ["matcher", "hooks"],
+      "properties": {
         "matcher": {
           "type": "string",
-          "description": "Regex pattern for tool matching (PreToolUse/PostToolUse) or 'manual'/'auto' for PreCompact"
+          "description": "Regex pattern to match tool names (e.g., '.*', 'Bash', 'Read')"
+        },
+        "hooks": {
+          "type": "array",
+          "description": "Array of hook commands",
+          "items": {
+            "$ref": "#/definitions/hookCommand"
+          },
+          "minItems": 1
         }
       },
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "type": {
-                "enum": ["PreToolUse", "PostToolUse"]
-              }
-            }
-          },
-          "then": {
-            "required": ["matcher"],
-            "properties": {
-              "matcher": {
-                "type": "string",
-                "description": "Regex pattern to match tool names"
-              }
-            }
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "type": {
-                "const": "PreCompact"
-              }
-            }
-          },
-          "then": {
-            "required": ["matcher"],
-            "properties": {
-              "matcher": {
-                "type": "string",
-                "enum": ["manual", "auto"],
-                "description": "Type of compaction trigger"
-              }
-            }
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "type": {
-                "enum": ["UserPromptSubmit", "Notification", "Stop", "SubagentStop"]
-              }
-            }
-          },
-          "then": {
-            "properties": {
-              "matcher": {
-                "not": {}
-              }
-            }
-          }
-        }
-      ]
+      "additionalProperties": false
     },
-    "handler": {
+    "compactHookEntry": {
       "type": "object",
-      "required": ["type"],
+      "required": ["matcher", "hooks"],
       "properties": {
-        "type": {
+        "matcher": {
           "type": "string",
-          "enum": ["command", "workflow", "script"],
-          "description": "Type of handler"
+          "enum": ["manual", "auto"],
+          "description": "Type of compaction trigger"
+        },
+        "hooks": {
+          "type": "array",
+          "description": "Array of hook commands",
+          "items": {
+            "$ref": "#/definitions/hookCommand"
+          },
+          "minItems": 1
         }
       },
-      "oneOf": [
-        {
-          "properties": {
-            "type": { "const": "command" },
-            "command": {
-              "type": "string",
-              "description": "Command to execute"
-            }
-          },
-          "required": ["command"],
-          "additionalProperties": false
-        },
-        {
-          "properties": {
-            "type": { "const": "workflow" },
-            "workflow": {
-              "type": "string",
-              "description": "Path to workflow file"
-            }
-          },
-          "required": ["workflow"],
-          "additionalProperties": false
-        },
-        {
-          "properties": {
-            "type": { "const": "script" },
-            "script": {
-              "type": "string",
-              "description": "Script content to execute"
-            }
-          },
-          "required": ["script"],
-          "additionalProperties": false
-        }
-      ]
+      "additionalProperties": false
     }
   }
 }

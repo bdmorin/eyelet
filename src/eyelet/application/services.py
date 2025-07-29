@@ -98,16 +98,33 @@ class ConfigurationService:
             hooks_data = data.get("hooks", [])
             hooks = []
 
-            for hook_data in hooks_data:
-                # Convert Claude format to our format
-                handler_data = hook_data["handler"]
-                handler = Handler(**handler_data)
-                hook = Hook(
-                    type=HookType(hook_data["type"]),
-                    matcher=hook_data.get("matcher"),
-                    handler=handler
-                )
-                hooks.append(hook)
+            # Handle both old array format and new nested object format
+            if isinstance(hooks_data, list):
+                # Old format: array of hook objects
+                for hook_data in hooks_data:
+                    handler_data = hook_data["handler"]
+                    handler = Handler(**handler_data)
+                    hook = Hook(
+                        type=HookType(hook_data["type"]),
+                        matcher=hook_data.get("matcher"),
+                        handler=handler
+                    )
+                    hooks.append(hook)
+            elif isinstance(hooks_data, dict):
+                # New format: nested object structure
+                for hook_type, hook_entries in hooks_data.items():
+                    for entry in hook_entries:
+                        for hook_config in entry.get("hooks", []):
+                            handler = Handler(
+                                type=hook_config["type"],
+                                command=hook_config["command"]
+                            )
+                            hook = Hook(
+                                type=HookType(hook_type),
+                                matcher=entry.get("matcher"),
+                                handler=handler
+                            )
+                            hooks.append(hook)
 
             return HookConfiguration(hooks=hooks)
         except Exception as e:
@@ -124,17 +141,28 @@ class ConfigurationService:
         else:
             settings = {}
 
-        # Convert to Claude format
-        hooks_data = []
+        # Convert to Claude format (new nested object structure)
+        hooks_data = {}
         for hook in config.hooks:
             if hook.enabled:
-                hook_dict = {
-                    "type": hook.type,
-                    "handler": hook.handler.model_dump(exclude_none=True)
+                hook_type = hook.type
+                if hook_type not in hooks_data:
+                    hooks_data[hook_type] = []
+                
+                hook_entry = {
+                    "hooks": [
+                        {
+                            "type": hook.handler.type,
+                            "command": hook.handler.command
+                        }
+                    ]
                 }
+                
+                # Add matcher if present
                 if hook.matcher:
-                    hook_dict["matcher"] = hook.matcher
-                hooks_data.append(hook_dict)
+                    hook_entry["matcher"] = hook.matcher
+                    
+                hooks_data[hook_type].append(hook_entry)
 
         settings["hooks"] = hooks_data
 

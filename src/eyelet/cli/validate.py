@@ -183,16 +183,30 @@ def validate_settings(ctx, settings_file, schema):
 
         # Show summary
         if 'hooks' in settings_data:
-            hook_count = len(settings_data['hooks'])
+            hooks_data = settings_data['hooks']
+            
+            # Count hooks based on format
+            if isinstance(hooks_data, list):
+                # Old format
+                hook_count = len(hooks_data)
+                hook_types = {}
+                for hook in hooks_data:
+                    hook_type = hook['type']
+                    if hook_type not in hook_types:
+                        hook_types[hook_type] = []
+                    hook_types[hook_type].append(hook)
+            elif isinstance(hooks_data, dict):
+                # New format - count all hook entries
+                hook_count = 0
+                hook_types = {}
+                for hook_type, entries in hooks_data.items():
+                    hook_types[hook_type] = entries
+                    hook_count += len(entries)
+            else:
+                hook_count = 0
+                hook_types = {}
+                
             console.print(f"\n[bold]Summary:[/bold] {hook_count} hooks configured")
-
-            # Group hooks by type
-            hook_types = {}
-            for hook in settings_data['hooks']:
-                hook_type = hook['type']
-                if hook_type not in hook_types:
-                    hook_types[hook_type] = []
-                hook_types[hook_type].append(hook)
 
             # Display table
             table = Table(title="Configured Hooks")
@@ -201,7 +215,15 @@ def validate_settings(ctx, settings_file, schema):
             table.add_column("Matchers", style="dim")
 
             for hook_type, hooks in sorted(hook_types.items()):
-                matchers = [h.get('matcher', '-') for h in hooks]
+                if isinstance(hooks_data, list):
+                    # Old format
+                    matchers = [h.get('matcher', '-') for h in hooks]
+                elif isinstance(hooks_data, dict):
+                    # New format - extract matchers from hook entries
+                    matchers = [entry.get('matcher', '-') for entry in hooks]
+                else:
+                    matchers = ['-']
+                    
                 unique_matchers = list(set(matchers))
                 table.add_row(
                     hook_type,
