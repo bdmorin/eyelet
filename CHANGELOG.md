@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- SQLite logging implementation plan
+- Configuration file design (eyelet.yaml for global and project settings)
+- `eyelet doctor` command concept for configuration validation
+- Support for multiple hook commands per hook type
+- Configuration management CLI commands
+- Roadmap for enhanced metadata system
+
+### Fixed
+- SubagentStop hooks now properly logged when using Task tool
+- Hook testing includes SubagentStop verification
+
+### Changed
+- Default logging format decision: JSON (with SQLite as opt-in)
+- Simplified configuration without version field
+
 ## [0.2.0] - 2025-01-28
 
 ### Changed
