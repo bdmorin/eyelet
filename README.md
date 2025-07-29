@@ -1,46 +1,73 @@
-# ⚓ Rigging - Hook Orchestration for AI Agents
+# 🔗 Eyelet - Hook Orchestration for AI Agents
 
-> "All hands to the rigging!" - A sophisticated hook management system for AI agent workflows
+> "Thread through the eyelet!" - A sophisticated hook management system for AI agent workflows
 
 [![Python](https://img.shields.io/badge/python-3.11%2B-blue)](https://www.python.org/)
-[![PyPI version](https://badge.fury.io/py/rigging-cli.svg)](https://badge.fury.io/py/rigging-cli)
+[![PyPI version](https://badge.fury.io/py/eyelet.svg)](https://badge.fury.io/py/eyelet)
 [![uv](https://img.shields.io/badge/uv-latest-green)](https://github.com/astral-sh/uv)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![CI](https://github.com/bdmorin/rigging-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/bdmorin/rigging-cli/actions/workflows/ci.yml)
+[![CI](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml/badge.svg)](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml)
+[![Status](https://img.shields.io/badge/status-alpha-yellow)](https://github.com/bdmorin/eyelet)
 
-Rigging provides comprehensive management, templating, and execution handling for AI agent hooks. Like a ship's rigging that controls the sails and direction, Rigging controls and orchestrates your AI agent's behavior through a powerful workflow system.
+## 🎉 New in v0.3.0: SQLite Logging!
+
+**Eyelet now supports SQLite database logging!** Choose between JSON files, SQLite database, or both:
+
+```bash
+# Enable SQLite logging
+uvx eyelet configure logging --format sqlite
+
+# Use both JSON and SQLite
+uvx eyelet configure logging --format json,sqlite
+
+# Query your hook data
+uvx eyelet query search --text "error"
+uvx eyelet query summary --last 24h
+```
+
+## 📦 About
+
+Eyelet provides comprehensive management, templating, and execution handling for AI agent hooks. Like an eyelet that securely connects hooks to fabric, Eyelet connects and orchestrates your AI agent's behavior through a reliable workflow system.
+
+## ✨ Features
+
+- 🪝 **Universal Hook Support** - Captures all Claude Code hook types
+- 💾 **Flexible Logging** - JSON files, SQLite database, or both
+- 🔍 **Powerful Queries** - Search, filter, and analyze your hook data
+- 🏥 **Health Monitoring** - `eyelet doctor` checks your configuration
+- 🚀 **Zero Config** - `eyelet configure install-all` sets up everything
+- 📊 **Rich Analytics** - Session summaries, error analysis, and more
+- 🔧 **Git Integration** - Automatic Git metadata enrichment
+- ⚡ **High Performance** - SQLite with WAL mode for concurrent access
 
 ## 🚀 Quick Start
 
-> **Note**: All commands use `uvx --from rigging-cli rigging` because the package is published as `rigging-cli` on PyPI.
-
 ```bash
-# Install with uvx (recommended)
-uvx --from rigging-cli rigging
+# Install universal logging for ALL hooks (one command!)
+uvx eyelet configure install-all
 
-# Install universal logging for ALL hooks (recommended!)
-uvx --from rigging-cli rigging configure install-all
+# Enable SQLite logging for better performance
+uvx eyelet configure logging --format sqlite
 
-# Set sail with the TUI
-uvx --from rigging-cli rigging
+# Check your configuration health
+uvx eyelet doctor
 
-# Configure hooks for your project
-uvx --from rigging-cli rigging configure --scope project
-
-# Deploy a template
-uvx --from rigging-cli rigging template install observability
+# Query your hook data
+uvx eyelet query summary          # Session overview
+uvx eyelet query search --help    # Search options
+uvx eyelet query errors           # Debug issues
 ```
 
 ## 🎯 Universal Hook Handler
 
-Rigging includes a powerful universal hook handler that logs EVERY Claude Code hook to a structured directory:
+Eyelet includes a powerful universal hook handler that logs EVERY Claude Code hook to a structured directory:
 
 ```bash
 # Install logging for all hooks with one command
-uvx --from rigging-cli rigging configure install-all
+uvx eyelet configure install-all
 
 # Your hooks will be logged to:
-./hms-hooks/
+./eyelet-hooks/
 ├── PreToolUse/
 │   └── Bash/2025-07-28/
 │       └── 20250728_133300_236408_PreToolUse_Bash.json
@@ -62,7 +89,7 @@ Each log contains:
 ## 🎯 Features
 
 - **Dynamic Hook Discovery** - Automatically detects new tools and generates all valid hook combinations
-- **Beautiful TUI** - Navigate with a Textual-powered interface worthy of a ship's bridge  
+- **Beautiful TUI** - Navigate with a Textual-powered interface for reliable connections  
 - **Template System** - Deploy pre-configured hook patterns with a single command
 - **Workflow Engine** - Chain complex behaviors with conditional logic
 - **Comprehensive Logging** - Track every hook execution in SQLite or filesystem
@@ -81,20 +108,52 @@ Each log contains:
 
 ```bash
 # Core Operations
-uvx --from rigging-cli rigging configure    # Configure hooks
-uvx --from rigging-cli rigging execute      # Run as hook endpoint
-uvx --from rigging-cli rigging logs         # View execution logs
+uvx eyelet configure         # Configure hooks
+uvx eyelet configure logging # Manage logging settings (JSON/SQLite)
+uvx eyelet execute          # Run as hook endpoint
+uvx eyelet logs             # View JSON execution logs
+uvx eyelet doctor           # Health check and diagnostics
 
-# Discovery & Generation  
-uvx --from rigging-cli rigging discover     # Find available hooks
-uvx --from rigging-cli rigging generate     # Create hook combinations
-uvx --from rigging-cli rigging update       # Check for updates
+# Query & Analytics (SQLite)
+uvx eyelet query search     # Full-text search with filters
+uvx eyelet query summary    # Session and hook statistics
+uvx eyelet query errors     # Error analysis and debugging
+uvx eyelet query session    # View specific session logs
+uvx eyelet query grep       # Pattern matching across logs
 
-# Templates & Workflows
-uvx --from rigging-cli rigging template list      # Browse available templates
-uvx --from rigging-cli rigging template install   # Deploy a template
-uvx --from rigging-cli rigging workflow create    # Build custom workflows
+# Discovery & Templates  
+uvx eyelet discover         # Find available hooks
+uvx eyelet template list    # Browse templates
+uvx eyelet template install # Deploy a template
 ```
+
+## 💾 SQLite Logging
+
+Eyelet's SQLite logging provides powerful analytics and querying capabilities:
+
+```bash
+# Enable SQLite logging
+uvx eyelet configure logging --format sqlite
+
+# Search for specific patterns
+uvx eyelet query search --text "error" --tool Bash --last 1h
+
+# Get session summary
+uvx eyelet query summary --format json
+
+# Analyze errors
+uvx eyelet query errors --last 24h
+
+# Export specific session
+uvx eyelet query session <session-id> --format json > session.json
+```
+
+### Why SQLite?
+- ⚡ **Fast queries** across millions of hooks
+- 🔍 **Full-text search** with advanced filters
+- 📊 **Analytics** without external dependencies
+- 🔄 **Concurrent access** with WAL mode
+- 💾 **Compact storage** compared to JSON files
 
 ## 🎨 Example Hook Configuration
 
@@ -105,7 +164,7 @@ uvx --from rigging-cli rigging workflow create    # Build custom workflows
     "matcher": "Bash",
     "handler": {
       "type": "command", 
-      "command": "uvx --from rigging-cli rigging execute --workflow bash-validator"
+      "command": "uvx eyelet execute --log-only"
     }
   }]
 }
@@ -113,14 +172,14 @@ uvx --from rigging-cli rigging workflow create    # Build custom workflows
 
 ## 🔍 JSON Validation & Linting
 
-Rigging provides built-in validation for Claude settings files and VS Code integration:
+Eyelet provides built-in validation for Claude settings files and VS Code integration:
 
 ```bash
 # Validate your Claude settings
-uvx --from rigging-cli rigging validate settings
+uvx eyelet validate settings
 
 # Validate a specific file
-uvx --from rigging-cli rigging validate settings ~/.claude/settings.json
+uvx eyelet validate settings ~/.claude/settings.json
 ```
 
 ### VS Code Integration
@@ -132,19 +191,73 @@ The project includes a JSON schema for Claude settings files. VS Code users get:
 
 See [docs/vscode-json-linting.md](docs/vscode-json-linting.md) for setup instructions.
 
-## 🚢 Naval Tradition
+## 🔗 Connection Philosophy
 
-Rigging embraces naval terminology in honor of staying organized and shipshape:
+Eyelet embraces hardware connection terminology for reliable, secure attachment:
 
-- **"All hands to the rigging!"** - Launch the TUI
-- **"Run out the guns!"** - Deploy templates  
-- **"Check the ship's log"** - View logs
-- **"Scan the horizon"** - Discover new hooks
-- **"Steady as she goes"** - Maintain current configuration
+- **"Thread through the eyelet!"** - Launch the TUI
+- **"Secure the connection!"** - Deploy templates  
+- **"Check the connection log"** - View logs
+- **"Scan for connection points"** - Discover new hooks
+- **"Hold fast!"** - Maintain current configuration
+
+## 🧪 Testing
+
+Eyelet includes comprehensive testing tools to ensure your hooks are working correctly:
+
+### Testing Hook Integration
+
+```bash
+# Run the interactive hook test
+mise run test-hooks
+
+# This will generate a unique test ID and guide you through testing all tools
+# After running the test commands, verify with:
+mise run test-hooks-verify zebra-1234-flamingo-5678
+
+# View hook statistics
+mise run hook-stats
+
+# Generate a coverage report
+mise run hook-coverage
+
+# Clean old logs (older than 7 days)
+mise run hook-clean
+```
+
+### Development Testing
+
+```bash
+# Run all tests
+mise run test
+
+# Run linting
+mise run lint
+
+# Run type checking
+mise run typecheck
+
+# Run all CI checks
+mise run ci
+```
+
+### Manual Hook Testing
+
+The `test_all_hooks.py` script provides comprehensive hook testing:
+- Generates unique test identifiers for tracking
+- Tests all Claude Code tools (Bash, Read, Write, Edit, etc.)
+- Verifies hook logs contain expected data
+- Provides coverage reports
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please open issues and pull requests on GitHub.
+
+## 📚 Documentation
+
+- **[Quickstart Guide](docs/QUICKSTART.md)** - Get up and running quickly
+- **[Design Documents](docs/design/)** - Architecture and design decisions
+- **[Setup Guides](docs/setup/)** - GitHub Actions and deployment setup
 
 ## 📜 License
 
@@ -156,4 +269,4 @@ Built with love for the AI development community. Special thanks to the Anthropi
 
 ---
 
-*"A ship is safe in harbor, but that's not what ships are for." - Set sail with Rigging and explore the possibilities of AI agent orchestration.*
+*"The strongest connections are forged under pressure." - Connect with Eyelet and explore the possibilities of AI agent orchestration.*

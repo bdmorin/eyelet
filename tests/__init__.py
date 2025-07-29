@@ -1,1 +1,1 @@
-# Tests for rigging-cli
+# Tests for eyelet

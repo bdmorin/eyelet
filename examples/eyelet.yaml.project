@@ -1,0 +1,14 @@
+# Project Eyelet Configuration
+# Location: ./eyelet.yaml
+
+# Override global settings for this project
+logging:
+  format: sqlite        # Use SQLite for this project
+  scope: both          # Log to both project and global
+  path: .eyelet-logs   # Custom path for this project
+
+# Project-specific metadata
+metadata:
+  custom_fields:
+    project_name: "my-awesome-project"
+    team: "engineering"

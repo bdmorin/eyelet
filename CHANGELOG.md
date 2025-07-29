@@ -7,6 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-01-29
+
+### Added
+- Complete SQLite logging implementation with WAL mode and retry logic
+- Configuration file system (eyelet.yaml) for global and project settings
+- `eyelet doctor` command for comprehensive health checks and diagnostics
+- `eyelet query` command suite for searching and analyzing hook logs
+  - `query search` - Full-text search with multiple filters
+  - `query summary` - Session and hook type statistics
+  - `query errors` - Error analysis and debugging
+  - `query session` - View specific session logs
+  - `query grep` - Pattern matching across logs
+- `eyelet configure logging` command to manage logging settings
+- Git metadata enrichment for all logged hooks
+- Process-safe SQLite connections with fork detection
+- Hybrid logging support (JSON files, SQLite, or both)
+- PyYAML dependency for configuration management
+
+### Fixed
+- SubagentStop hooks now properly logged when using Task tool
+- Hook testing includes SubagentStop verification
+- PosixPath JSON serialization errors
+- Rich console.print() stderr output issues
+- Query commands handle missing execution data gracefully
+
+### Changed
+- Logging format configuration now accepts comma-separated values (e.g., `--format json,sqlite`)
+- Archive directory removed (tagged as `archive-removal` in git history)
+- Improved error handling with fallback to legacy logging on failures
+
+## [0.2.0] - 2025-01-28
+
+### Changed
+- Complete rebrand from Rigging to Eyelet
+- Package name changed to `eyelet` on PyPI
+- All commands now use `uvx eyelet`
+- Updated all documentation and examples to use new branding
+
+### Added
+- Comprehensive hook testing infrastructure
+  - `test_all_hooks.py` script for testing all Claude Code tools
+  - Unique test identifier generation for tracking
+  - Hook coverage reporting (100% coverage achieved)
+- mise configuration with testing tasks
+  - `mise run test-hooks`: Interactive hook testing
+  - `mise run test-hooks-verify`: Verify test results
+  - `mise run hook-stats`: Show hook statistics
+  - `mise run hook-coverage`: Generate coverage report
+  - `mise run hook-clean`: Clean old logs
+- Testing documentation in README.md
+
+### Fixed
+- Claude Code hook format updated to new nested object structure
+- Fixed settings.json generation for compatibility with latest Claude Code
+- Updated JSON schema for new hook format
+- Backwards compatibility maintained for loading old settings
+
 ## [0.1.3] - 2025-01-28
 
 ### Added
@@ -63,8 +120,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rich terminal output with tables
 - Error handling with helpful messages
 
-[Unreleased]: https://github.com/bdmorin/rigging-cli/compare/v0.1.3...HEAD
-[0.1.3]: https://github.com/bdmorin/rigging-cli/compare/v0.1.2...v0.1.3
-[0.1.2]: https://github.com/bdmorin/rigging-cli/compare/v0.1.1...v0.1.2
-[0.1.1]: https://github.com/bdmorin/rigging-cli/compare/v0.1.0...v0.1.1
-[0.1.0]: https://github.com/bdmorin/rigging-cli/releases/tag/v0.1.0
+[Unreleased]: https://github.com/bdmorin/eyelet/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/bdmorin/eyelet/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/bdmorin/eyelet/compare/v0.1.3...v0.2.0
+[0.1.3]: https://github.com/bdmorin/eyelet/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/bdmorin/eyelet/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/bdmorin/eyelet/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/bdmorin/eyelet/releases/tag/v0.1.0

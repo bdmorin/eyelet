@@ -6,7 +6,7 @@ from pathlib import Path
 
 from click.testing import CliRunner
 
-from rigging.cli.main import cli
+from eyelet.cli.main import cli
 
 
 def test_validate_valid_settings():
@@ -17,21 +17,45 @@ def test_validate_valid_settings():
         "hooks": [
             {
                 "type": "PreToolUse",
-                "handler": {
-                    "type": "command",
-                    "command": "echo test"
-                },
-                "matcher": ".*"
+                "handler": {"type": "command", "command": "echo test"},
+                "matcher": ".*",
             }
         ]
     }
 
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         json.dump(valid_settings, f)
         temp_path = f.name
 
     try:
-        result = runner.invoke(cli, ['validate', 'settings', temp_path])
+        result = runner.invoke(cli, ["validate", "settings", temp_path])
+        assert result.exit_code == 0
+        assert "is valid!" in result.output
+    finally:
+        Path(temp_path).unlink()
+
+
+def test_validate_new_format_settings():
+    """Test validation of settings with new object format"""
+    runner = CliRunner()
+
+    new_format_settings = {
+        "hooks": {
+            "PreToolUse": [
+                {
+                    "handler": {"type": "command", "command": "echo test"},
+                    "matcher": ".*",
+                }
+            ]
+        }
+    }
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
+        json.dump(new_format_settings, f)
+        temp_path = f.name
+
+    try:
+        result = runner.invoke(cli, ["validate", "settings", temp_path])
         assert result.exit_code == 0
         assert "is valid!" in result.output
     finally:
@@ -46,20 +70,17 @@ def test_validate_invalid_settings():
         "hooks": [
             {
                 "type": "InvalidHookType",
-                "handler": {
-                    "type": "command",
-                    "command": "echo test"
-                }
+                "handler": {"type": "command", "command": "echo test"},
             }
         ]
     }
 
-    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
         json.dump(invalid_settings, f)
         temp_path = f.name
 
     try:
-        result = runner.invoke(cli, ['validate', 'settings', temp_path])
+        result = runner.invoke(cli, ["validate", "settings", temp_path])
         assert result.exit_code == 0  # We don't fail, just report
         assert "Validation failed" in result.output
     finally:

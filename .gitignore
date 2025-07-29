@@ -60,7 +60,7 @@ Thumbs.db
 .env
 .env.local
 config.local.yaml
-rigging.yaml
+eyelet.yaml
 
 # UV
 uv.lock
@@ -68,6 +68,9 @@ uv.lock
 # Project specific
 workflows/user/*
 .claude/settings.json.backup
-hms-hooks/
+eyelet-hooks/
+.eyelet-logs/
+.eyelet-logging/
 test-*.json
-tmp-test/
+tmp-test/claude-code/
+claude-code/
