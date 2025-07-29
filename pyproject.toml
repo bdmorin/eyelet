@@ -1,7 +1,7 @@
 [project]
 name = "eyelet"
 version = "0.3.0"
-description = "Hook orchestration system for AI agents - Thread through the eyelet! (Work in Progress)"
+description = "Hook orchestration system for AI agents with SQLite logging and powerful analytics"
 readme = "README.md"
 authors = [{name = "Brian Morin"}]
 license = {text = "MIT"}

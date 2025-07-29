@@ -7,39 +7,55 @@
 [![uv](https://img.shields.io/badge/uv-latest-green)](https://github.com/astral-sh/uv)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![CI](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml/badge.svg)](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml)
-[![Status](https://img.shields.io/badge/status-work%20in%20progress-orange)](https://github.com/bdmorin/eyelet)
+[![Status](https://img.shields.io/badge/status-alpha-yellow)](https://github.com/bdmorin/eyelet)
 
-## ⚠️ Work in Progress
+## 🎉 New in v0.3.0: SQLite Logging!
 
-**Note: Eyelet is under active development.** While core hook logging functionality is stable and working, we're currently building:
-- SQLite database logging (in addition to JSON files)
-- Advanced configuration management
-- Query and analytics features
-- Browser-based UI for log exploration
+**Eyelet now supports SQLite database logging!** Choose between JSON files, SQLite database, or both:
 
-Feel free to use and contribute, but expect breaking changes as we evolve the API.
+```bash
+# Enable SQLite logging
+uvx eyelet configure logging --format sqlite
+
+# Use both JSON and SQLite
+uvx eyelet configure logging --format json,sqlite
+
+# Query your hook data
+uvx eyelet query search --text "error"
+uvx eyelet query summary --last 24h
+```
 
 ## 📦 About
 
 Eyelet provides comprehensive management, templating, and execution handling for AI agent hooks. Like an eyelet that securely connects hooks to fabric, Eyelet connects and orchestrates your AI agent's behavior through a reliable workflow system.
 
+## ✨ Features
+
+- 🪝 **Universal Hook Support** - Captures all Claude Code hook types
+- 💾 **Flexible Logging** - JSON files, SQLite database, or both
+- 🔍 **Powerful Queries** - Search, filter, and analyze your hook data
+- 🏥 **Health Monitoring** - `eyelet doctor` checks your configuration
+- 🚀 **Zero Config** - `eyelet configure install-all` sets up everything
+- 📊 **Rich Analytics** - Session summaries, error analysis, and more
+- 🔧 **Git Integration** - Automatic Git metadata enrichment
+- ⚡ **High Performance** - SQLite with WAL mode for concurrent access
+
 ## 🚀 Quick Start
 
 ```bash
-# Install with uvx (recommended)
-uvx eyelet
-
-# Install universal logging for ALL hooks (recommended!)
+# Install universal logging for ALL hooks (one command!)
 uvx eyelet configure install-all
 
-# Thread through the eyelet with the TUI
-uvx eyelet
+# Enable SQLite logging for better performance
+uvx eyelet configure logging --format sqlite
 
-# Configure hooks for your project
-uvx eyelet configure --scope project
+# Check your configuration health
+uvx eyelet doctor
 
-# Deploy a template
-uvx eyelet template install observability
+# Query your hook data
+uvx eyelet query summary          # Session overview
+uvx eyelet query search --help    # Search options
+uvx eyelet query errors           # Debug issues
 ```
 
 ## 🎯 Universal Hook Handler
@@ -92,20 +108,52 @@ Each log contains:
 
 ```bash
 # Core Operations
-uvx eyelet configure    # Configure hooks
-uvx eyelet execute      # Run as hook endpoint
-uvx eyelet logs         # View execution logs
+uvx eyelet configure         # Configure hooks
+uvx eyelet configure logging # Manage logging settings (JSON/SQLite)
+uvx eyelet execute          # Run as hook endpoint
+uvx eyelet logs             # View JSON execution logs
+uvx eyelet doctor           # Health check and diagnostics
 
-# Discovery & Generation  
-uvx eyelet discover     # Find available hooks
-uvx eyelet generate     # Create hook combinations
-uvx eyelet update       # Check for updates
+# Query & Analytics (SQLite)
+uvx eyelet query search     # Full-text search with filters
+uvx eyelet query summary    # Session and hook statistics
+uvx eyelet query errors     # Error analysis and debugging
+uvx eyelet query session    # View specific session logs
+uvx eyelet query grep       # Pattern matching across logs
 
-# Templates & Workflows
-uvx eyelet template list      # Browse available templates
-uvx eyelet template install   # Deploy a template
-uvx eyelet workflow create    # Build custom workflows
+# Discovery & Templates  
+uvx eyelet discover         # Find available hooks
+uvx eyelet template list    # Browse templates
+uvx eyelet template install # Deploy a template
 ```
+
+## 💾 SQLite Logging
+
+Eyelet's SQLite logging provides powerful analytics and querying capabilities:
+
+```bash
+# Enable SQLite logging
+uvx eyelet configure logging --format sqlite
+
+# Search for specific patterns
+uvx eyelet query search --text "error" --tool Bash --last 1h
+
+# Get session summary
+uvx eyelet query summary --format json
+
+# Analyze errors
+uvx eyelet query errors --last 24h
+
+# Export specific session
+uvx eyelet query session <session-id> --format json > session.json
+```
+
+### Why SQLite?
+- ⚡ **Fast queries** across millions of hooks
+- 🔍 **Full-text search** with advanced filters
+- 📊 **Analytics** without external dependencies
+- 🔄 **Concurrent access** with WAL mode
+- 💾 **Compact storage** compared to JSON files
 
 ## 🎨 Example Hook Configuration
 
@@ -116,7 +164,7 @@ uvx eyelet workflow create    # Build custom workflows
     "matcher": "Bash",
     "handler": {
       "type": "command", 
-      "command": "uvx eyelet execute --workflow bash-validator"
+      "command": "uvx eyelet execute --log-only"
     }
   }]
 }
