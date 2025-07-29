@@ -1,0 +1,46 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for better context
+    
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v44
+      with:
+        files: |
+          **/*.py
+          **/*.yml
+          **/*.yaml
+          **/*.json
+          **/*.md
+    
+    - name: Claude Code Review
+      if: steps.changed-files.outputs.any_changed == 'true'
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # This is a placeholder for Claude Code review integration
+        # In practice, this would:
+        # 1. Analyze the changed files
+        # 2. Send them to Claude for review
+        # 3. Post comments on the PR
+        
+        echo "Changed files for review:"
+        echo "${{ steps.changed-files.outputs.all_changed_files }}"
+        
+        # For now, just run basic checks
+        if [[ -n $(echo "${{ steps.changed-files.outputs.all_changed_files }}" | grep "\.py$") ]]; then
+          echo "Python files changed - would request Claude review"
+        fi

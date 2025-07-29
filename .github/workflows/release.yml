@@ -24,6 +24,7 @@ jobs:
     - name: Run tests
       run: |
         uv run ruff check .
+        uv run ruff format --check .
         uv run pytest tests/ -v
         uv build
         uv run twine check dist/*
