@@ -70,4 +70,4 @@ workflows/user/*
 .claude/settings.json.backup
 hms-hooks/
 test-*.json
-tmp-test/
+tmp-test/claude-code/
