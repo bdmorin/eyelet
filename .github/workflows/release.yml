@@ -42,6 +42,7 @@ jobs:
         echo "EOF" >> $GITHUB_OUTPUT
     
     - name: Create GitHub Release
+      id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,23 +58,26 @@ jobs:
           
           ```bash
           # Install with uvx (recommended)
-          uvx --from rigging-cli rigging
+          uvx eyelet
           
           # Or with pipx
-          pipx install rigging-cli==${{ steps.version.outputs.VERSION }}
+          pipx install eyelet==${{ steps.version.outputs.VERSION }}
           ```
           
           ## Quick Start
           
           ```bash
           # Install universal logging for ALL hooks
-          uvx --from rigging-cli rigging configure install-all
+          uvx eyelet configure install-all
           
-          # Validate your Claude settings
-          uvx --from rigging-cli rigging validate settings
+          # Enable SQLite logging
+          uvx eyelet configure logging --format sqlite
+          
+          # Check configuration health
+          uvx eyelet doctor
           ```
           
-          Full documentation: https://github.com/bdmorin/rigging-cli#readme
+          Full documentation: https://github.com/bdmorin/eyelet#readme
         draft: false
         prerelease: ${{ contains(steps.version.outputs.VERSION, 'alpha') || contains(steps.version.outputs.VERSION, 'beta') || contains(steps.version.outputs.VERSION, 'rc') }}
     
@@ -83,8 +87,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/rigging_cli-${{ steps.version.outputs.VERSION }}-py3-none-any.whl
-        asset_name: rigging_cli-${{ steps.version.outputs.VERSION }}-py3-none-any.whl
+        asset_path: ./dist/eyelet-${{ steps.version.outputs.VERSION }}-py3-none-any.whl
+        asset_name: eyelet-${{ steps.version.outputs.VERSION }}-py3-none-any.whl
         asset_content_type: application/zip
     
     - name: Upload source distribution to release
@@ -93,6 +97,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./dist/rigging_cli-${{ steps.version.outputs.VERSION }}.tar.gz
-        asset_name: rigging_cli-${{ steps.version.outputs.VERSION }}.tar.gz
+        asset_path: ./dist/eyelet-${{ steps.version.outputs.VERSION }}.tar.gz
+        asset_name: eyelet-${{ steps.version.outputs.VERSION }}.tar.gz
         asset_content_type: application/gzip

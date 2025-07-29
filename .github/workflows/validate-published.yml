@@ -24,20 +24,23 @@ jobs:
     - name: Install from PyPI with pipx
       run: |
         python -m pip install pipx
-        pipx install rigging-cli
+        pipx install eyelet
     
     - name: Test basic functionality
       run: |
-        rigging --version
-        rigging --help
-        rigging validate --help
-        rigging configure --help
+        eyelet --version
+        eyelet --help
+        eyelet validate --help
+        eyelet configure --help
+        eyelet doctor --help
+        eyelet query --help
     
     - name: Test with uvx
       run: |
         python -m pip install uv
-        uvx --from rigging-cli rigging --version
-        uvx --from rigging-cli rigging validate --help
+        uvx eyelet --version
+        uvx eyelet validate --help
+        uvx eyelet doctor --help
       if: matrix.os != 'windows-latest'  # uvx may have issues on Windows
     
     - name: Create test settings and validate
@@ -58,10 +61,10 @@ jobs:
         }
         EOF
         cd test-project
-        rigging validate settings .claude/settings.json
+        eyelet validate settings .claude/settings.json
       shell: bash
     
     - name: Test completion installation
       run: |
-        rigging completion --help
+        eyelet completion --help
       continue-on-error: true
