@@ -41,7 +41,7 @@ console = Console()
 @click.option("--until", help="Show logs until timestamp")
 def logs(tail, hook_type, tool, status, output_json, details, follow, since, until):
     """
-    View hook execution logs - Check the ship's log
+    View hook execution logs
 
     \b
     View and analyze hook execution history with powerful filtering options.

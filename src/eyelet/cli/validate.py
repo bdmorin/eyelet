@@ -175,7 +175,7 @@ def get_embedded_schema():
 
 @click.group(name="validate")
 def validate():
-    """Validate configurations - Check the ship's papers!"""
+    """Validate configurations and settings"""
     pass
 
 

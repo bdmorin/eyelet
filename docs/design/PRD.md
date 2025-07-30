@@ -197,16 +197,16 @@ eyelet
 # Configure hooks for current project
 eyelet configure --scope project
 
-# Install a template - "Run out the guns!"
+# Install a template
 eyelet template install observability
 
-# View logs - "Check the ship's log"
+# View logs
 eyelet logs --tail 50
 
 # Execute as hook endpoint
 eyelet execute
 
-# Discover available hooks - "Scan the horizon"
+# Discover available hooks
 eyelet discover hooks
 
 # Generate all hook combinations

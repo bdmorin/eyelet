@@ -21,7 +21,7 @@ console = Console()
 @click.pass_context
 def doctor(ctx, fix, verbose):
     """
-    Diagnose configuration and system health - Check the ship's condition!
+    Diagnose configuration and system health
 
     Checks for:
     - Claude Code integration status

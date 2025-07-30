@@ -23,7 +23,7 @@ console = Console()
 @click.pass_context
 def execute(ctx, workflow, log_only, log_result, debug, no_logging):
     """
-    Execute as a hook endpoint - Thread through the eyelet!
+    Execute as a hook endpoint
 
     This command is called by Claude Code when hooks are triggered.
     It reads JSON from stdin and processes according to configuration.

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2025-01-30
+
+### Changed
+- Complete rebrand from naval terminology to eyelet/hook terminology
+- Updated all CLI command descriptions to remove naval references
+- Cleaned up documentation to use consistent eyelet theming
+- Simplified command help text for better user experience
+
+### Removed
+- All naval-themed command descriptions ("Run out the guns!", "Check the ship's log", etc.)
+- Legacy rigging references in documentation and code
+
 ## [0.3.1] - 2025-01-29
 
 ### Added
@@ -95,8 +107,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.2] - 2025-01-28
 
 ### Changed
-- Package name changed to `rigging-cli` on PyPI
-- All commands now use `uvx --from rigging-cli rigging`
+- Package name changed to `eyelet` on PyPI
+- All commands now use `uvx eyelet`
 - Updated documentation to reflect new package name
 
 ### Fixed
@@ -106,7 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - JSON schema validation for Claude settings files
-- `uvx --from rigging-cli rigging validate settings` command for universal settings validation
+- `uvx eyelet validate settings` command for universal settings validation
 - VS Code integration with automatic schema mapping
 - Embedded schema for zero-dependency validation
 

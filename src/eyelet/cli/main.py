@@ -19,7 +19,7 @@ from eyelet.cli import (
     template,
     validate,
 )
-from eyelet.presentation.tui import launch_tui
+from eyelet.tui.app import launch_tui
 
 console = Console()
 
@@ -128,7 +128,7 @@ def cli(ctx, config_dir):
 @cli.command()
 @click.pass_context
 def status(ctx):
-    """Check the ship's status - show current configuration"""
+    """Show current configuration and status"""
     config_dir = ctx.obj["config_dir"]
     console.print(f"[bold]Configuration Directory:[/bold] {config_dir}")
 

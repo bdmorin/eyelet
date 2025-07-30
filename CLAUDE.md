@@ -47,14 +47,14 @@ Eyelet will support all seven Claude Code hook types:
 - Stop/SubagentStop: Session and subtask completion handling
 - PreCompact: Context management monitoring
 
-### Naval Theming
+### Eyelet Theming
 
-The project embraces naval terminology:
-- "Thread through the eyelet!" - Launch the TUI
-- "Run out the guns!" - Deploy templates
-- "Check the ship's log" - View logs
-- "Scan the horizon" - Discover new hooks
-- "Steady as she goes" - Maintain current configuration
+The project uses eyelet/hook terminology:
+- "Thread through the eyelet!" - Launch the TUI (connecting hooks through the eyelet)
+- "Deploy templates" - Install hook templates
+- "View logs" - Check hook execution history
+- "Discover hooks" - Find available hooks and tools
+- "Maintain configuration" - Keep current hook setup
 
 ## Current Status
 
@@ -64,7 +64,7 @@ The repository is in transition from Go concept to Python implementation. Histor
 
 - You are 100% responsible for this directory, its management, and how it's implemented. The user will guide you, however it's your responsibility to maintain it to the high standards you would expect.
 - When implementing Eyelet, follow the TECHNOLOGY_GUIDE.md philosophy: troubleshoot and solve problems rather than abandoning approaches.
-- Maintain consistency with the naval theme and Python technology choices outlined in our documentation.
+- Maintain consistency with the eyelet/hook theme and Python technology choices outlined in our documentation.
 
 ## Documentation Guidelines
 
@@ -141,13 +141,13 @@ The repository is in transition from Go concept to Python implementation. Histor
 3. **Dead Code**: Remove unused files, functions, and imports immediately
 4. **Hardcoded Paths**: Use Path objects and make paths configurable
 5. **Missing Error Handling**: Every file operation needs proper error handling
-6. **Inconsistent Naming**: Follow naval theme and Python conventions
+6. **Inconsistent Naming**: Follow eyelet/hook theme and Python conventions
 7. **Circular Imports**: Keep clean separation between layers
 
 ### File Monitoring for Changes
 When any of these files change, review related files:
 - `pyproject.toml` → Check README.md, CHANGELOG.md, GitHub workflows
-- `src/rigging/cli/*.py` → Update help documentation, README examples  
+- `src/eyelet/cli/*.py` → Update help documentation, README examples  
 - `schemas/*.json` → Update validation code and documentation
 - `.github/workflows/*` → Test locally, update docs/setup/
-- `src/rigging/__init__.py` → Check all import statements across codebase
+- `src/eyelet/__init__.py` → Check all import statements across codebase

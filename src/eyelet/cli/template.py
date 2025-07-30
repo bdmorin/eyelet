@@ -17,7 +17,7 @@ console = Console()
 
 @click.group()
 def template():
-    """Manage hook templates - Run out the guns!"""
+    """Manage hook templates"""
     pass
 
 

@@ -21,7 +21,7 @@ Eyelet templates are curated collections of hooks designed to work together for 
 - **Version control** - Track template versions and updates
 - **Community sharing** - Export and share templates with other users
 
-Templates follow the naval theme: "Run out the guns!" means deploying your templates into action.
+Templates are deployed into action to configure your hooks.
 
 ## Available Templates
 

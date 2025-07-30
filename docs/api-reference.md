@@ -402,7 +402,7 @@ eyelet completion status
 
 ### eyelet status
 
-Check the ship's status - show current configuration.
+Show current configuration and status.
 
 ```bash
 eyelet status

@@ -16,7 +16,7 @@ console = Console()
 
 @click.group()
 def discover():
-    """Discover available hooks and tools - Scan the horizon!"""
+    """Discover available hooks and tools"""
     pass
 
 

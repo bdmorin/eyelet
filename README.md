@@ -31,14 +31,14 @@ Eyelet provides comprehensive management, templating, and execution handling for
 
 ## ✨ Features
 
-- 🪝 **Universal Hook Support** - Captures all Claude Code hook types
-- 💾 **Flexible Logging** - JSON files, SQLite database, or both
-- 🔍 **Powerful Queries** - Search, filter, and analyze your hook data
-- 🏥 **Health Monitoring** - `eyelet doctor` checks your configuration
-- 🚀 **Zero Config** - `eyelet configure install-all` sets up everything
-- 📊 **Rich Analytics** - Session summaries, error analysis, and more
-- 🔧 **Git Integration** - Automatic Git metadata enrichment
-- ⚡ **High Performance** - SQLite with WAL mode for concurrent access
+- 🪝 **Universal Hook Support** - Captures all Claude Code hook types ✅
+- 💾 **Flexible Logging** - JSON files, SQLite database, or both ✅
+- 🔍 **Powerful Queries** - Search, filter, and analyze your hook data ✅
+- 🏥 **Health Monitoring** - `eyelet doctor` checks your configuration ✅
+- 🚀 **Zero Config** - `eyelet configure install-all` sets up everything ✅
+- 📊 **Rich Analytics** - Session summaries, error analysis, and more ✅
+- 🔧 **Git Integration** - Automatic Git metadata enrichment ✅
+- ⚡ **High Performance** - SQLite with WAL mode for concurrent access ✅
 
 ## 🚀 Quick Start
 
@@ -88,13 +88,13 @@ Each log contains:
 
 ## 🎯 Features
 
-- **Dynamic Hook Discovery** - Automatically detects new tools and generates all valid hook combinations
-- **Beautiful TUI** - Navigate with a Textual-powered interface for reliable connections  
-- **Template System** - Deploy pre-configured hook patterns with a single command
-- **Workflow Engine** - Chain complex behaviors with conditional logic
-- **Comprehensive Logging** - Track every hook execution in SQLite or filesystem
-- **AI Integration** - Native Claude Code SDK support for intelligent workflows
-- **Real-time Monitoring** - Watch hook executions as they happen
+- **Dynamic Hook Discovery** - Automatically detects new tools and generates all valid hook combinations ✅
+- **Beautiful TUI** - Navigate with a Textual-powered interface for reliable connections ✅ 
+- **Template System** - Deploy pre-configured hook patterns with a single command ✅
+- **Workflow Engine** - Chain complex behaviors with conditional logic ❌ (Not implemented - raises NotImplementedError)
+- **Comprehensive Logging** - Track every hook execution in SQLite or filesystem ✅
+- **AI Integration** - Native Claude Code SDK support for intelligent workflows ✅
+- **Real-time Monitoring** - Watch hook executions as they happen ✅ (via `eyelet logs --follow`)
 
 ## 📚 Documentation
 
@@ -108,23 +108,23 @@ Each log contains:
 
 ```bash
 # Core Operations
-uvx eyelet configure         # Configure hooks
-uvx eyelet configure logging # Manage logging settings (JSON/SQLite)
-uvx eyelet execute          # Run as hook endpoint
-uvx eyelet logs             # View JSON execution logs
-uvx eyelet doctor           # Health check and diagnostics
+uvx eyelet configure         # Configure hooks ✅
+uvx eyelet configure logging # Manage logging settings (JSON/SQLite) ✅
+uvx eyelet execute          # Run as hook endpoint ✅
+uvx eyelet logs             # View JSON execution logs ✅
+uvx eyelet doctor           # Health check and diagnostics ✅
 
 # Query & Analytics (SQLite)
-uvx eyelet query search     # Full-text search with filters
-uvx eyelet query summary    # Session and hook statistics
-uvx eyelet query errors     # Error analysis and debugging
-uvx eyelet query session    # View specific session logs
-uvx eyelet query grep       # Pattern matching across logs
+uvx eyelet query search     # Full-text search with filters ✅
+uvx eyelet query summary    # Session and hook statistics ✅
+uvx eyelet query errors     # Error analysis and debugging ✅
+uvx eyelet query session    # View specific session logs ✅
+uvx eyelet query grep       # Pattern matching across logs ✅
 
 # Discovery & Templates  
-uvx eyelet discover         # Find available hooks
-uvx eyelet template list    # Browse templates
-uvx eyelet template install # Deploy a template
+uvx eyelet discover         # Find available hooks ✅
+uvx eyelet template list    # Browse templates ✅
+uvx eyelet template install # Deploy a template ✅
 ```
 
 ## 💾 SQLite Logging
@@ -185,9 +185,9 @@ uvx eyelet validate settings ~/.claude/settings.json
 ### VS Code Integration
 
 The project includes a JSON schema for Claude settings files. VS Code users get:
-- ✅ IntelliSense/autocomplete for hook configurations
-- ✅ Real-time error detection
-- ✅ Hover documentation
+- ✅ IntelliSense/autocomplete for hook configurations ⚠️ (Schema exists but no .vscode/settings.json in project)
+- ✅ Real-time error detection ⚠️ (Schema exists but VS Code config not set up)
+- ✅ Hover documentation ⚠️ (Schema exists but VS Code config not set up)
 
 See [docs/vscode-json-linting.md](docs/vscode-json-linting.md) for setup instructions.
 
