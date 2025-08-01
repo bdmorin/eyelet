@@ -5,7 +5,7 @@ import os
 import sqlite3
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
-from typing import Iterator
+from typing import Any, Iterator
 
 from eyelet.recall.models import ConversationData, MessageData
 from eyelet.recall.parser import ConversationParser

@@ -64,24 +64,18 @@ class MigrationManager:
 
         for version, description, sql in MIGRATIONS:
             if version > current_version:
-                # Begin transaction for this migration
-                conn.execute("BEGIN EXCLUSIVE")
                 try:
                     # Execute migration SQL
                     if sql.strip():  # Skip empty migrations
+                        # Use executescript which handles its own transactions
                         conn.executescript(sql)
 
-                    # Update version
+                    # Update version (autocommit mode, so this is immediate)
                     self.set_version(version)
-
-                    # Commit transaction
-                    conn.execute("COMMIT")
 
                     applied.append(f"v{version}: {description}")
 
                 except Exception as e:
-                    # Rollback on error
-                    conn.execute("ROLLBACK")
                     raise RuntimeError(f"Migration {version} failed: {e}") from e
 
         return applied

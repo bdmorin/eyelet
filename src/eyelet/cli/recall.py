@@ -117,11 +117,21 @@ def recall(query: str, role: str, tool: str, session: str, since: str, limit: in
                 # Get project name
                 project_name = Path(conv.project_path).name
                 
-                console.print(f"[bold]{i}. {msg.role.upper()}[/bold] - {time_str} - {project_name}")
-                console.print(f"   {result.snippet}")
+                # Use Text objects to avoid markup parsing errors
+                from rich.text import Text
+                
+                header = Text()
+                header.append(f"{i}. {msg.role.upper()}", style="bold")
+                header.append(f" - {time_str} - {project_name}")
+                console.print(header)
+                
+                # Print snippet without markup parsing
+                snippet_text = Text(f"   {result.snippet}")
+                console.print(snippet_text)
                 
                 if msg.tool_name:
-                    console.print(f"   [dim]Tool: {msg.tool_name}[/dim]")
+                    tool_text = Text(f"   Tool: {msg.tool_name}", style="dim")
+                    console.print(tool_text)
                 
                 console.print()
         
@@ -138,7 +148,8 @@ def recall(query: str, role: str, tool: str, session: str, since: str, limit: in
     
     except Exception as e:
         console.print(f"[red]Error: {e}[/red]")
-        if console.is_debug:
+        import traceback
+        if '--debug' in sys.argv:
             console.print_exception()
         sys.exit(1)
 

@@ -37,6 +37,30 @@ fi
 uv run python test_all_hooks.py --verify $1
 """
 
+[tasks.recall]
+description = "Run recall command locally"
+run = """
+# Pass all arguments to the recall command
+uv run python -m eyelet.cli.recall "$@"
+"""
+
+[tasks.recall-debug]
+description = "Run recall with debugging"
+run = "PYTHONPATH=src python -m pdb -m eyelet.cli.recall"
+
+[tasks.recall-no-tui]
+description = "Run recall in CLI mode (no TUI)"
+run = """
+uv run python -m eyelet.cli.recall --no-tui "$@"
+"""
+
+[tasks.eyelet-dev]
+description = "Run eyelet CLI in development mode"
+run = """
+# Run any eyelet command in development
+uv run python -m eyelet.cli.main "$@"
+"""
+
 [tasks.hook-coverage]
 description = "Generate hook coverage report"
 run = """
