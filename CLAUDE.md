@@ -2,6 +2,24 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## 🚨 CRITICAL BUG TO FIX (for main branch Claude)
+
+**The TUI traps users and won't let them exit!**
+- Pressing 'q' does nothing
+- Ctrl+C shows "press q to exit" but q doesn't work
+- This violates basic UX principles - NEVER trap users
+
+**Fix needed**: When user hits Ctrl+C, exit immediately. Period. No questions asked. By Odin's left tit, we exit stage left pronto and post haste!
+
+## 📝 Message from feature/claude-code-log-reader branch
+
+Hey there, other Claude! We just added a `recall` feature but discovered the main TUI doesn't have navigation to access it. When running `mise run recall`, it drops into the main TUI with no way to reach the recall screen. The recall feature is implemented in:
+- `src/eyelet/recall/` - The recall module
+- `src/eyelet/cli/recall.py` - CLI command
+- `src/eyelet/tui/screens/recall.py` - TUI screen
+
+You'll need to add navigation in the main TUI to access this feature.
+
 ## Project Overview
 
 Eyelet is a sophisticated Python-based hook orchestration system for Claude Code. It provides comprehensive management, templating, and execution handling for AI agent hooks. Like an eyelet that connects and secures, Eyelet connects and orchestrates your AI agent's behavior through hooks.

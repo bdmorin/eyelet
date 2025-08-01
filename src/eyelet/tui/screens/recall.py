@@ -19,6 +19,7 @@ class RecallScreen(Screen):
     BINDINGS = [
         ("escape", "back", "Back"),
         ("ctrl+c", "quit", "Quit"),
+        ("q", "quit", "Quit"),
         ("/", "focus_search", "Search"),
         ("enter", "view_message", "View"),
     ]

@@ -7,6 +7,7 @@ from pathlib import Path
 import click
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+from rich.text import Text
 
 from eyelet.recall import ConversationLoader, ConversationSearch, SearchFilter
 from eyelet.services.config_service import ConfigService
@@ -136,14 +137,20 @@ def recall(query: str, role: str, tool: str, session: str, since: str, limit: in
                 console.print()
         
         else:
-            # Launch TUI
+            # Launch TUI with recall screen directly
+            from textual.app import App
             from eyelet.tui.screens.recall import RecallScreen
-            from eyelet.tui.app import EyeletApp
             
-            # Create app with search screen
-            app = EyeletApp()
-            recall_screen = RecallScreen(db_path, initial_query=query, initial_filter=search_filter)
-            app.push_screen(recall_screen)
+            class RecallApp(App):
+                """Standalone app for recall feature"""
+                CSS_PATH = Path(__file__).parent.parent / "tui" / "app.tcss"
+                TITLE = "Eyelet Recall - Search Conversations"
+                
+                def on_mount(self) -> None:
+                    """Mount the recall screen directly"""
+                    self.push_screen(RecallScreen(db_path, initial_query=query, initial_filter=search_filter))
+            
+            app = RecallApp()
             app.run()
     
     except Exception as e:
