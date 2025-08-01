@@ -16,6 +16,7 @@ from eyelet.cli import (
     execute,
     logs,
     query,
+    recall,
     template,
     validate,
 )
@@ -162,6 +163,7 @@ cli.add_command(template.template)
 cli.add_command(execute.execute)
 cli.add_command(logs.logs)
 cli.add_command(query.query)
+cli.add_command(recall.recall)
 cli.add_command(discover.discover)
 cli.add_command(completion.completion)
 cli.add_command(validate.validate)

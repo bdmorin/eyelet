@@ -1,0 +1,219 @@
+/* Eyelet TUI Base Styles */
+
+/* Catppuccin Mocha Theme Colors */
+$primary: #89b4fa;
+$secondary: #cba6f7;
+$success: #a6e3a1;
+$warning: #f9e2af;
+$error: #f38ba8;
+$info: #89dceb;
+$text: #cdd6f4;
+$text-muted: #bac2de;
+$surface: #313244;
+$background: #1e1e2e;
+
+/* Main Layout */
+#main-container {
+    align: center middle;
+    width: 100%;
+    height: 100%;
+}
+
+#main-content {
+    width: 60;
+    max-width: 80;
+    padding: 1 2;
+}
+
+/* Title Styling */
+#title {
+    text-align: center;
+    text-style: bold;
+    padding: 1;
+    width: 100%;
+    color: $primary;
+}
+
+#subtitle {
+    text-align: center;
+    padding: 0 0 1 0;
+    width: 100%;
+    color: $text;
+}
+
+#tagline {
+    text-align: center;
+    padding: 0 0 2 0;
+    width: 100%;
+    text-style: italic;
+    color: $text-muted;
+}
+
+/* Menu Buttons */
+#menu-buttons {
+    width: 100%;
+    align: center top;
+}
+
+#menu-buttons Button {
+    width: 100%;
+    margin: 1 0;
+    height: 3;
+}
+
+#bottom-buttons {
+    margin-top: 2;
+    width: 100%;
+    align: center middle;
+}
+
+#bottom-buttons Button {
+    width: 50%;
+    margin: 0 1;
+}
+
+/* Screen Headers */
+.screen-header {
+    dock: top;
+    height: 3;
+    padding: 1;
+    text-align: center;
+    text-style: bold;
+}
+
+/* Lists and Tables */
+.hook-list {
+    width: 100%;
+    height: 100%;
+    border: solid;
+    margin: 1 0;
+}
+
+/* Forms */
+.form-container {
+    width: 100%;
+    padding: 1;
+}
+
+.form-group {
+    margin: 1 0;
+    width: 100%;
+}
+
+.form-label {
+    margin-bottom: 1;
+}
+
+/* Status Messages */
+.status-message {
+    text-align: center;
+    padding: 1;
+    margin: 1 0;
+    height: 3;
+    width: 100%;
+}
+
+.status-success {
+    border: solid $success;
+}
+
+.status-error {
+    border: solid $error;
+}
+
+.status-warning {
+    border: solid $warning;
+}
+
+/* Modal Dialogs */
+.modal-container {
+    align: center middle;
+    width: 100%;
+    height: 100%;
+}
+
+.modal-content {
+    width: 60;
+    max-width: 80;
+    padding: 2;
+    border: double;
+}
+
+/* Navigation Breadcrumbs */
+.breadcrumbs {
+    dock: top;
+    height: 3;
+    padding: 1;
+}
+
+/* Loading States */
+.loading {
+    text-align: center;
+    padding: 2;
+}
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 4;
+    width: 100%;
+}
+
+.empty-state-icon {
+    text-style: bold;
+    padding: 2;
+}
+
+.empty-state-text {
+    padding: 1;
+}
+
+/* Cards */
+.card {
+    border: solid;
+    padding: 1;
+    margin: 1 0;
+    width: 100%;
+}
+
+.card-title {
+    text-style: bold;
+    padding-bottom: 1;
+}
+
+.card-content {
+    padding: 0 1;
+}
+
+/* Templates Screen */
+#templates-table {
+    height: 12;
+    margin: 1 0;
+}
+
+#preview-container {
+    height: 8;
+    margin: 1 0;
+}
+
+.templates-list {
+    border: solid $primary;
+}
+
+/* Tabs */
+.tab-container {
+    width: 100%;
+    height: 100%;
+}
+
+/* Action Buttons */
+.action-bar {
+    dock: bottom;
+    height: 3;
+    align: center middle;
+    padding: 0 1;
+}
+
+.action-bar Button {
+    margin: 0 1;
+}

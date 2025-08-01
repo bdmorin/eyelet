@@ -4,6 +4,9 @@ from pathlib import Path
 
 from eyelet.services.sqlite_connection import ProcessLocalConnection, sqlite_retry
 
+# Import conversation migrations
+from eyelet.recall.migrations import CONVERSATION_SCHEMA_V1
+
 # Migration format: (version, description, SQL)
 MIGRATIONS: list[tuple[int, str, str]] = [
     (
@@ -14,8 +17,10 @@ MIGRATIONS: list[tuple[int, str, str]] = [
         -- This migration is a placeholder
     """,
     ),
+    # Conversation search feature
+    (2, "Add conversation search tables", CONVERSATION_SCHEMA_V1),
     # Future migrations will be added here
-    # (2, "Add user_id column", """
+    # (3, "Add user_id column", """
     #     ALTER TABLE hooks ADD COLUMN user_id TEXT;
     #     CREATE INDEX idx_user_id ON hooks(user_id);
     # """),
