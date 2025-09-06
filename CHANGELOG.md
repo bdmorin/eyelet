@@ -7,13 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3] - 2025-01-30
+
+### Fixed
+- **CRITICAL**: Fixed missing TUI module in PyPI package
+- Added .tcss file to package data to ensure TUI styles are included
+- Updated MANIFEST.in to include TUI resources
+
 ## [0.3.2] - 2025-01-30
+
+### Added
+- **Recall Feature**: New `eyelet recall` command to search Claude Code conversation history
+  - Full-text search across all conversations
+  - Filter by date range, tool usage, or conversation ID
+  - CLI and TUI modes available
+- **TUI Framework** (Experimental): Complete Textual-based Terminal User Interface
+  - Multiple screens: Configure, Templates, Logs, Settings, Help
+  - Theme support (Mocha/Latte)
+  - Note: TUI has known issues with exit functionality
+- **Testing Improvements**:
+  - Added pytest-asyncio for async test support
+  - Added pytest-textual-snapshot for TUI testing
+  - Fixed test suite compatibility with new schema format
 
 ### Changed
 - Complete rebrand from naval terminology to eyelet/hook terminology
 - Updated all CLI command descriptions to remove naval references
 - Cleaned up documentation to use consistent eyelet theming
 - Simplified command help text for better user experience
+
+### Fixed
+- Test suite now compatible with new nested hooks schema format
+- Added missing test dependencies
+
+### Known Issues
+- TUI exit functionality needs fixing (Ctrl+C doesn't work properly)
+- Recall screen not accessible from main TUI menu
 
 ### Removed
 - All naval-themed command descriptions ("Run out the guns!", "Check the ship's log", etc.)

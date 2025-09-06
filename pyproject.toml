@@ -1,6 +1,6 @@
 [project]
 name = "eyelet"
-version = "0.3.2"
+version = "0.3.3"
 description = "Hook orchestration system for AI agents with SQLite logging and powerful analytics"
 readme = "README.md"
 authors = [{name = "Brian Morin"}]
@@ -50,7 +50,7 @@ eyelet = "eyelet.cli.main:cli"
 where = ["src"]
 
 [tool.setuptools.package-data]
-eyelet = ["schemas/*.json"]
+eyelet = ["schemas/*.json", "tui/*.tcss"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

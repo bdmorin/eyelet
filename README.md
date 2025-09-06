@@ -9,9 +9,19 @@
 [![CI](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml/badge.svg)](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml)
 [![Status](https://img.shields.io/badge/status-alpha-yellow)](https://github.com/bdmorin/eyelet)
 
-## 🎉 New in v0.3.0: SQLite Logging!
+## 🎉 New in v0.3.3: Recall Feature & TUI Framework!
 
-**Eyelet now supports SQLite database logging!** Choose between JSON files, SQLite database, or both:
+### v0.3.3 Updates (Hotfix)
+- Fixed missing TUI module in PyPI package
+- Added .tcss file to package data
+
+### v0.3.2 Updates
+- **Recall Feature**: Search Claude Code conversation history with `eyelet recall`
+- **TUI Framework**: Complete Textual-based UI (experimental)
+- **Test Improvements**: Better test coverage and pytest-asyncio support
+
+### v0.3.0 Features
+**SQLite database logging support!** Choose between JSON files, SQLite database, or both:
 
 ```bash
 # Enable SQLite logging
@@ -113,6 +123,7 @@ uvx eyelet configure logging # Manage logging settings (JSON/SQLite) ✅
 uvx eyelet execute          # Run as hook endpoint ✅
 uvx eyelet logs             # View JSON execution logs ✅
 uvx eyelet doctor           # Health check and diagnostics ✅
+uvx eyelet recall           # Search Claude Code conversations (NEW!) ✅
 
 # Query & Analytics (SQLite)
 uvx eyelet query search     # Full-text search with filters ✅
