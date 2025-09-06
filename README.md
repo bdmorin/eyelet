@@ -9,7 +9,7 @@
 [![CI](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml/badge.svg)](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml)
 [![Status](https://img.shields.io/badge/status-alpha-yellow)](https://github.com/bdmorin/eyelet)
 
-## 🎉 New in v0.3.4: Auto-update Support & Critical Fixes!
+## 🎉 New in v0.3.5: TUI Exit Fix!
 
 ### v0.3.4 Updates
 - **Auto-update support**: `--autoupdate` flag for install-all command

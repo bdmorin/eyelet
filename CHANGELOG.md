@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.5] - 2025-01-30
+
+### Fixed
+- **CRITICAL**: TUI now properly responds to exit commands (q, Ctrl+C, Ctrl+Q, Escape)
+- Added multiple exit key bindings for better user experience
+- Added explicit quit action handlers
+- Wrapped TUI launch in KeyboardInterrupt handler for clean exit
+
 ## [0.3.4] - 2025-01-30
 
 ### Added

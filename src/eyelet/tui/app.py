@@ -122,6 +122,10 @@ class MainMenu(Screen):
         """Show quick actions menu"""
         # TODO: Implement quick actions popup
         self.app.notify("⚡ Quick Actions - Coming soon!", severity="information")
+    
+    def action_quit(self) -> None:
+        """Quit the application"""
+        self.app.exit()
 
 
 class EyeletApp(App):
@@ -141,7 +145,10 @@ class EyeletApp(App):
     }
     
     BINDINGS = [
-        Binding("ctrl+q", "quit", "Quit", priority=True),
+        Binding("ctrl+c", "quit", "Quit", priority=True, show=True),
+        Binding("ctrl+q", "quit", "Quit", priority=True, show=True),
+        Binding("q", "quit", "Quit", priority=True, show=True),
+        Binding("escape", "quit", "Exit", priority=True, show=False),
         Binding("ctrl+p", "command_palette", "Command Palette"),
         Binding("ctrl+t", "toggle_theme", "Toggle Theme"),
     ]
@@ -175,9 +182,23 @@ class EyeletApp(App):
     def action_command_palette(self) -> None:
         """Show command palette"""
         self.notify("🎯 Command Palette - Coming soon!", severity="information")
+    
+    def action_quit(self) -> None:
+        """Quit the application immediately"""
+        self.exit()
+    
+    def on_key(self, event: events.Key) -> None:
+        """Handle key events globally"""
+        # Emergency exit on Ctrl+C
+        if event.key == "ctrl+c":
+            self.exit()
 
 
 def launch_tui():
     """Launch the Eyelet TUI"""
-    app = EyeletApp()
-    app.run()
+    try:
+        app = EyeletApp()
+        app.run()
+    except KeyboardInterrupt:
+        # Clean exit on Ctrl+C
+        pass
