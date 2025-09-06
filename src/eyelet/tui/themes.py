@@ -6,7 +6,7 @@ from dataclasses import dataclass
 @dataclass
 class CatppuccinColors:
     """Color definitions for Catppuccin themes"""
-    
+
     # Base colors
     rosewater: str
     flamingo: str
@@ -22,7 +22,7 @@ class CatppuccinColors:
     sapphire: str
     blue: str
     lavender: str
-    
+
     # Surface colors
     text: str
     subtext1: str
@@ -55,7 +55,6 @@ MOCHA = CatppuccinColors(
     sapphire="#74c7ec",
     blue="#89b4fa",
     lavender="#b4befe",
-    
     # Surface colors
     text="#cdd6f4",
     subtext1="#bac2de",
@@ -89,7 +88,6 @@ LATTE = CatppuccinColors(
     sapphire="#209fb5",
     blue="#1e66f5",
     lavender="#7287fd",
-    
     # Surface colors
     text="#4c4f69",
     subtext1="#5c5f77",

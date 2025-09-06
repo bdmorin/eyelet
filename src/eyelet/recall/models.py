@@ -8,7 +8,7 @@ from typing import Any
 @dataclass
 class MessageData:
     """Represents a single message in a conversation."""
-    
+
     uuid: str
     session_id: str
     parent_uuid: str | None
@@ -25,7 +25,7 @@ class MessageData:
 @dataclass
 class ConversationData:
     """Represents a conversation session."""
-    
+
     session_id: str
     project_path: str
     start_time: float
@@ -40,7 +40,7 @@ class ConversationData:
 @dataclass
 class SearchResult:
     """Search result with context."""
-    
+
     message: MessageData
     conversation: ConversationData
     snippet: str  # Text snippet with search terms highlighted
@@ -50,7 +50,7 @@ class SearchResult:
 @dataclass
 class SearchFilter:
     """Filter criteria for searching conversations."""
-    
+
     role: str | None = None
     tool_name: str | None = None
     session_id: str | None = None

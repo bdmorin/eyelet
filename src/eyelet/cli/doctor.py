@@ -68,7 +68,7 @@ def doctor(ctx, fix, verbose):
 
     # Check for version pinning warning specifically
     has_unpinned_warning = any("unpinned eyelet command" in w for w in warnings)
-    
+
     # Summary
     console.print("\n" + "=" * 50 + "\n")
 
@@ -98,16 +98,20 @@ def doctor(ctx, fix, verbose):
             console.print(
                 "\n💡 Run with [bold]--fix[/bold] to automatically fix issues where possible."
             )
-    
+
     # Special notification for unpinned versions
     if has_unpinned_warning:
         console.print("\n" + "=" * 50)
-        console.print("\n🔔 [bold yellow]IMPORTANT: Auto-updates not enabled[/bold yellow]")
+        console.print(
+            "\n🔔 [bold yellow]IMPORTANT: Auto-updates not enabled[/bold yellow]"
+        )
         console.print("\nYour eyelet hooks won't automatically get updates.")
         console.print("To enable auto-updates, choose one option:\n")
         console.print("  1. [cyan]eyelet configure install-all --autoupdate[/cyan]")
         console.print("     Reinstalls all hooks with @latest pinning\n")
-        console.print("  2. [cyan]uvx --reinstall eyelet@latest execute --log-only[/cyan]")
+        console.print(
+            "  2. [cyan]uvx --reinstall eyelet@latest execute --log-only[/cyan]"
+        )
         console.print("     Manually update individual hooks in settings.json\n")
         console.print("  3. [cyan]pipx upgrade eyelet[/cyan] (if using pipx)")
         console.print("     Updates globally installed version")
@@ -152,13 +156,20 @@ def check_claude_integration(
                                     if "eyelet" in command:
                                         eyelet_hooks += 1
                                         # Check if version is pinned
-                                        if "uvx eyelet" in command and "@" not in command:
-                                            unpinned_commands.append(command[:50] + "..." if len(command) > 50 else command)
+                                        if (
+                                            "uvx eyelet" in command
+                                            and "@" not in command
+                                        ):
+                                            unpinned_commands.append(
+                                                command[:50] + "..."
+                                                if len(command) > 50
+                                                else command
+                                            )
 
                 if verbose:
                     console.print(f"   📊 Total hooks: {total_hooks}")
                     console.print(f"   📊 Eyelet hooks: {eyelet_hooks}")
-                
+
                 # Warn about unpinned versions
                 if unpinned_commands:
                     warnings.append(
@@ -170,7 +181,9 @@ def check_claude_integration(
                         for cmd in unpinned_commands[:3]:  # Show first 3
                             console.print(f"      • {cmd}")
                         if len(unpinned_commands) > 3:
-                            console.print(f"      • ... and {len(unpinned_commands) - 3} more")
+                            console.print(
+                                f"      • ... and {len(unpinned_commands) - 3} more"
+                            )
 
             except Exception as e:
                 issues.append(f"Failed to parse {settings_path}: {e}")

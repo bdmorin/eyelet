@@ -18,9 +18,7 @@ def test_validate_valid_settings():
             "PreToolUse": [
                 {
                     "matcher": ".*",
-                    "hooks": [
-                        {"type": "command", "command": "echo test"}
-                    ]
+                    "hooks": [{"type": "command", "command": "echo test"}],
                 }
             ]
         }
@@ -47,9 +45,7 @@ def test_validate_new_format_settings():
             "PreToolUse": [
                 {
                     "matcher": ".*",
-                    "hooks": [
-                        {"type": "command", "command": "echo test"}
-                    ]
+                    "hooks": [{"type": "command", "command": "echo test"}],
                 }
             ]
         }
@@ -74,11 +70,7 @@ def test_validate_invalid_settings():
     invalid_settings = {
         "hooks": {
             "InvalidHookType": [
-                {
-                    "hooks": [
-                        {"type": "command", "command": "echo test"}
-                    ]
-                }
+                {"hooks": [{"type": "command", "command": "echo test"}]}
             ]
         }
     }

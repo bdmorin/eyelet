@@ -4,19 +4,29 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container, Horizontal, Vertical
 from textual.screen import Screen
-from textual.widgets import Button, Footer, Header, Input, Label, RadioButton, RadioSet, Static, Switch
+from textual.widgets import (
+    Button,
+    Footer,
+    Header,
+    Input,
+    Label,
+    RadioButton,
+    RadioSet,
+    Static,
+    Switch,
+)
 
 
 class SettingsScreen(Screen):
     """Screen for application settings"""
-    
+
     BINDINGS = [
         Binding("escape", "app.pop_screen", "Back"),
         Binding("s", "save", "Save"),
         Binding("r", "reset", "Reset"),
         Binding("q", "app.pop_screen", "Back"),
     ]
-    
+
     def compose(self) -> ComposeResult:
         """Compose the settings screen"""
         yield Header(show_clock=True)
@@ -29,7 +39,9 @@ class SettingsScreen(Screen):
                     Vertical(
                         Label("Theme:"),
                         RadioSet(
-                            RadioButton("Catppuccin Mocha (Dark)", id="theme-mocha", value=True),
+                            RadioButton(
+                                "Catppuccin Mocha (Dark)", id="theme-mocha", value=True
+                            ),
                             RadioButton("Catppuccin Latte (Light)", id="theme-latte"),
                             id="theme-selector",
                         ),
@@ -39,7 +51,6 @@ class SettingsScreen(Screen):
                     ),
                     classes="card",
                 ),
-                
                 # Logging Settings
                 Container(
                     Static("📋 Logging", classes="card-title"),
@@ -57,7 +68,6 @@ class SettingsScreen(Screen):
                     ),
                     classes="card",
                 ),
-                
                 # Claude Integration
                 Container(
                     Static("🤖 Claude Integration", classes="card-title"),
@@ -70,7 +80,6 @@ class SettingsScreen(Screen):
                     ),
                     classes="card",
                 ),
-                
                 Horizontal(
                     Button("💾 Save", id="save", variant="success"),
                     Button("🔄 Reset", id="reset", variant="warning"),
@@ -82,28 +91,28 @@ class SettingsScreen(Screen):
             id="settings-container",
         )
         yield Footer()
-    
+
     def on_button_pressed(self, event: Button.Pressed) -> None:
         """Handle button presses"""
         button_id = event.button.id
-        
+
         if button_id == "save":
             self.action_save()
         elif button_id == "reset":
             self.action_reset()
         elif button_id == "cancel":
             self.app.pop_screen()
-    
+
     def action_save(self) -> None:
         """Save settings"""
         # TODO: Actually save settings
         self.app.notify("💾 Settings saved successfully!", severity="success")
         self.app.pop_screen()
-    
+
     def action_reset(self) -> None:
         """Reset to defaults"""
         self.app.notify("🔄 Settings reset to defaults", severity="warning")
-    
+
     def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
         """Handle theme changes"""
         if event.radio_set.id == "theme-selector":

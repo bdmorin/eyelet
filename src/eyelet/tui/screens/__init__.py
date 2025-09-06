@@ -8,7 +8,7 @@ from .templates import TemplatesScreen
 
 __all__ = [
     "ConfigureHooksScreen",
-    "TemplatesScreen", 
+    "TemplatesScreen",
     "LogsScreen",
     "SettingsScreen",
     "HelpScreen",

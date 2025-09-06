@@ -304,9 +304,7 @@ def clear(ctx, scope, force):
 @click.option(
     "--dev", is_flag=True, help="Use local development wheel instead of public uvx"
 )
-@click.option(
-    "--autoupdate", is_flag=True, help="Pin to @latest for automatic updates"
-)
+@click.option("--autoupdate", is_flag=True, help="Pin to @latest for automatic updates")
 @click.pass_context
 def install_all(ctx, scope, force, dev, autoupdate):
     """

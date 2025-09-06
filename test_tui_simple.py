@@ -14,13 +14,13 @@ if __name__ == "__main__":
     print("Press Ctrl+Q to quit")
     print("\nKey bindings:")
     print("- C: Configure Hooks")
-    print("- T: Templates") 
+    print("- T: Templates")
     print("- L: Logs")
     print("- S: Settings")
     print("- H: Help")
     print("- Arrow keys: Navigate")
     print("\nStarting...")
-    
+
     try:
         launch_tui()
     except KeyboardInterrupt:
@@ -28,4 +28,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\nError: {e}")
         import traceback
+
         traceback.print_exc()

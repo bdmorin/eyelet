@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.6] - 2025-01-30
-
 ### Added
 - **mise Integration**: Complete mise configuration example for project integration
   - Tasks for hooks installation, doctor, logs, and queries
@@ -26,6 +24,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added update tasks for dependencies
 
 ### Fixed
+- **Code Quality**: Fixed all ruff linting and formatting issues
+  - Removed trailing whitespace
+  - Fixed import ordering
+  - Removed unused imports
 - **Documentation**: Corrected incorrect `uvx --force` flag references
   - Fixed update instructions in README.md
   - Fixed update instructions in UPDATE_GUIDE.md
@@ -35,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added note that eyelet is designed for uvx (local installation may require tweaks)
 - Added mise integration section to README
 - Created comprehensive UPDATE_GUIDE.md
+- Added PUBLISHING_GUIDE.md for release process documentation
 
 ## [0.3.5] - 2025-01-30
 

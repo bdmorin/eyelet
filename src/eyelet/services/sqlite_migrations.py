@@ -2,10 +2,9 @@
 
 from pathlib import Path
 
-from eyelet.services.sqlite_connection import ProcessLocalConnection, sqlite_retry
-
 # Import conversation migrations
 from eyelet.recall.migrations import CONVERSATION_SCHEMA_V1
+from eyelet.services.sqlite_connection import ProcessLocalConnection, sqlite_retry
 
 # Migration format: (version, description, SQL)
 MIGRATIONS: list[tuple[int, str, str]] = [

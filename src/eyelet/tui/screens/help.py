@@ -4,9 +4,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container, Vertical
 from textual.screen import Screen
-from textual.widgets import Footer, Header, Static
-from textual.widgets import RichLog
-
+from textual.widgets import Footer, Header, RichLog, Static
 
 HELP_CONTENT = """# Eyelet Help
 
@@ -106,12 +104,12 @@ Welcome aboard! Eyelet helps you manage Claude Code hooks with ease.
 
 class HelpScreen(Screen):
     """Screen for help documentation"""
-    
+
     BINDINGS = [
         Binding("escape", "app.pop_screen", "Back"),
         Binding("q", "app.pop_screen", "Back"),
     ]
-    
+
     def compose(self) -> ComposeResult:
         """Compose the help screen"""
         yield Header(show_clock=True)
@@ -123,17 +121,17 @@ class HelpScreen(Screen):
             ),
         )
         yield Footer()
-    
+
     def on_mount(self) -> None:
         """Load help content when mounted"""
         help_log = self.query_one("#help-content", RichLog)
         # Convert markdown-style content to rich text
-        for line in HELP_CONTENT.split('\n'):
-            if line.startswith('#'):
+        for line in HELP_CONTENT.split("\n"):
+            if line.startswith("#"):
                 # Headers
-                level = line.count('#')
-                text = line.strip('#').strip()
-                help_log.write(f"[bold]{'  ' * (level-1)}{text}[/bold]")
+                level = line.count("#")
+                text = line.strip("#").strip()
+                help_log.write(f"[bold]{'  ' * (level - 1)}{text}[/bold]")
             elif line.strip():
                 # Regular text
                 help_log.write(line)

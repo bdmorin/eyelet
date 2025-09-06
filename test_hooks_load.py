@@ -15,8 +15,11 @@ try:
     config = config_service.load_configuration()
     print(f"Loaded {len(config.hooks)} hooks:")
     for i, hook in enumerate(config.hooks):
-        print(f"{i+1}. {hook.type} - Handler: {hook.handler.type} - Matcher: {hook.matcher or 'None'}")
+        print(
+            f"{i + 1}. {hook.type} - Handler: {hook.handler.type} - Matcher: {hook.matcher or 'None'}"
+        )
 except Exception as e:
     print(f"Error loading hooks: {e}")
     import traceback
+
     traceback.print_exc()
