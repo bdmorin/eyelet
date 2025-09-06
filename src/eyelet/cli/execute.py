@@ -170,8 +170,8 @@ def execute(ctx, workflow, log_only, log_result, debug, no_logging, legacy_log):
             if debug:
                 console.print(f"[yellow]Legacy logging failed: {e}[/yellow]")
 
-    # Extract hook information
-    hook_type = input_data.get("hook_event_name", "unknown")
+    # Extract hook information (support both hook_type and hook_event_name for compatibility)
+    hook_type = input_data.get("hook_type") or input_data.get("hook_event_name", "unknown")
     tool_name = input_data.get("tool_name", None)
 
     # Create execution record
