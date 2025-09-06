@@ -169,3 +169,9 @@ When any of these files change, review related files:
 - `schemas/*.json` → Update validation code and documentation
 - `.github/workflows/*` → Test locally, update docs/setup/
 - `src/eyelet/__init__.py` → Check all import statements across codebase
+```
+
+## Development Process
+
+### Critical Workflow Guidance
+- do not push or commit without explicit instruction

@@ -1,6 +1,6 @@
 [project]
 name = "eyelet"
-version = "0.3.5"
+version = "0.3.6"
 description = "Hook orchestration system for AI agents with SQLite logging and powerful analytics"
 readme = "README.md"
 authors = [{name = "Brian Morin"}]

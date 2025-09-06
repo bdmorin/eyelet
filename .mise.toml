@@ -1,7 +1,10 @@
-# mise configuration for claude-hooks (eyelet)
+# mise configuration for eyelet development
+# https://mise.jdx.dev/
 
 [tools]
 python = "3.11"
+# uv is managed by mise for consistent development
+uv = "latest"
 
 [tasks.test]
 description = "Run all tests"
@@ -147,17 +150,55 @@ run = "uv run eyelet validate"
 description = "Configure eyelet hooks"
 run = "uv run eyelet configure"
 
+[tasks.check]
+description = "Run all checks (lint, typecheck, test)"
+depends = ["lint", "typecheck", "test"]
+
 [tasks.ci]
 description = "Run all CI checks"
 depends = ["lint", "typecheck", "test", "validate"]
+
+[tasks.clean]
+description = "Clean build artifacts and caches"
+run = """
+rm -rf dist/ build/ *.egg-info
+find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+find . -type f -name "*.pyc" -delete
+"""
+
+[tasks.doctor]
+description = "Run eyelet doctor to check configuration"
+run = "uv run eyelet doctor"
+
+[tasks.tui]
+description = "Launch TUI interface"
+run = "uv run eyelet tui"
 
 [tasks.dev]
 description = "Run development server"
 run = "uv run eyelet"
 
+[tasks.install]
+description = "Install project dependencies"
+run = "uv sync"
+
 [tasks.install-dev]
 description = "Install development dependencies"
 run = "uv sync --all-extras"
+
+[tasks.update]
+description = "Update all dependencies to latest versions"
+run = """
+uv lock --upgrade
+uv sync
+"""
+
+[tasks.update-minimal]
+description = "Update dependencies respecting version constraints"
+run = """
+uv lock
+uv sync
+"""
 
 [tasks.build]
 description = "Build distribution packages"
@@ -213,3 +254,5 @@ echo "6. Run: gh release create vX.Y.Z"
 
 [env]
 PYTHONPATH = "${PWD}/src"
+# Development mode
+EYELET_DEV = "1"

@@ -1,0 +1,70 @@
+# Example mise configuration with eyelet integration
+# Add this to your project's .mise.toml or mise.toml
+# Note: eyelet is primarily designed to run via uvx. Local installation 
+# may require additional configuration tweaks (YMMV).
+
+[tools]
+python = "3.11"
+# Option 1: Use pipx (requires pipx to be installed)
+# "pipx:eyelet" = "latest"  # Or pin to "0.3.5"
+
+# Option 2: Define as mise tasks to use uvx (recommended)
+
+[tasks.hooks-install]
+description = "Install eyelet hooks for Claude Code"
+run = """
+echo "🔗 Installing eyelet hooks..."
+uvx eyelet@latest configure install-all --autoupdate
+echo "✅ Hooks installed! Run mise run hooks-doctor to verify"
+"""
+
+[tasks.hooks-doctor]
+description = "Check eyelet hook configuration and version"
+run = """
+echo "🔍 Checking eyelet configuration..."
+uvx eyelet@latest doctor
+echo ""
+echo "📌 Version:"
+uvx eyelet@latest --version
+"""
+
+[tasks.hooks-logs]
+description = "View recent hook logs"
+run = "uvx eyelet@latest logs --tail 20"
+
+[tasks.hooks-query]
+description = "Query hook database"
+run = """
+if [ -z "$1" ]; then
+    uvx eyelet@latest query summary
+else
+    uvx eyelet@latest query search --text "$@"
+fi
+"""
+
+[tasks.hooks-clean]
+description = "Clean old hook logs (interactive)"
+run = """
+echo "🧹 Cleaning old hook logs..."
+read -p "Delete logs older than 7 days? (y/N) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    find eyelet-hooks -name "*.json" -mtime +7 -delete
+    echo "✅ Cleaned old logs"
+fi
+"""
+
+# Shortcuts for common operations
+[tasks.hd]
+alias = "hooks-doctor"
+
+[tasks.hl]
+alias = "hooks-logs"
+
+[tasks.hq]
+alias = "hooks-query"
+
+[env]
+# Optional: Configure eyelet behavior via environment
+EYELET_LOG_LEVEL = "INFO"
+EYELET_HOOKS_DIR = "./eyelet-hooks"

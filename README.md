@@ -77,28 +77,82 @@ uvx eyelet query search --help    # Search options
 uvx eyelet query errors           # Debug issues
 ```
 
-### ⚠️ Important: Version Updates
+### ⚠️ Important: Keeping Eyelet Updated
 
-By default, `uvx eyelet` caches the package and won't auto-update. You have three options:
+When using `uvx`, eyelet runs in an isolated environment. To ensure you're using the latest version:
 
-1. **Enable auto-updates** (recommended):
+1. **Always use @latest tag** (recommended):
+   ```bash
+   uvx eyelet@latest [command]
+   ```
+   This fetches the latest version from PyPI every time.
+
+2. **For persistent installation with uv**:
+   ```bash
+   uv tool install eyelet@latest              # Install latest
+   uv tool install --reinstall eyelet@latest  # Force reinstall
+   ```
+
+3. **Enable auto-updates in hooks**:
    ```bash
    uvx eyelet configure install-all --autoupdate
    ```
-   This uses `uvx eyelet@latest` which always fetches the latest version.
+   This configures hooks to use `uvx eyelet@latest` which always fetches the latest version.
 
-2. **Manual update** when needed:
+4. **Check current version**:
    ```bash
-   uvx --reinstall eyelet@latest execute --log-only
+   uvx eyelet --version
    ```
 
-3. **Use pipx** for global installation:
+5. **Use pipx for global installation** (auto-updatable):
    ```bash
    pipx install eyelet
    pipx upgrade eyelet  # When updates are available
    ```
 
+See [Update Guide](docs/UPDATE_GUIDE.md) for detailed update instructions.
+
 Run `eyelet doctor` to check if your hooks are configured for auto-updates.
+
+### 🔧 Integration with mise
+
+If you're using [mise](https://mise.jdx.dev/) for project management, add eyelet to your `.mise.toml`:
+
+```toml
+# .mise.toml or mise.toml
+[tools]
+python = "3.11"
+
+[tasks.hooks-install]
+description = "Install eyelet hooks for Claude Code"
+run = "uvx eyelet@latest configure install-all --autoupdate"
+
+[tasks.hooks-doctor]
+description = "Check eyelet configuration and version"
+run = """
+uvx eyelet@latest doctor
+echo "📌 Version: $(uvx eyelet@latest --version)"
+"""
+
+[tasks.hooks-logs]
+description = "View recent hook logs"
+run = "uvx eyelet@latest logs --tail 20"
+
+# Shortcuts
+[tasks.hd]
+alias = "hooks-doctor"
+```
+
+Then use:
+```bash
+mise run hooks-install  # Set up eyelet hooks
+mise run hd            # Check configuration (shortcut)
+mise run hooks-logs    # View recent logs
+```
+
+See [full example](.mise.toml) for more tasks and options.
+
+**Note:** Eyelet is designed to run via `uvx`. Local installation may require additional configuration (YMMV).
 
 ## 🎯 Universal Hook Handler
 

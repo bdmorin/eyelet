@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.6] - 2025-01-30
+
+### Added
+- **mise Integration**: Complete mise configuration example for project integration
+  - Tasks for hooks installation, doctor, logs, and queries
+  - Shortcuts for common operations
+  - Uses `uvx eyelet@latest` for automatic updates
+- **Update Documentation**: Comprehensive update guide for uvx and uv tool users
+  - Correct update commands without incorrect `--force` flag
+  - Clear explanation of how uvx caching works
+  - Multiple update methods documented
+
+### Changed
+- **Enhanced mise Configuration**: Improved project `.mise.toml` with uv tool management
+  - Added development tasks for testing, linting, and building
+  - Integrated uv for dependency management
+  - Added update tasks for dependencies
+
+### Fixed
+- **Documentation**: Corrected incorrect `uvx --force` flag references
+  - Fixed update instructions in README.md
+  - Fixed update instructions in UPDATE_GUIDE.md
+  - Clarified that `uvx eyelet@latest` always fetches latest version
+
+### Documentation
+- Added note that eyelet is designed for uvx (local installation may require tweaks)
+- Added mise integration section to README
+- Created comprehensive UPDATE_GUIDE.md
+
 ## [0.3.5] - 2025-01-30
 
 ### Fixed
