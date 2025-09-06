@@ -9,7 +9,13 @@
 [![CI](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml/badge.svg)](https://github.com/bdmorin/eyelet/actions/workflows/ci.yml)
 [![Status](https://img.shields.io/badge/status-alpha-yellow)](https://github.com/bdmorin/eyelet)
 
-## 🎉 New in v0.3.3: Recall Feature & TUI Framework!
+## 🎉 New in v0.3.4: Auto-update Support & Critical Fixes!
+
+### v0.3.4 Updates
+- **Auto-update support**: `--autoupdate` flag for install-all command
+- **Version detection**: Doctor command warns about unpinned versions
+- **Critical fix**: Execute command now supports both hook_type and hook_event_name
+- **Enhanced doctor**: Clear guidance on enabling auto-updates
 
 ### v0.3.3 Updates (Hotfix)
 - Fixed missing TUI module in PyPI package
@@ -53,13 +59,16 @@ Eyelet provides comprehensive management, templating, and execution handling for
 ## 🚀 Quick Start
 
 ```bash
-# Install universal logging for ALL hooks (one command!)
+# Install universal logging for ALL hooks with auto-updates
+uvx eyelet configure install-all --autoupdate
+
+# Or install without auto-updates (manual updates required)
 uvx eyelet configure install-all
 
 # Enable SQLite logging for better performance
 uvx eyelet configure logging --format sqlite
 
-# Check your configuration health
+# Check your configuration health (detects unpinned versions)
 uvx eyelet doctor
 
 # Query your hook data
@@ -67,6 +76,29 @@ uvx eyelet query summary          # Session overview
 uvx eyelet query search --help    # Search options
 uvx eyelet query errors           # Debug issues
 ```
+
+### ⚠️ Important: Version Updates
+
+By default, `uvx eyelet` caches the package and won't auto-update. You have three options:
+
+1. **Enable auto-updates** (recommended):
+   ```bash
+   uvx eyelet configure install-all --autoupdate
+   ```
+   This uses `uvx eyelet@latest` which always fetches the latest version.
+
+2. **Manual update** when needed:
+   ```bash
+   uvx --reinstall eyelet@latest execute --log-only
+   ```
+
+3. **Use pipx** for global installation:
+   ```bash
+   pipx install eyelet
+   pipx upgrade eyelet  # When updates are available
+   ```
+
+Run `eyelet doctor` to check if your hooks are configured for auto-updates.
 
 ## 🎯 Universal Hook Handler
 

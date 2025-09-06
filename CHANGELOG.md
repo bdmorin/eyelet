@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.4] - 2025-01-30
+
+### Added
+- **Auto-update support**: New `--autoupdate` flag for `configure install-all` command
+- **Version detection**: Doctor command now detects and warns about unpinned eyelet versions
+- **Update guidance**: Doctor provides clear instructions for enabling auto-updates
+
+### Fixed
+- **CRITICAL**: Execute command now supports both `hook_type` and `hook_event_name` fields
+- Fixed validation error when Claude Code sends hook_event_name
+
+### Changed
+- Enhanced doctor command output with prominent auto-update notifications
+- Improved README with version update documentation
+
 ## [0.3.3] - 2025-01-30
 
 ### Fixed

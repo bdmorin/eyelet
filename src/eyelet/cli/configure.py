@@ -304,8 +304,11 @@ def clear(ctx, scope, force):
 @click.option(
     "--dev", is_flag=True, help="Use local development wheel instead of public uvx"
 )
+@click.option(
+    "--autoupdate", is_flag=True, help="Pin to @latest for automatic updates"
+)
 @click.pass_context
-def install_all(ctx, scope, force, dev):
+def install_all(ctx, scope, force, dev, autoupdate):
     """
     Install universal logging for ALL hooks - Full broadside!
 
@@ -369,10 +372,16 @@ def install_all(ctx, scope, force, dev):
             )
         else:
             # Use public uvx (requires package to be published to PyPI)
-            eyelet_cmd = "uvx eyelet execute --log-only"
-            console.print(
-                "[cyan]Using public uvx command (requires PyPI package)[/cyan]"
-            )
+            if autoupdate:
+                eyelet_cmd = "uvx eyelet@latest execute --log-only"
+                console.print(
+                    "[cyan]Using public uvx command with @latest (auto-updates enabled)[/cyan]"
+                )
+            else:
+                eyelet_cmd = "uvx eyelet execute --log-only"
+                console.print(
+                    "[cyan]Using public uvx command (requires PyPI package)[/cyan]"
+                )
 
         # PreToolUse and PostToolUse for all tools
 
