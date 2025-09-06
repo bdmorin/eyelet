@@ -14,13 +14,16 @@ def test_validate_valid_settings():
     runner = CliRunner()
 
     valid_settings = {
-        "hooks": [
-            {
-                "type": "PreToolUse",
-                "handler": {"type": "command", "command": "echo test"},
-                "matcher": ".*",
-            }
-        ]
+        "hooks": {
+            "PreToolUse": [
+                {
+                    "matcher": ".*",
+                    "hooks": [
+                        {"type": "command", "command": "echo test"}
+                    ]
+                }
+            ]
+        }
     }
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
@@ -43,8 +46,10 @@ def test_validate_new_format_settings():
         "hooks": {
             "PreToolUse": [
                 {
-                    "handler": {"type": "command", "command": "echo test"},
                     "matcher": ".*",
+                    "hooks": [
+                        {"type": "command", "command": "echo test"}
+                    ]
                 }
             ]
         }
@@ -67,12 +72,15 @@ def test_validate_invalid_settings():
     runner = CliRunner()
 
     invalid_settings = {
-        "hooks": [
-            {
-                "type": "InvalidHookType",
-                "handler": {"type": "command", "command": "echo test"},
-            }
-        ]
+        "hooks": {
+            "InvalidHookType": [
+                {
+                    "hooks": [
+                        {"type": "command", "command": "echo test"}
+                    ]
+                }
+            ]
+        }
     }
 
     with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
