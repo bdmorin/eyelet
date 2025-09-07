@@ -11,6 +11,7 @@ from eyelet import __version__
 from eyelet.cli import (
     completion,
     configure,
+    dashboard,
     discover,
     doctor,
     execute,
@@ -69,6 +70,9 @@ class EyeletCLI(click.Group):
         console.print("[bold]Common Commands:[/bold]")
         commands = [
             ("configure install-all", "Install universal logging (recommended!)"),
+            ("dashboard tui", "Monitor databases (terminal interface)"),
+            ("dashboard web", "Web dashboard (requires: --with fastapi uvicorn jinja2)"),
+            ("dashboard metrics", "Show database metrics (CLI, no deps)"),
             ("configure", "Manage hook configuration"),
             ("template", "Work with hook templates"),
             ("logs", "View execution logs"),
@@ -81,7 +85,8 @@ class EyeletCLI(click.Group):
         console.print("\n[bold]Options:[/bold]")
         console.print("  [cyan]-h, --help[/cyan]     Show this help message")
         console.print("  [cyan]--version[/cyan]      Show version information")
-        console.print("  [cyan]--config-dir[/cyan]   Set configuration directory\n")
+        console.print("  [cyan]--config-dir[/cyan]   Set configuration directory")
+        console.print("  [cyan]--database, --db[/cyan] Set database file path (default: central location)\n")
 
         console.print("[bold]Examples:[/bold]")
         console.print("  [dim]# Configure hooks for current project[/dim]")
@@ -90,6 +95,10 @@ class EyeletCLI(click.Group):
         console.print("  eyelet template install bash-validator\n")
         console.print("  [dim]# View recent hook executions[/dim]")
         console.print("  eyelet logs --tail 20\n")
+        console.print("  [dim]# Web dashboard with uvx (single command)[/dim]")
+        console.print("  uvx --with fastapi --with uvicorn --with jinja2 eyelet dashboard web -o\n")
+        console.print("  [dim]# CLI metrics without dependencies[/dim]")
+        console.print("  uvx eyelet dashboard metrics\n")
 
         console.print("[bold]Shell Completion:[/bold]")
         console.print("  [dim]# Enable tab completion for your shell[/dim]")
@@ -107,8 +116,14 @@ class EyeletCLI(click.Group):
 @click.option(
     "--config-dir", type=Path, help="Configuration directory (default: current dir)"
 )
+@click.option(
+    "--database", 
+    "--db",
+    type=Path, 
+    help="Database file path (default: XDG-compliant central location)"
+)
 @click.pass_context
-def cli(ctx, config_dir):
+def cli(ctx, config_dir, database):
     """
     ⚓ Eyelet - Hook Orchestration for AI Agents
 
@@ -119,6 +134,7 @@ def cli(ctx, config_dir):
     """
     ctx.ensure_object(dict)
     ctx.obj["config_dir"] = config_dir or Path.cwd()
+    ctx.obj["database"] = database
 
     # If no command provided, launch TUI
     if ctx.invoked_subcommand is None:
@@ -159,6 +175,7 @@ def tui():
 
 # Register subcommands
 cli.add_command(configure.configure)
+cli.add_command(dashboard.dashboard)
 cli.add_command(template.template)
 cli.add_command(execute.execute)
 cli.add_command(logs.logs)

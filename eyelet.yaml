@@ -2,10 +2,10 @@ logging:
   add_to_gitignore: true
   enabled: true
   format: sqlite
-  global_path: ~/.claude/eyelet-logging
-  path: .eyelet-logs
+  global_path: ~/.eyelet
+  path: null
   project_path: .eyelet-logging
-  scope: project
+  scope: global
 metadata:
   custom_fields:
     environment: development

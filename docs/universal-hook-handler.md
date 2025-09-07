@@ -4,7 +4,7 @@ The Universal Hook Handler is Eyelet's comprehensive logging system that capture
 
 ## Overview
 
-The handler logs all hook events to a structured directory system (`./eyelet-hooks/`), creating a complete audit trail of AI agent actions. This is invaluable for:
+The handler logs all hook events to a structured directory system (`~/.eyelet/hooks/`), creating a complete audit trail of AI agent actions. This is invaluable for:
 
 - Debugging agent behavior
 - Understanding tool usage patterns
@@ -29,7 +29,7 @@ This single command configures Claude Code to send every hook event to Eyelet's 
 Logs are organized in a logical hierarchy:
 
 ```
-./eyelet-hooks/
+~/.eyelet/hooks/
 ├── PreToolUse/           # Before tool execution
 │   ├── Bash/            # Organized by tool
 │   │   └── 2025-07-28/  # Daily directories
@@ -117,13 +117,13 @@ uvx --from eyelet eyelet configure install-all --force
 ### Viewing Logs
 ```bash
 # Browse log directory
-ls -la ./eyelet-hooks/
+ls -la ~/.eyelet/hooks/
 
 # Find recent Bash commands
-find ./eyelet-hooks/PreToolUse/Bash -name "*.json" -mtime -1
+find ~/.eyelet/hooks/PreToolUse/Bash -name "*.json" -mtime -1
 
 # Search for specific content
-grep -r "rm -rf" ./eyelet-hooks/PreToolUse/Bash/
+grep -r "rm -rf" ~/.eyelet/hooks/PreToolUse/Bash/
 ```
 
 ### Analyzing Logs
@@ -132,7 +132,7 @@ import json
 from pathlib import Path
 
 # Read all PreToolUse Bash logs
-hooks_dir = Path("./eyelet-hooks")
+hooks_dir = Path("~/.eyelet/hooks").expanduser()
 bash_logs = hooks_dir.glob("PreToolUse/Bash/**/*.json")
 
 for log_file in bash_logs:
@@ -162,7 +162,7 @@ The `install-all` command creates hooks with:
 
 - **Local only**: All logs stay on your machine
 - **No network calls**: Pure filesystem logging
-- **Gitignored**: `eyelet-hooks/` is in .gitignore by default
+- **Central location**: Logs stored in `~/.eyelet/` - no project directory pollution
 - **Sensitive data**: Be aware that logs may contain sensitive information
 
 ## Troubleshooting
@@ -170,20 +170,20 @@ The `install-all` command creates hooks with:
 ### Logs not appearing
 1. Check hooks are installed: `uvx --from eyelet eyelet configure list`
 2. Verify eyelet is in PATH: `which uvx`
-3. Check permissions: `ls -la ./eyelet-hooks/`
+3. Check permissions: `ls -la ~/.eyelet/hooks/`
 
 ### Large log directories
 ```bash
 # Find and remove logs older than 7 days
-find ./eyelet-hooks -name "*.json" -mtime +7 -delete
+find ~/.eyelet/hooks -name "*.json" -mtime +7 -delete
 
 # Check disk usage
-du -sh ./eyelet-hooks/
+du -sh ~/.eyelet/hooks/
 ```
 
 ### Parsing errors
 If Claude Code sends malformed JSON, check:
-- `./eyelet-hooks/parse_error/` directory
+- `~/.eyelet/hooks/parse_error/` directory
 - Look for `error` field in log files
 
 ## Advanced Usage
@@ -197,7 +197,7 @@ uvx --from eyelet eyelet configure add --workflow my-validator
 ### Real-time Monitoring
 ```bash
 # Watch for new logs
-watch -n 1 'find ./eyelet-hooks -name "*.json" -mmin -5 | tail -20'
+watch -n 1 'find ~/.eyelet/hooks -name "*.json" -mmin -5 | tail -20'
 ```
 
 ### Integration with Analysis Tools
@@ -207,7 +207,7 @@ Export to various formats:
 uvx --from eyelet eyelet logs export --format csv --output hooks.csv
 
 # Stream to monitoring systems
-tail -f ./eyelet-hooks/**/*.json | jq '.hook_type'
+tail -f ~/.eyelet/hooks/**/*.json | jq '.hook_type'
 ```
 
 ## Best Practices

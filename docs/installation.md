@@ -114,7 +114,7 @@ uvx eyelet configure install-all
 # ✅ Configures PreToolUse hooks for all tools
 # ✅ Configures PostToolUse hooks for all tools
 # ✅ Sets up UserPromptSubmit, Stop, and PreCompact hooks
-# ✅ Creates ./eyelet-hooks/ directory structure
+# ✅ Creates ~/.eyelet/hooks/ directory structure
 # ✅ Updates your Claude settings.json
 ```
 
@@ -179,7 +179,7 @@ Eyelet uses a layered configuration system with two levels:
 # Example eyelet.yaml
 logging:
   format: sqlite          # json, sqlite, or both
-  scope: project          # global, project, or both
+  scope: global           # global, project, or both
   enabled: true           # Enable/disable logging
   add_to_gitignore: true  # Auto-add log dirs to .gitignore
 
@@ -245,15 +245,15 @@ uvx eyelet configure logging --format json,sqlite
 
 ### Logging Scopes
 
-1. **Project** (Default)
+1. **Global** (Default) 
+   - Logs stored in `~/.eyelet/hooks/`
+   - Cross-project analytics
+   - Tidy citizen - no project pollution
+
+2. **Project**
    - Logs stored in `./eyelet-hooks/`
    - Project-specific data
    - Easy to share with team
-
-2. **Global**
-   - Logs stored in `~/.claude/eyelet-logs/`
-   - Cross-project analytics
-   - Personal usage patterns
 
 3. **Both**
    - Logs to both locations
@@ -340,8 +340,8 @@ python --version
 uvx eyelet doctor --fix
 
 # Or manually create directories
-mkdir -p ./eyelet-hooks
-chmod 755 ./eyelet-hooks
+mkdir -p ~/.eyelet/hooks
+chmod 755 ~/.eyelet/hooks
 ```
 
 #### Claude Settings Not Found
@@ -422,7 +422,7 @@ rm -rf ./eyelet-hooks/
 
 # Remove global configuration (optional)
 rm -f ~/.claude/eyelet.yaml
-rm -rf ~/.claude/eyelet-logs/
+rm -rf ~/.eyelet/
 
 # Remove from Claude settings
 # Edit ~/.claude/settings.json and remove eyelet hooks
@@ -433,10 +433,9 @@ rm -rf ~/.claude/eyelet-logs/
 If you added log directories to `.gitignore`:
 
 ```bash
-# Remove these lines from .gitignore:
-# .eyelet-logs/
-# .eyelet-logging/
+# Remove these lines from .gitignore if present:
 # eyelet-hooks/
+# .eyelet-logs/
 ```
 
 ## Next Steps

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        // Catppuccin Mocha theme configuration for Tailwind
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ctp-base': '#1e1e2e',
+                        'ctp-surface0': '#313244', 
+                        'ctp-text': '#cdd6f4',
+                        'ctp-blue': '#89b4fa',
+                        'ctp-green': '#a6e3a1',
+                        'ctp-yellow': '#f9e2af',
+                        'ctp-red': '#f38ba8',
+                        'ctp-mauve': '#cba6f7'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-ctp-base text-ctp-text min-h-screen">
+    <div class="container mx-auto p-8">
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-4xl font-bold text-ctp-mauve mb-2">⚓ Eyelet Database Dashboard</h1>
+            <p class="text-ctp-text/70">Monitor eyelet databases across the system</p>
+        </header>
+
+        <!-- System Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-ctp-surface0 rounded-xl p-6 border border-ctp-surface0">
+                <div class="text-3xl font-bold text-ctp-blue">{{ system_metrics.total_databases }}</div>
+                <div class="text-sm text-ctp-text/70">Total Databases</div>
+            </div>
+            
+            <div class="bg-ctp-surface0 rounded-xl p-6 border border-ctp-surface0">
+                <div class="text-3xl font-bold text-ctp-green">{{ "{:,}".format(system_metrics.total_records) }}</div>
+                <div class="text-sm text-ctp-text/70">Total Records</div>
+            </div>
+            
+            <div class="bg-ctp-surface0 rounded-xl p-6 border border-ctp-surface0">
+                <div class="text-3xl font-bold text-ctp-yellow">{{ system_metrics.active_databases }}</div>
+                <div class="text-sm text-ctp-text/70">Active Databases</div>
+            </div>
+            
+            <div class="bg-ctp-surface0 rounded-xl p-6 border border-ctp-surface0">
+                <div class="text-3xl font-bold text-ctp-red">{{ system_metrics.total_errors }}</div>
+                <div class="text-sm text-ctp-text/70">Total Errors</div>
+            </div>
+        </div>
+
+        <!-- Databases Grid -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold text-ctp-mauve mb-4">Databases</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {% for db in system_metrics.databases %}
+                <div class="bg-ctp-surface0 rounded-xl p-6 border border-ctp-surface0 hover:border-ctp-blue transition-colors">
+                    <!-- Activity indicator -->
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-2">
+                            {% if db.activity_level.value == 'active' %}
+                                <div class="w-3 h-3 bg-ctp-green rounded-full animate-pulse"></div>
+                                <span class="text-ctp-green text-sm">Active</span>
+                            {% elif db.activity_level.value == 'recent' %}
+                                <div class="w-3 h-3 bg-ctp-yellow rounded-full"></div>
+                                <span class="text-ctp-yellow text-sm">Recent</span>
+                            {% else %}
+                                <div class="w-3 h-3 bg-ctp-red rounded-full"></div>
+                                <span class="text-ctp-red text-sm">Stale</span>
+                            {% endif %}
+                        </div>
+                        <div class="text-xs text-ctp-text/50">{{ db.schema_version.value }}</div>
+                    </div>
+                    
+                    <!-- Database info -->
+                    <h3 class="font-semibold text-ctp-text mb-2 text-sm">
+                        {{ db.path.name }}
+                    </h3>
+                    <p class="text-xs text-ctp-text/70 mb-4 break-all">{{ db.path.parent }}</p>
+                    
+                    <!-- Metrics -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-ctp-text/70">Records:</span>
+                            <span class="text-sm font-mono">{{ "{:,}".format(db.record_count) }}</span>
+                        </div>
+                        
+                        <div class="flex justify-between">
+                            <span class="text-sm text-ctp-text/70">Size:</span>
+                            <span class="text-sm font-mono">{{ "{:,}".format(db.size_bytes) }}B</span>
+                        </div>
+                        
+                        {% if db.recent_errors > 0 %}
+                        <div class="flex justify-between">
+                            <span class="text-sm text-ctp-text/70">Errors:</span>
+                            <span class="text-sm font-mono text-ctp-red">{{ db.recent_errors }}</span>
+                        </div>
+                        {% endif %}
+                        
+                        {% if db.last_activity %}
+                        <div class="text-xs text-ctp-text/50 mt-3">
+                            Last: {{ db.last_activity.strftime('%H:%M:%S') }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Recent Hooks -->
+        <div>
+            <h2 class="text-2xl font-semibold text-ctp-mauve mb-4">Recent Activity</h2>
+            <div x-data="{ 
+                hooks: [],
+                loading: true,
+                error: null,
+                async fetchHooks() {
+                    try {
+                        const response = await fetch('/api/hooks?limit=10');
+                        const data = await response.json();
+                        this.hooks = data.hooks;
+                        this.loading = false;
+                    } catch (err) {
+                        this.error = err.message;
+                        this.loading = false;
+                    }
+                }
+            }" 
+            x-init="fetchHooks()" 
+            class="bg-ctp-surface0 rounded-xl p-6 border border-ctp-surface0">
+                
+                <!-- Loading state -->
+                <div x-show="loading" class="text-center py-8">
+                    <div class="text-ctp-text/50">Loading recent hooks...</div>
+                </div>
+
+                <!-- Error state -->
+                <div x-show="error" class="text-center py-8">
+                    <div class="text-ctp-red">Error loading hooks</div>
+                </div>
+
+                <!-- Hooks list -->
+                <div x-show="!loading && !error">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-ctp-surface0">
+                                    <th class="text-left py-2 text-ctp-text/70">Time</th>
+                                    <th class="text-left py-2 text-ctp-text/70">Type</th>
+                                    <th class="text-left py-2 text-ctp-text/70">Tool</th>
+                                    <th class="text-left py-2 text-ctp-text/70">Session</th>
+                                    <th class="text-left py-2 text-ctp-text/70">Duration</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="hook in hooks" :key="hook.id">
+                                    <tr class="hover:bg-ctp-surface0/50 transition-colors">
+                                        <td class="py-2 font-mono text-xs" x-text="new Date(hook.timestamp).toLocaleTimeString()"></td>
+                                        <td class="py-2">
+                                            <span class="px-2 py-1 rounded text-xs bg-ctp-blue/20 text-ctp-blue" x-text="hook.hook_type"></span>
+                                        </td>
+                                        <td class="py-2 font-mono text-xs" x-text="hook.tool_name || '-'"></td>
+                                        <td class="py-2 font-mono text-xs" x-text="hook.session_id.substring(0, 8) + '...'"></td>
+                                        <td class="py-2 font-mono text-xs">
+                                            <span x-show="hook.duration_ms" x-text="hook.duration_ms + 'ms'"></span>
+                                            <span x-show="!hook.duration_ms">-</span>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

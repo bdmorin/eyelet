@@ -5,39 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.4.0] - 2025-09-07
 
 ### Added
-- **mise Integration**: Complete mise configuration example for project integration
-  - Tasks for hooks installation, doctor, logs, and queries
-  - Shortcuts for common operations
-  - Uses `uvx eyelet@latest` for automatic updates
-- **Update Documentation**: Comprehensive update guide for uvx and uv tool users
-  - Correct update commands without incorrect `--force` flag
-  - Clear explanation of how uvx caching works
-  - Multiple update methods documented
+- **Interactive Web Dashboard**: Complete web interface for monitoring eyelet databases
+  - Real-time metrics and activity tracking across all databases
+  - Database discovery service that finds all eyelet databases system-wide
+  - FastAPI + WebSockets + HTMX stack for responsive UI
+  - sslip.io integration for local HTTPS development
+  - CLI commands: `eyelet dashboard web`, `eyelet dashboard metrics`, `eyelet dashboard hooks`
+  - Automatic port selection with fallback from 443 to random ports
+  - Web dependencies installable via `eyelet[web]`
 
 ### Changed
-- **Enhanced mise Configuration**: Improved project `.mise.toml` with uv tool management
-  - Added development tasks for testing, linting, and building
-  - Integrated uv for dependency management
-  - Added update tasks for dependencies
+- **BREAKING: Default Logging Scope**: Changed from PROJECT to GLOBAL
+  - Eyelet is now a "tidy citizen" - doesn't pollute project directories by default
+  - Uses XDG-compliant central directory (~/.eyelet/) for all logging
+  - Backward compatibility maintained for project-specific logging when configured
+  - Central logging provides better cross-project analysis and monitoring
+- **Documentation Overhaul**: Updated all documentation to reflect central logging
+  - Fixed 100+ stale references to local directories
+  - Updated quickstart, installation, and API docs with new paths
+  - Corrected design documents with XDG-compliant paths
+- **Path Utilities**: Comprehensive XDG Base Directory support
+  - Cross-platform path handling (Linux, macOS, Windows)
+  - Automatic directory creation with proper permissions
 
 ### Fixed
-- **Code Quality**: Fixed all ruff linting and formatting issues
-  - Removed trailing whitespace
-  - Fixed import ordering
-  - Removed unused imports
-- **Documentation**: Corrected incorrect `uvx --force` flag references
-  - Fixed update instructions in README.md
-  - Fixed update instructions in UPDATE_GUIDE.md
-  - Clarified that `uvx eyelet@latest` always fetches latest version
+- All stale documentation references to local `./eyelet-hooks/` directories
+- Path handling for cross-platform compatibility
+- Template generators now use central paths by default
 
-### Documentation
-- Added note that eyelet is designed for uvx (local installation may require tweaks)
-- Added mise integration section to README
-- Created comprehensive UPDATE_GUIDE.md
-- Added PUBLISHING_GUIDE.md for release process documentation
+## [Unreleased]
 
 ## [0.3.5] - 2025-01-30
 

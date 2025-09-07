@@ -139,9 +139,9 @@ Eyelet captures these hook types:
 
 Logs are stored in:
 ```
-./eyelet-hooks/              # Project-specific logs
-~/.eyelet-logging/            # Global logs
-~/.eyelet-logging/eyelet.db  # SQLite database
+~/.eyelet/hooks/              # Central hooks directory (default)
+~/.eyelet/eyelet.db          # SQLite database
+./eyelet-hooks/              # Project-specific logs (optional)
 ```
 
 ## Updating Eyelet
@@ -204,7 +204,7 @@ uvx eyelet@latest recall --tool Bash "docker"
 
 ### If SQLite isn't working:
 1. Enable it: `uvx eyelet@latest configure logging --format sqlite`
-2. Check database: `ls -la ~/.eyelet-logging/eyelet.db`
+2. Check database: `ls -la ~/.eyelet/eyelet.db`
 
 ### If updates aren't working:
 1. Always use `@latest`: `uvx eyelet@latest`
@@ -222,7 +222,7 @@ uvx eyelet@latest recall --tool Bash "docker"
 ```bash
 # Optional configuration
 export EYELET_LOG_LEVEL=INFO
-export EYELET_HOOKS_DIR=./eyelet-hooks
+export EYELET_HOOKS_DIR=~/.eyelet/hooks
 ```
 
 ## Quick Reference Card

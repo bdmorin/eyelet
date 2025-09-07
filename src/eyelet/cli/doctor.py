@@ -289,15 +289,8 @@ def check_logging_setup(
                 with open(gitignore_path) as f:
                     gitignore_content = f.read()
 
-                log_dirs = [".eyelet-logs", ".eyelet-logging", "eyelet-hooks"]
-                missing_ignores = [d for d in log_dirs if d not in gitignore_content]
-
-                if missing_ignores:
-                    warnings.append(
-                        f"Log directories not in .gitignore: {', '.join(missing_ignores)}"
-                    )
-                else:
-                    console.print("   ✅ Log directories in .gitignore")
+                # Note: Eyelet now logs centrally, so no local directories need .gitignore
+                console.print("   ℹ️  Eyelet logs centrally - no local directories to ignore")
 
     except Exception as e:
         issues.append(f"Logging setup error: {e}")
@@ -454,14 +447,8 @@ def attempt_fixes(issues: list[str], warnings: list[str], project_dir: Path) -> 
     for warning in warnings:
         if "not in .gitignore" in warning:
             gitignore_path = project_dir / ".gitignore"
-            if gitignore_path.exists():
-                with open(gitignore_path, "a") as f:
-                    f.write("\n# Eyelet logging directories\n")
-                    f.write(".eyelet-logs/\n")
-                    f.write(".eyelet-logging/\n")
-                    f.write("eyelet-hooks/\n")
-                console.print("   ✅ Updated .gitignore")
-                fixed += 1
+            # Note: Eyelet logs centrally now, no local directories to ignore
+            console.print("   ℹ️  No .gitignore updates needed - eyelet logs centrally")
 
     # Fix missing Eyelet in hooks
     for warning in warnings:

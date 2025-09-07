@@ -311,7 +311,7 @@ def install_all(ctx, scope, force, dev, autoupdate):
     Install universal logging for ALL hooks - Full broadside!
 
     This command installs a comprehensive hook configuration that logs
-    every single Claude Code hook to the ./eyelet-hooks directory.
+    every single Claude Code hook to the central eyelet directory.
 
     Hooks installed:
     - PreToolUse: All tools (Bash, Read, Write, etc.)
@@ -322,7 +322,7 @@ def install_all(ctx, scope, force, dev, autoupdate):
     - SubagentStop
     - PreCompact (manual and auto)
 
-    All hooks will log to: ./eyelet-hooks/{hook_type}/{tool}/{date}/
+    All hooks will log centrally to the eyelet data directory.
     """
     # Handle case where ctx.obj is not initialized (e.g., when run via uvx)
     if ctx.obj is None:
@@ -440,7 +440,7 @@ def install_all(ctx, scope, force, dev, autoupdate):
             table.add_row(hook.type, hook.matcher or "-", hook.description)
 
         console.print(table)
-        console.print("\n[dim]All hooks will log to: ./eyelet-hooks/[/dim]")
+        console.print("\n[dim]All hooks will log centrally to the eyelet data directory[/dim]")
         console.print("[dim]Run 'eyelet logs' to view execution history[/dim]")
 
     except Exception as e:
@@ -589,7 +589,7 @@ def logging(ctx, format, scope, enabled, is_global):
             if config.logging.scope in [LogScope.GLOBAL, LogScope.BOTH]:
                 console.print("  • Global: ~/.claude/eyelet-logs/hooks.db")
             if config.logging.scope in [LogScope.PROJECT, LogScope.BOTH]:
-                console.print("  • Project: .eyelet-logs/hooks.db")
+                console.print("  • Project: local project database")
             console.print(
                 "\n[dim]Use 'eyelet query' commands to explore the data[/dim]"
             )

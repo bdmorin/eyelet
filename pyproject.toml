@@ -1,6 +1,6 @@
 [project]
 name = "eyelet"
-version = "0.3.5"
+version = "0.4.0"
 description = "Hook orchestration system for AI agents with SQLite logging and powerful analytics"
 readme = "README.md"
 authors = [{name = "Brian Morin"}]
@@ -27,6 +27,8 @@ dependencies = [
     "sqlalchemy>=2.0.23",
     "claude-code-sdk>=0.0.17",
     "pyyaml>=6.0.1",
+    "fastapi>=0.116.1",
+    "uvicorn[standard]>=0.35.0",
 ]
 
 [project.optional-dependencies]

@@ -1,10 +1,19 @@
 # mise configuration for eyelet development
 # https://mise.jdx.dev/
 
+[env]
+PYTHONPATH = "${PWD}/src"
+# Development mode
+EYELET_DEV = "1"
+
 [tools]
 python = "3.11"
-# uv is managed by mise for consistent development
 uv = "latest"
+ruff = "latest"
+pre-commit = "latest"
+node = "20"
+bun = "latest"
+"npm:@anthropic-ai/claude-code" = "latest"
 
 [tasks.test]
 description = "Run all tests"
@@ -252,7 +261,11 @@ echo "5. Run: git push origin main --tags"
 echo "6. Run: gh release create vX.Y.Z"
 """
 
-[env]
-PYTHONPATH = "${PWD}/src"
-# Development mode
-EYELET_DEV = "1"
+
+[tasks.claude]
+run = "bunx @anthropic-ai/claude-code --dangerously-skip-permissions"
+description = "Run Claude Code with bun (faster startup)"
+
+[tasks.claude-npm]
+run = "claude"
+description = "Run Claude Code with npm (standard)"

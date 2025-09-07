@@ -3,6 +3,7 @@
 __all__ = [
     "completion",
     "configure",
+    "dashboard",
     "discover",
     "doctor",
     "execute",

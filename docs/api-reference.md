@@ -147,7 +147,7 @@ eyelet configure logging [OPTIONS]
 | Option | Description |
 |--------|-------------|
 | `--format FORMAT` | Logging format(s) - comma-separated (json, sqlite, json,sqlite) |
-| `--scope [global\|project\|both]` | Logging scope |
+| `--scope [global\|project\|both]` | Logging scope (default: global) |
 | `--enabled/--disabled` | Enable or disable logging |
 | `--global` | Configure global settings instead of project |
 
@@ -524,7 +524,7 @@ These environment variables are available to hook commands:
 | `CLAUDE_TOOL_NAME` | Tool name (for tool hooks) |
 | `CLAUDE_TRANSCRIPT_PATH` | Path to conversation transcript |
 | `CLAUDE_CWD` | Current working directory |
-| `EYELET_LOG_PATH` | Path to Eyelet log directory |
+| `EYELET_LOG_PATH` | Path to Eyelet log directory (default: ~/.eyelet/hooks) |
 | `EYELET_CONFIG_DIR` | Eyelet configuration directory |
 
 ### Exit Codes
@@ -551,9 +551,9 @@ Project-specific Eyelet configuration:
 logging:
   format: "sqlite"  # json, sqlite, or both
   enabled: true
-  scope: "project"  # project, global, or both
-  global_path: "~/.claude/eyelet-logging"
-  project_path: ".eyelet-logging"
+  scope: "global"   # global, project, or both (default: global)
+  global_path: "~/.eyelet"
+  project_path: ".eyelet-hooks"
   path: null  # Override for project-specific path
   add_to_gitignore: true
 

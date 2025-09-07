@@ -35,8 +35,8 @@ class LoggingConfig(BaseModel):
 
     format: LogFormat = LogFormat.JSON
     enabled: bool = True
-    scope: LogScope = LogScope.PROJECT
-    global_path: str = "~/.claude/eyelet-logging"
+    scope: LogScope = LogScope.GLOBAL  # Changed to GLOBAL for tidy citizen behavior
+    global_path: str = "~/.eyelet"  # Use XDG-compliant central directory
     project_path: str = ".eyelet-logging"
     path: str | None = None  # Override for project-specific path
     add_to_gitignore: bool = True

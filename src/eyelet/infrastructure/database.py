@@ -2,6 +2,7 @@
 
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 from sqlalchemy import (
     JSON,
@@ -15,14 +16,33 @@ from sqlalchemy import (
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from eyelet.utils.paths import get_eyelet_db_path, ensure_directory_exists, migrate_legacy_data
+
 Base = declarative_base()
 
 
-def get_db_path() -> Path:
-    """Get the database path"""
-    db_dir = Path.home() / ".eyelet"
-    db_dir.mkdir(exist_ok=True)
-    return db_dir / "eyelet.db"
+def get_db_path(custom_location: Optional[Path] = None) -> Path:
+    """Get the database path using XDG-compliant central location.
+    
+    Args:
+        custom_location: Optional custom database location
+        
+    Returns:
+        Path to eyelet database file
+    """
+    # Get the new central database path
+    db_path = get_eyelet_db_path(custom_location)
+    
+    # Ensure directory exists
+    ensure_directory_exists(db_path.parent)
+    
+    # Check for legacy migration if no custom location specified
+    if custom_location is None:
+        legacy_path = Path.home() / ".eyelet" / "eyelet.db"
+        if migrate_legacy_data(legacy_path, db_path):
+            print(f"Migrated eyelet database from {legacy_path} to {db_path}")
+    
+    return db_path
 
 
 class HookExecutionModel(Base):
@@ -70,16 +90,32 @@ class TemplateModel(Base):
     installed_at = Column(DateTime)
 
 
-def init_db(engine=None):
-    """Initialize the database"""
+def init_db(engine=None, custom_db_path: Optional[Path] = None):
+    """Initialize the database.
+    
+    Args:
+        engine: Optional SQLAlchemy engine instance
+        custom_db_path: Optional custom database path
+        
+    Returns:
+        SQLAlchemy engine instance
+    """
     if engine is None:
-        engine = create_engine(f"sqlite:///{get_db_path()}")
+        db_path = get_db_path(custom_db_path)
+        engine = create_engine(f"sqlite:///{db_path}")
     Base.metadata.create_all(bind=engine)
     return engine
 
 
-def get_session():
-    """Get a database session"""
-    engine = init_db()
+def get_session(custom_db_path: Optional[Path] = None):
+    """Get a database session.
+    
+    Args:
+        custom_db_path: Optional custom database path
+        
+    Returns:
+        SQLAlchemy session instance
+    """
+    engine = init_db(custom_db_path=custom_db_path)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     return SessionLocal()

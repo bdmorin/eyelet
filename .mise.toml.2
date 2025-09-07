@@ -1,0 +1,87 @@
+# GLIC Infrastructure Audit Project - Tool Configuration
+# Managed by mise for consistent development environment
+
+[tools]
+# Python managed via uv
+python = "3.12"
+uv = "latest"
+
+# Development tools
+ruff = "latest"
+pre-commit = "latest"
+node = "20"
+bun = "latest"
+
+# Claude Code CLI
+"npm:@anthropic-ai/claude-code" = "latest"
+
+[env]
+# Project environment variables
+PROJECT_NAME = "glic-infra-audit"
+PYTHONPATH = "{{config_root}}/src:$PYTHONPATH"
+
+# Python/uv settings
+UV_PYTHON = "3.12"
+UV_PROJECT_ENVIRONMENT = "{{config_root}}/.venv"
+
+# Ansible configuration
+ANSIBLE_HOST_KEY_CHECKING = "false"
+ANSIBLE_INVENTORY = "{{config_root}}/ansible/inventory"
+ANSIBLE_REMOTE_USER = "webdev"
+
+# Network ranges for discovery
+GLIC_NETWORK_DATABASE = "10.246.164.0/24"
+GLIC_NETWORK_PRODUCTION = "10.246.165.0/24"
+GLIC_NETWORK_NONPROD = "10.246.168.0/24"
+
+# Rackspace identifiers
+GLIC_PROJECT_ID = "844792"
+RACKSPACE_INTERNAL_ID = "113047"
+
+[tasks.setup]
+run = """
+echo "Setting up GLIC Infrastructure Audit environment..."
+uv venv
+uv pip install --upgrade pip
+echo "Environment ready. Run 'mise run install' to install dependencies."
+"""
+description = "Initial project setup"
+
+[tasks.install]
+run = """
+echo "Installing project dependencies..."
+uv pip install -e .
+mise install
+echo "Dependencies installed successfully."
+"""
+description = "Install project dependencies"
+
+[tasks.lint]
+run = "ruff check src/ agents/ tests/"
+description = "Run linter on codebase"
+
+[tasks.format]
+run = "ruff format src/ agents/ tests/"
+description = "Format code with ruff"
+
+[tasks.test]
+run = "uv run pytest tests/ -v"
+description = "Run test suite"
+
+[tasks.clean]
+run = """
+echo "Cleaning project artifacts..."
+find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+find . -type f -name "*.pyc" -delete
+find . -type f -name ".DS_Store" -delete
+echo "Cleanup complete."
+"""
+description = "Clean project artifacts"
+
+[tasks.claude]
+run = "bunx @anthropic-ai/claude-code --dangerously-skip-permissions"
+description = "Run Claude Code with bun (faster startup)"
+
+[tasks.claude-npm]
+run = "claude"
+description = "Run Claude Code with npm (standard)"

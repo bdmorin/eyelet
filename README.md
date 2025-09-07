@@ -77,6 +77,26 @@ uvx eyelet query search --help    # Search options
 uvx eyelet query errors           # Debug issues
 ```
 
+### 📊 Web Dashboard
+
+The web dashboard provides real-time monitoring of all eyelet databases. Since it requires additional dependencies, you have three options:
+
+```bash
+# Option 1: Install locally with web dependencies
+uv add eyelet[web] fastapi uvicorn[standard] jinja2
+eyelet dashboard web --open-browser
+
+# Option 2: Use uvx with dependencies (one-time setup)
+uvx --with fastapi --with "uvicorn[standard]" --with jinja2 eyelet dashboard web -o
+
+# Option 3: Use CLI-only commands (no web dependencies required)
+uvx eyelet dashboard metrics      # Static metrics
+uvx eyelet dashboard hooks        # Recent hooks table
+uvx eyelet dashboard search "error"  # Search across databases
+```
+
+The web dashboard automatically finds available ports (preferring 443) and generates sslip.io URLs for easy access.
+
 ### ⚠️ Important: Keeping Eyelet Updated
 
 When using `uvx`, eyelet runs in an isolated environment. To ensure you're using the latest version:

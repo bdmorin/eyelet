@@ -118,7 +118,7 @@ def generate_safety_hook(
 
 
 def generate_logging_hook(
-    log_location: str = "eyelet-hooks",
+    log_location: str = "central",  # Changed default to indicate central logging
     include_outputs: bool = True,
     hook_types: list[str] = None,
 ) -> str:
@@ -462,7 +462,9 @@ class WorkflowState:
 
     def __init__(self, storage_type: str = "{state_storage}"):
         self.storage_type = storage_type
-        self.state_file = Path("eyelet-hooks/workflow-state.json")
+        # Import here to avoid circular imports
+        from eyelet.utils.paths import get_eyelet_data_dir
+        self.state_file = get_eyelet_data_dir() / "workflow-state.json"
 
     def load_state(self) -> Dict[str, Any]:
         """Load current workflow state."""

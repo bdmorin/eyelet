@@ -12,10 +12,10 @@ Transition from JSON file logging to SQLite database with support for concurrent
 - **Concurrency**: WAL mode + application-level retry logic
 
 ### 2. Logging Scope
-- **Options**: `project`, `global`, or `both`
-- **Global path**: `~/.claude/eyelet-logging/`
-- **Project path**: `.eyelet-logging/` (configurable)
-- **Auto-gitignore**: Add logging directory to .gitignore
+- **Options**: `global` (default), `project`, or `both`
+- **Global path**: `~/.eyelet/` (XDG-compliant)
+- **Project path**: `.eyelet-hooks/` (configurable)
+- **Auto-gitignore**: Add project logging directory to .gitignore
 
 ### 3. Database Schema
 ```sql
@@ -43,14 +43,14 @@ CREATE INDEX idx_tool_name ON hooks(tool_name);
 
 ### 4. Configuration Files
 
-**Global**: `~/.claude/eyelet.yaml`
+**Global**: `~/.eyelet/eyelet.yaml`
 ```yaml
 logging:
   format: json  # 'json' or 'sqlite' 
   enabled: true
-  scope: project  # 'project', 'global', or 'both'
-  global_path: ~/.claude/eyelet-logging
-  project_path: .eyelet-logging
+  scope: global  # 'global', 'project', or 'both'
+  global_path: ~/.eyelet
+  project_path: .eyelet-hooks
   add_to_gitignore: true
 
 metadata:
@@ -63,7 +63,7 @@ metadata:
 logging:
   format: sqlite  # Override global
   scope: both     # Override global
-  path: .eyelet-logs  # Override default project path
+  path: .eyelet-hooks  # Override default project path
 ```
 
 ### 5. SQLite Optimizations

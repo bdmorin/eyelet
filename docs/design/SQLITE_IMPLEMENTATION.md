@@ -95,7 +95,7 @@ CREATE TABLE hooks (
    - SQLiteLogger writes with retry logic
    - ProcessLocalConnection handles concurrency
 5. For JSON:
-   - Traditional file-based logging to eyelet-hooks/
+   - Central logging to ~/.eyelet/hooks/ or local ./eyelet-hooks/ based on scope
 ```
 
 ### 5. Query System (`query_service.py`)
@@ -126,14 +126,14 @@ eyelet query grep "git push"
 
 ### 6. Configuration (`eyelet.yaml`)
 
-**Global Configuration** (`~/.claude/eyelet.yaml`)
+**Global Configuration** (`~/.eyelet/eyelet.yaml`)
 ```yaml
 logging:
   format: json      # json, sqlite, or both
   enabled: true
-  scope: project    # project, global, or both
-  global_path: ~/.claude/eyelet-logging
-  project_path: .eyelet-logging
+  scope: global     # global, project, or both (default: global)
+  global_path: ~/.eyelet
+  project_path: .eyelet-hooks
   add_to_gitignore: true
 
 metadata:

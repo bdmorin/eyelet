@@ -15,22 +15,20 @@ from eyelet.infrastructure.database import get_db_path
 from eyelet.infrastructure.repositories import SQLiteExecutionRepository
 from eyelet.services.config_service import ConfigService
 from eyelet.services.hook_logger import HookLogger
+from eyelet.utils.paths import get_eyelet_data_dir, ensure_directory_exists
 
 console = Console()
 
 
 def create_eyelet_log_entry_legacy(input_data, start_time, project_dir=None):
-    """Legacy JSON file logging - kept for compatibility"""
-    if project_dir is None:
-        project_dir = Path.cwd()
+    """Legacy JSON file logging - now uses central XDG-compliant location"""
+    # Use central eyelet data directory instead of local project directory
+    eyelet_dir = get_eyelet_data_dir() / "hooks"
+    ensure_directory_exists(eyelet_dir)
 
     # Extract hook information
     hook_type = input_data.get("hook_event_name", "unknown")
     tool_name = input_data.get("tool_name", "")
-
-    # Build directory structure
-    # Format: ./eyelet-hooks/{hook_type}/{tool_name}/{date}/
-    eyelet_dir = project_dir / "eyelet-hooks"
 
     if hook_type in ["PreToolUse", "PostToolUse"] and tool_name:
         log_dir = eyelet_dir / hook_type / tool_name / start_time.strftime("%Y-%m-%d")

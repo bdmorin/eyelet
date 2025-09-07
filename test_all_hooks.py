@@ -218,7 +218,9 @@ def verify_logs(test_id):
     print(f"Searching for logs created after: {start_time}")
 
     # Find all logs with our test ID
-    base_dir = Path.cwd() / "eyelet-hooks"
+    # Use the central eyelet data directory for testing
+    from src.eyelet.utils.paths import get_eyelet_data_dir
+    base_dir = get_eyelet_data_dir() / "hooks"
     found_logs = find_logs_with_test_id(base_dir, start_time, test_id)
 
     print(f"\nFound {len(found_logs)} unique tool/hook combinations")
